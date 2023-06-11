@@ -1,19 +1,27 @@
-import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import Navbar from './components/navbar/Navbar';
+import Navbar from './components/UI-components/Navbar';
+import { createContext, useState } from 'react';
+import ProfileSlider from './components/ProfileSlider';
+import AppRoutes from './AppRoutes';
+
+export const AppContext = createContext();
 
 function App() {
+
+  const [sliderToggle, setSliderToggle] = useState(false);
+
   return (
-    <BrowserRouter>
-    <div className="App">
-      <header className="App-header">
-        <Navbar/>
-      </header>
-      <main>
-        working...
-      </main>
-    </div>
-    </BrowserRouter>
+    <AppContext.Provider value={{setSliderToggle}}>
+      <div className="App">
+      {sliderToggle && <ProfileSlider/>}
+        <header className="App-header">
+          <Navbar/>
+        </header>
+        <main>
+          <AppRoutes/>
+        </main>
+      </div>
+    </AppContext.Provider>
   );
 }
 

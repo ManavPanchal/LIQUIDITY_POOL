@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { dots, uniLogo, ethLogo} from '../../images/images'
+import { AppContext } from '../../App'
 
 const Navbar = () => {
 
   const [dropdownToogle, setDropdownToggle] = useState(false);
+  const walletAddress = "0x1234...432"
+  const [isWalletConnected, setWalletConnection] = useState(true);
+  const {setSliderToggle} = useContext(AppContext);
 
   const style = {
     navigation_li : "hover:bg-gray-600 hover:bg-opacity-5 px-3 py-2 cursor-pointer rounded-md"
   }
 
   return (
-    <section className='navbar_div h-22 w-full p-2 flex justify-evenly items-center'>
+    <section className='navbar_div h-22 w-full p-2 flex justify-between items-center'>
         <section className="navigation flex gap-5 items-center">
-            <img src={uniLogo} alt="logo" className="h-9"/>
+            <Link to="/#">
+             <img src={uniLogo} alt="logo" className="h-9 cursor-pointer"/>
+            </Link>
             <u className="list-none no-underline text-slate-400 flex">
               <li className={style.navigation_li}>
-                <Link to="/swap" >Swap</Link>
-              </li >
+                <Link to="/swap/#" >Swap</Link>
+              </li>
               <li className={style.navigation_li}>
                 <Link to="/swap" >Tokens</Link>
               </li>
@@ -41,7 +47,7 @@ const Navbar = () => {
           </div>
           <section className="list_section"></section>
         </section>
-        <section className='wallet connector'>
+        <section className='connectors flex gap-1 items-center'>
           <section className="chain_selector">
             <div className="currentchain cursor-pointer hover:bg-gray-600 hover:bg-opacity-5 px-3 py-2 rounded-md flex gap-1 items-center" onClick={()=>setDropdownToggle(!dropdownToogle)}>
               <img src={ethLogo} alt="" className='w-6'/>
@@ -50,8 +56,18 @@ const Navbar = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="m283-345-43-43 240-240 240 239-43 43-197-197-197 198Z"/></svg>}
             </div>
           </section>
-          <section className="user_profile">
-            
+          <section 
+            className="user_profile rounded-3xl flex justify-evenly px-4 py-1 border border-purple-700 items-center gap-3 cursor-pointer"
+            onClick={()=>setSliderToggle(true)}
+            >
+              {
+                isWalletConnected ? 
+                <p>Connect</p> : 
+                <>
+                  <img src="" alt="" className='rounded-full w-7 h-7 '/>
+                  <p className="wallet_address">{walletAddress}</p>
+                </>
+              }
           </section>
         </section>
     </section>

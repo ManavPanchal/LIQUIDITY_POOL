@@ -1,0 +1,17 @@
+/* ---------------------- ProfileSlider-----------------------------
+
+.profile_contaier{
+    transition: 250ms ease 0s
+}
+.profile_contaier.tiny {
+    height: 45px;
+    margin-right: 0;
+  }
+.profile_container_closer{
+    text-decoration: none;
+    cursor: pointer;
+    height: 100%;
+    padding: 24px calc(28px) 24px 14px;
+    border-radius: 20px 0px 0px 20px;
+    transition: 250ms ease 0s, margin 250ms ease 0s;
+} */

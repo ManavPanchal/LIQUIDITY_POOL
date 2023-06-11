@@ -12,8 +12,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
   width: 100vw;
-  background: rgb(233,222,250);
-  background: radial-gradient(circle, rgba(233,222,250,1) 0%, rgba(251,249,255,1) 82%, rgba(254,253,255,1) 100%);
+  background: rgb(255,234,244);
+  background: linear-gradient(184deg, rgba(255,234,244,1) 0%, rgba(255,255,255,1) 100%);
 }
 
 code {

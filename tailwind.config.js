@@ -5,8 +5,15 @@ module.exports = {
     extend: {
       colors: {
         'regal-blue': '#194BFB',
-        'light-purple':'#dfccff'
+        'light-purple':'#dfccff',
+        "uni-dim-white":"rgb(255, 255, 255)"
       },
+      width:{
+        "120":"480px"
+      },
+      height:{
+        "120":"480px"
+      }
     },
   },
   plugins: [],
