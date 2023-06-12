@@ -6,13 +6,17 @@ module.exports = {
       colors: {
         'regal-blue': '#194BFB',
         'light-purple':'#dfccff',
-        "uni-dim-white":"rgb(255, 255, 255)"
+        "uni-dim-white":"rgb(255, 255, 255)",
+        "uni-dark-pink":"rgb(251, 17, 142)"
       },
       width:{
         "120":"480px"
       },
       height:{
         "120":"480px"
+      },
+      fontFamily:{
+        "Inter-c":"'Inter custom',sans-serif"
       }
     },
   },

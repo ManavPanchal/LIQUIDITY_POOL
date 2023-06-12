@@ -9,9 +9,11 @@ export const AppContext = createContext();
 function App() {
 
   const [sliderToggle, setSliderToggle] = useState(false);
+  const [isWalletConnected, setWalletConnection] = useState(false);
+
 
   return (
-    <AppContext.Provider value={{setSliderToggle}}>
+    <AppContext.Provider value={{sliderToggle, setSliderToggle, isWalletConnected, setWalletConnection}}>
       <div className="App">
       {sliderToggle && <ProfileSlider/>}
         <header className="App-header">

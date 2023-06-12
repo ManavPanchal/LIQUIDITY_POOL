@@ -1,17 +1,13 @@
-/* ---------------------- ProfileSlider-----------------------------
+/* ---------------------- ProfileSlider-----------------------------*/
 
-.profile_contaier{
-    transition: 250ms ease 0s
+/* #profile_slider {
+  position: absolute;
+  top: 0;
+  right: -300px;
+  width: 300px;
+  height: 100vh;
+  transition: right 0.3s ease-in-out;
 }
-.profile_contaier.tiny {
-    height: 45px;
-    margin-right: 0;
-  }
-.profile_container_closer{
-    text-decoration: none;
-    cursor: pointer;
-    height: 100%;
-    padding: 24px calc(28px) 24px 14px;
-    border-radius: 20px 0px 0px 20px;
-    transition: 250ms ease 0s, margin 250ms ease 0s;
+#profile_slider:target {
+    right: 0;
 } */
