@@ -15,7 +15,7 @@ const Navbar = () => {
   }
 
   return (
-    <section className='navbar_div h-22 w-full p-2 grid grid-cols-3'>
+    <section className='navbar_div h-22 w-full p-3 lg:grid lg:grid-cols-3'>
         <section className="navigation flex gap-5 items-center">
             <Link to="/#">
              <img src={uniLogo} alt="logo" className="h-9 cursor-pointer"/>
@@ -38,7 +38,7 @@ const Navbar = () => {
               </li>
             </u>
         </section>
-        <section className="searchbar justify-self-center w-fit bg-white bg-opacity-40 backdrop-blur-3xl text-gray-600">
+        <section className="searchbar justify-self-center w-fit bg-white bg-opacity-40 backdrop-blur-3xl text-gray-600 md:hidden lg:block">
           <div className="input_field flex items-center gap-3 justify-evenly  px-5 py-2 bg-opacity-40 rounded-xl border hover:border-violet-700 border-violet-200">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 15L11.2439 11.2439M12.3821 6.69106C12.3821 9.83414 9.83414 12.3821 6.69106 12.3821C3.54797 12.3821 1 9.83414 1 6.69106C1 3.54797 3.54797 1 6.69106 1C9.83414 1 12.3821 3.54797 12.3821 6.69106Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <input type="text" className='h-7 w-120 outline-none bg-transparent text-black font-Inter-c p-3 font-medium' placeholder='Search tokens'/>
@@ -65,7 +65,7 @@ const Navbar = () => {
                   <img src="" alt="" className='rounded-full w-7 h-7 '/>
                   <p className="wallet_address">{walletAddress}</p>
                 </> :
-                <p className='px-4 py-1 text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 font-semibold text-xl w-full  h-full rounded-3xl'>Connect</p>
+                <p className='px-3 py-2 text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-base font-medium w-full  h-full rounded-3xl'>Connect</p>
               }
           </section>
         </section>

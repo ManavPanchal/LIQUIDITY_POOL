@@ -7,11 +7,11 @@ import TradeCalculations from '../trade-calculation';
 const SwapUI = () => {
 
   const tokenName = "Ether";
-  const {isWalletConnected, setSliderToggle} = useContext(AppContext);
+  const {isWalletConnected, setSliderToggle, setTokenSelectorToggle} = useContext(AppContext);
 
   return (
     <div className='flex justify-center pt-[68px]'>
-        <div className="swap_container max-w-6xl h-fit px-4 py-2 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
+        <div className="swap_container max-w-6xl h-fit px-2 py-1 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
             <div className="conatainer_header flex justify-between items-center p-3 mb-1">
               <div className="container_navigator flex gap-3 text-center font-medium text-gray-500">
                   <span>Swap</span>
@@ -25,7 +25,9 @@ const SwapUI = () => {
               <div className="token_select_section bg-blue-50 p-3 rounded-2xl relative mb-1 flex flex-col gap-2">
                 <div  className="amount_input_field text-2xl flex gap-2" >
                   <input type="text" id='token1' className='bg-transparent outline-none text-4xl w-0 flex-1' placeholder='0'/>
-                  <button className="token_selector flex grow items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit">
+                  <button
+                      className="token_selector flex grow items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit"
+                      onClick={()=>setTokenSelectorToggle(true)}>
                     <img src={ethLogo} alt="" className='w-6'/>
                     <span>{tokenName}</span>
                     <span><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M480-345 240-585l43-43 197 198 197-197 43 43-240 239Z"/></svg></span>
@@ -43,7 +45,9 @@ const SwapUI = () => {
               <div className="token_select_section bg-blue-50 p-3 rounded-2xl flex flex-col gap-2">
                   <div className="amount_input_field text-2xl flex gap-2">
                     <input type="text" className='bg-transparent outline-none basis-1/2 text-4xl w-0 flex-1' placeholder='0'/>
-                    <button className=" basis-1/2 token_selector flex items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit">
+                    <button
+                      className="token_selector flex grow items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit"
+                      onClick={()=>setTokenSelectorToggle(true)}>
                       <img src={ethLogo} alt="" className='w-6'/>
                       <span>{tokenName}</span>
                       <span><svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18"><path d="M480-345 240-585l43-43 197 198 197-197 43 43-240 239Z"/></svg></span>
