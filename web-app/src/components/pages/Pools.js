@@ -1,7 +1,7 @@
 import React from 'react';
 
 function Pools() {
-  return <div>Pools</div>;
+  return <div>Pools creation</div>;
 }
 
 export default Pools;
