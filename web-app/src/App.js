@@ -4,8 +4,8 @@ import { createContext, useState } from 'react';
 import ProfileSlider from './components/ProfileSlider';
 import AppRoutes from './AppRoutes';
 import TokenSelector from './components/token-selector';
-import { WagmiConfig } from 'wagmi';
-import { config } from './utils/wagmi_configuration';
+// import { WagmiConfig } from 'wagmi';
+// import { config } from './utils/wagmi_configuration';
 
 export const AppContext = createContext();
 
@@ -16,7 +16,7 @@ function App() {
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
 
   return (
-    <WagmiConfig config={config}>
+    // <WagmiConfig config={config}>
       <AppContext.Provider
         value={{
           sliderToggle,
@@ -37,7 +37,7 @@ function App() {
           {tokenSelectorToggle && <TokenSelector />}
         </div>
       </AppContext.Provider>
-    </WagmiConfig>
+    // </WagmiConfig>
   );
 }
 
