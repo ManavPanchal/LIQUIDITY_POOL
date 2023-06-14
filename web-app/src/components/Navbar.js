@@ -3,11 +3,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { dots, uniLogo, ethLogo } from '../images/images';
 import { AppContext } from '../App';
+import { useAccount } from 'wagmi';
+
 
 const Navbar = () => {
   const [dropdownToogle, setDropdownToggle] = useState(false);
   const walletAddress = '0x1234...432';
   const { setSliderToggle, isWalletConnected } = useContext(AppContext);
+
+  const {isConnected, address} = useAccount();
 
   const style = {
     navigation_li:
@@ -72,7 +76,7 @@ const Navbar = () => {
         </div>
         <section className="list_section"></section>
       </section>
-      <section className="connectors flex gap-1 items-center justify-self-end">
+      <section className="connectors flex gap-1 items-center justify-self-end px-2">
         <section className="chain_selector">
           <div
             className="currentchain cursor-pointer hover:bg-gray-600 hover:bg-opacity-5 px-3 py-2 rounded-md flex gap-1 items-center"
@@ -101,14 +105,14 @@ const Navbar = () => {
           </div>
         </section>
         <section
-          className="user_profile rounded-3xl flex justify-evenly items-center gap-3 cursor-pointer"
+          className="user_profile rounded-3xl cursor-pointer overflow-hidden"
           onClick={() => setSliderToggle(true)}
         >
-          {isWalletConnected ? (
-            <>
-              <img src="" alt="" className="rounded-full w-7 h-7 " />
-              <p className="wallet_address">{walletAddress}</p>
-            </>
+          {isConnected ? (
+            <div className='flex items-center gap-3 rounded-3xl font-medium px-2 py-1 hover:border-violet-300 border border-transparent'>
+              <svg x="0" y="0" width="24" height="24" className='rounded-full'><rect x="0" y="0" width="24" height="24" transform="translate(0.7865506155529516 -0.6225804798458897) rotate(412.8 12 12)" fill="#F29E02"></rect><rect x="0" y="0" width="24" height="24" transform="translate(-7.190959125771529 6.1319622881810965) rotate(268.6 12 12)" fill="#C8144D"></rect><rect x="0" y="0" width="24" height="24" transform="translate(-18.76614179150707 14.796157445697116) rotate(161.6 12 12)" fill="#2366E1"></rect></svg>
+              <p className="wallet_address">{address.slice(0,6) + "..." + address.slice(-4)}</p>
+            </div>
           ) : (
             <p className="px-3 py-2 text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-base font-medium w-full  h-full rounded-3xl">
               Connect
