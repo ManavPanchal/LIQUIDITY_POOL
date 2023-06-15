@@ -34,7 +34,7 @@ const Navbar = () => {
             <Link to="/swap">NFTs</Link>
           </li>
           <li className={style.navigation_li}>
-            <Link to="/swap">Pools</Link>
+            <Link to="/pools">Pools</Link>
           </li>
           <li className={style.navigation_li}>
             <img

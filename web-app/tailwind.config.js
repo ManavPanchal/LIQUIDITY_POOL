@@ -14,6 +14,9 @@ module.exports = {
         'uni-caption': 'rgb(119, 128, 160),',
         'uni-landing-background': 'rgba(255,234,244)',
         'uni-feature-bg': 'rgb(245,246,252)',
+        'uni-light-pink': 'rgb(248, 172, 185)',
+        'uni-hover-pink': '#cf0c86',
+        'uni-slate': '#e8ecfb',
       },
       width: {
         120: '480px',
