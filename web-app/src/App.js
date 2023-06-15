@@ -26,7 +26,7 @@ function App() {
           setTokenSelectorToggle,
         }}
       >
-        <div id="App" className="h-screen w-screen">
+        <div id="App" className="h-screen w-screen overflow-x-hidden">
           {sliderToggle && <ProfileSlider />}
           <header className="App-header">
             <Navbar />

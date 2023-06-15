@@ -5,13 +5,12 @@ import { dots, uniLogo, ethLogo } from '../images/images';
 import { AppContext } from '../App';
 import { useAccount } from 'wagmi';
 
-
 const Navbar = () => {
   const [dropdownToogle, setDropdownToggle] = useState(false);
   const walletAddress = '0x1234...432';
   const { setSliderToggle, isWalletConnected } = useContext(AppContext);
 
-  const {isConnected, address} = useAccount();
+  const { isConnected, address } = useAccount();
 
   const style = {
     navigation_li:
@@ -48,8 +47,8 @@ const Navbar = () => {
           </li>
         </u>
       </section>
-      <section className="searchbar justify-self-center w-fit bg-white bg-opacity-40 backdrop-blur-3xl text-gray-600 md:hidden lg:block">
-        <div className="input_field flex items-center gap-3 justify-evenly  px-5 py-2 bg-opacity-40 rounded-xl border hover:border-violet-700 border-violet-200">
+      <section className="searchbar justify-self-center w-fit bg-opacity-40 rounded-xl border hover:border-violet-700 border-violet-200 backdrop-blur-3xl text-gray-600 md:hidden lg:block">
+        <div className="input_field flex items-center gap-3 justify-evenly  px-5 py-2 bg-opacity-40 ">
           <svg
             width="16"
             height="16"
@@ -109,9 +108,36 @@ const Navbar = () => {
           onClick={() => setSliderToggle(true)}
         >
           {isConnected ? (
-            <div className='flex items-center gap-3 rounded-3xl font-medium px-2 py-1 hover:border-violet-300 border border-transparent'>
-              <svg x="0" y="0" width="24" height="24" className='rounded-full'><rect x="0" y="0" width="24" height="24" transform="translate(0.7865506155529516 -0.6225804798458897) rotate(412.8 12 12)" fill="#F29E02"></rect><rect x="0" y="0" width="24" height="24" transform="translate(-7.190959125771529 6.1319622881810965) rotate(268.6 12 12)" fill="#C8144D"></rect><rect x="0" y="0" width="24" height="24" transform="translate(-18.76614179150707 14.796157445697116) rotate(161.6 12 12)" fill="#2366E1"></rect></svg>
-              <p className="wallet_address">{address.slice(0,6) + "..." + address.slice(-4)}</p>
+            <div className="flex items-center gap-3 rounded-3xl font-medium px-2 py-1 hover:border-violet-300 border border-transparent">
+              <svg x="0" y="0" width="24" height="24" className="rounded-full">
+                <rect
+                  x="0"
+                  y="0"
+                  width="24"
+                  height="24"
+                  transform="translate(0.7865506155529516 -0.6225804798458897) rotate(412.8 12 12)"
+                  fill="#F29E02"
+                ></rect>
+                <rect
+                  x="0"
+                  y="0"
+                  width="24"
+                  height="24"
+                  transform="translate(-7.190959125771529 6.1319622881810965) rotate(268.6 12 12)"
+                  fill="#C8144D"
+                ></rect>
+                <rect
+                  x="0"
+                  y="0"
+                  width="24"
+                  height="24"
+                  transform="translate(-18.76614179150707 14.796157445697116) rotate(161.6 12 12)"
+                  fill="#2366E1"
+                ></rect>
+              </svg>
+              <p className="wallet_address">
+                {address.slice(0, 6) + '...' + address.slice(-4)}
+              </p>
             </div>
           ) : (
             <p className="px-3 py-2 text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-base font-medium w-full  h-full rounded-3xl">

@@ -35,7 +35,10 @@ body {
   background: rgb(255,234,244);
   background: linear-gradient(184deg, rgba(255,234,244,1) 0%, rgba(255,255,255,1) 100%);
 }
-
+.bggradient{
+background: rgb(255,48,233);
+background: radial-gradient(circle, rgba(255,48,233,1) 0%, rgba(255,234,244,1) 32%);
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
