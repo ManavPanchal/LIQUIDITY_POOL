@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ethLogo } from '../../images/images';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '../../App';
+import { useAccount } from 'wagmi';
 
 function AddToPool() {
   const tokenName = 'ETH';
+  const { isConnected } = useAccount();
+
   const {
     sliderToggle,
     isWalletConnected,
@@ -13,7 +16,7 @@ function AddToPool() {
     setTokenSelectorToggle,
   } = useContext(AppContext);
   return (
-    <div className="flex flex-col  gap-5 bg-white w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
+    <div className="flex flex-col  gap-5 bg-white max-w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
       <div className="flex justify-between items-center">
         <Link className="flex " to="/pools">
           <svg
@@ -55,7 +58,7 @@ function AddToPool() {
           </svg>
         </div>
       </div>
-      <div className="bg-uni-slate flex flex-col p-5 rounded-xl">
+      <div className="bg-blue-50 flex flex-col p-5 rounded-xl">
         <div className="amount_input_field text-2xl flex gap-2">
           <input
             type="text"
@@ -84,7 +87,7 @@ function AddToPool() {
         <div className="w-fit h-5"></div>
       </div>
       <div className="text-center text-xl opacity-60">+</div>
-      <div className="bg-uni-slate flex flex-col p-5 rounded-xl">
+      <div className="bg-blue-50 flex flex-col p-5 rounded-xl">
         <div className="amount_input_field text-2xl flex gap-2">
           <input
             type="text"
@@ -119,7 +122,7 @@ function AddToPool() {
         }}
         className=" text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-center px-8 py-4 text-xl rounded-2xl font-bold"
       >
-        Connect Wallet
+        {isConnected ? 'Add Funds' : 'Connect Wallet'}
       </button>
     </div>
   );

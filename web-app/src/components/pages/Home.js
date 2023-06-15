@@ -8,7 +8,7 @@ import feature3pic from '../../images/feature3.png';
 import { Link } from 'react-router-dom';
 const Home = () => {
   return (
-    <div className="">
+    <div className="max-md:h-fit">
       <div className="flex justify-center items-center ">
         <img
           src={homepic}
@@ -32,17 +32,17 @@ const Home = () => {
           Learn More ⇩
         </h3>
       </div>
-      <div className="h-[354px] flex justify-around ml-36 mr-36 mb-10 ">
-        <div className="h-full w-[740px]  bg-white mr-8 flex justify-between rounded-2xl   hover:border-gray-300 hover:border-2 shadow-md shadow-white">
-          <div className="flex flex-col justify-around">
-            <h1 className="font-roboto text-3xl mt-8 ml-8 font-bold">
+      <div className="h-80 flex justify-around ml-36 mr-36 mb-10 max-sm:flex-col max-sm:gap-5 max-md:flex-col max-md:gap-5 max-sm:mb-60 max-md:mb-60 max-sm:mx-4 max-md:mx-6">
+        <div className="h-full w-[740px] max-sm:max-w-full max-md:max-w-full bg-white mr-8 flex justify-between rounded-2xl   hover:border-gray-300 hover:border-2 shadow-md shadow-white">
+          <div className="flex flex-col  justify-around">
+            <h1 className="flex font-roboto text-3xl max-sm:text-2xl mt-8 ml-8 font-bold">
               Swap tokens
             </h1>
-            <h3 className="font-roboto text-xl mt-32 ml-8">
+            <h3 className="font-roboto text-xl mt-32 ml-8 max-sm:mt-8 max-md:mt-16  max-xl:mt-6  max-sm:text-md max-md:text-lg max-xl:text-lg">
               Buy, sell, and explore tokens on Ethereum,{' '}
               <h3>Polygon, Optimism, and more.</h3>
             </h3>
-            <h4 className="font-roboto text-xl mt-8 ml-8 text-pink-600 font-medium">
+            <h4 className="font-roboto text-xl mt-8 ml-8 max-sm:mt-2  max-md:mt-2 max-xl:mt-4 max-sm:text-md max-md:text-lg max-lg:text-lg text-pink-600 font-medium">
               Trade Tokens
             </h4>
           </div>
@@ -50,20 +50,20 @@ const Home = () => {
             <img
               src={homeswappic}
               alt="swap2 "
-              className=" rounded-2xl  border-transparent h-[343px] "
+              className=" rounded-2xl border-transparent h-72 "
             />
           </div>
         </div>
-        <div className="h-full w-[740px]  bg-white mr-8 flex justify-between rounded-2xl   hover:border-gray-300 hover:border-2 shadow-md shadow-white">
+        <div className=" h-full w-[740px] max-sm:max-w-full max-md:max-w-full bg-white mr-8 flex justify-between rounded-2xl   hover:border-gray-300 hover:border-2 shadow-md shadow-white ">
           <div className="flex flex-col justify-around">
-            <h1 className="font-roboto text-3xl mt-8 ml-8 font-bold">
+            <h1 className="font-roboto text-3xl max-sm:text-2xl mt-8 ml-8 font-bold">
               Trade NFTs
             </h1>
-            <h3 className="font-roboto text-xl mt-32 ml-8">
+            <h3 className="font-roboto text-xl mt-32 ml-8  max-sm:mt-8  max-md:mt-16   max-xl:mt-6  max-sm:text-md max-md:text-lg max-xl:text-lg">
               Buy and sell NFTs across marketplaces to find
               <h3>more listings at better prices.</h3>
             </h3>
-            <h4 className="font-roboto text-xl mt-8 ml-8 text-pink-600 font-medium">
+            <h4 className="font-roboto text-xl mt-8 ml-8 max-sm:mt-2  max-md:mt-2 max-xl:mt-4 max-sm:text-md max-md:text-lg text-pink-600 font-medium">
               Explore NFTs
             </h4>
           </div>
@@ -71,17 +71,18 @@ const Home = () => {
             <img
               src={homenftpic}
               alt="swap3"
-              className=" rounded-2xl  border-transparent h-[343px] "
+              className=" rounded-2xl  border-transparent h-72 "
             />
           </div>
         </div>
       </div>
+
       <div className="w-10/12 m-auto">
-        <div className="h-[260px] flex justify-between mb-20  ">
-          <div className="h-full w-[460px]  bg-uni-feature-bg mr-8 flex justify-between rounded-3xl hover:border-gray-300 hover:border-2 ">
+        <div className="h-[260px] flex justify-between mb-20 max-sm:flex-col max-sm:gap-5 max-md:flex-col max-md:gap-5">
+          <div className="h-full w-[460px] max-sm:max-w-full max-md:max-w-full max-xl:m-auto bg-uni-feature-bg mr-8 flex justify-between rounded-3xl hover:border-gray-300 hover:border-2 ">
             <div className="flex flex-col justify-around">
               <div className="flex justify-between">
-                <h1 className="font-roboto text-3xl mt-8 ml-8 font-bold">
+                <h1 className="font-roboto text-3xl max-sm:text-2xl max-xl:text-2xl mt-8 ml-8 font-bold">
                   Buy Crypto
                 </h1>
                 <div>
@@ -93,19 +94,19 @@ const Home = () => {
                 </div>
               </div>
 
-              <h3 className="font-roboto text-xl mt-10 ml-8 text-slate-400">
+              <h3 className="font-roboto text-xl mt-10 ml-8 max-sm:mt-5 max-xl:mt-4 text-slate-400">
                 Buy crypto with your credit
                 <h3> card or bank account at the best rates</h3>
               </h3>
-              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 text-pink-600 font-medium">
+              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 max-sm:mt-2 max-sm:text-lg max-xl:mt-2 max-xl:text-lg text-pink-600 font-medium">
                 Buy Now
               </h4>
             </div>
           </div>
-          <div className="h-full w-[460px]  bg-uni-feature-bg mr-8 flex justify-between rounded-3xl border-transparent hover:border-gray-300 border-2 ">
+          <div className="h-full w-[460px] max-sm:max-w-full max-md:max-w-full max-xl:m-auto bg-uni-feature-bg mr-8 flex justify-between rounded-3xl border-transparent hover:border-gray-300 border-2 ">
             <div className="flex flex-col justify-around">
               <div className="flex justify-between">
-                <h1 className="font-roboto text-3xl mt-8 ml-8 font-bold">
+                <h1 className="font-roboto text-3xl max-sm:text-2xl max-xl:text-2xl mt-8 ml-8 font-bold">
                   Earn
                 </h1>
                 <div>
@@ -117,19 +118,19 @@ const Home = () => {
                 </div>
               </div>
 
-              <h3 className="font-roboto text-xl mt-10 ml-8 text-slate-400">
+              <h3 className="font-roboto text-xl mt-10 ml-8 max-sm:mt-5 max-xl:mt-4 text-slate-400">
                 Provide liquidity to pools on Uniswap
                 <h3> and earn fees on swaps.</h3>
               </h3>
-              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 text-pink-600 font-medium">
+              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 max-sm:mt-2 max-sm:text-lg max-xl:mt-2 max-xl:text-lg text-pink-600 font-medium">
                 Provide Liquidity
               </h4>
             </div>
           </div>
-          <div className="h-full w-[460px]  bg-uni-feature-bg mr-8 flex justify-between rounded-3xl border-transparent hover:border-gray-300 border-2 ">
+          <div className="h-full w-[460px] max-sm:max-w-full max-md:max-w-full max-xl:m-auto bg-uni-feature-bg mr-8 flex justify-between rounded-3xl border-transparent hover:border-gray-300 border-2 ">
             <div className="flex flex-col justify-around">
               <div className="flex justify-between">
-                <h1 className="font-roboto text-3xl mt-8 ml-8 font-bold">
+                <h1 className="font-roboto text-3xl max-sm:text-2xl max-xl:text-2xl  mt-8 ml-8 font-bold">
                   Build dApps
                 </h1>
                 <div>
@@ -141,29 +142,30 @@ const Home = () => {
                 </div>
               </div>
 
-              <h3 className="font-roboto text-xl mt-10 ml-8 text-slate-400">
+              <h3 className="font-roboto text-xl mt-10 ml-8 max-sm:mt-5 max-xl:mt-4 text-slate-400">
                 Build apps and tools on the largest
                 <h3> DeFi protocol on Ethereum.</h3>
               </h3>
-              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 text-pink-600 font-medium">
+              <h4 className="font-roboto text-xl mt-8 ml-8 mb-4 max-sm:mt-2 max-sm:text-lg max-xl:mt-2 max-xl:text-lg text-pink-600 font-medium">
                 Developer Docs
               </h4>
             </div>
           </div>
         </div>
       </div>
-      <div className="h-[124px] bg-gradient-to-r from-uni-btn-a to-uni-text-pink-b  ml-40 mr-44 mb-10 rounded-2xl flex justify-between">
-        <div className="flex flex-col">
-          <h1 className="font-roboto text-3xl font-bold ml-16 mt-8 text-white">
+
+      <div className="flex justify-between h-32 max-sm:hidden max-md:absolute max-md:m-0 bg-gradient-to-r from-uni-btn-a to-uni-text-pink-b  ml-40 mr-44 mb-10 rounded-2xl ">
+        <div className="flex flex-col max-sm:max-w-full max-md:max-w-full">
+          <h1 className="font-roboto text-3xl max-md:text-2xl font-bold ml-16 mt-8 text-white">
             Powered by the Uniswap Protocol
           </h1>
-          <h2 className="font-roboto text-xl font-medium ml-16 mt-2 text-white">
+          <h2 className="font-roboto text-xl max-md:text-lg font-medium ml-16 mt-2 text-white">
             The leading decentralized crypto trading protocol, governed by a
             global community.
           </h2>
         </div>
         <div>
-          <button className="border-white border-2 rounded-xl text-white font-roboto h-14 w-44 mt-10 mr-20">
+          <button className="border-white border-2 rounded-xl max-md:text-lg text-white font-roboto h-14 w-44 mt-10 mr-20">
             Learn more
           </button>
         </div>
