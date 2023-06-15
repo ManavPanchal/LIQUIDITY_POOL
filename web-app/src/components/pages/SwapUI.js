@@ -6,12 +6,14 @@ import TradeCalculations from '../trade-calculation';
 import { useAccount } from 'wagmi';
 
 const SwapUI = () => {
+
   const tokenName = 'Ether';
   const {setSliderToggle, setTokenSelectorToggle } =
     useContext(AppContext);
   const { isConnected} = useAccount();
+
   return (
-    <div className="flex justify-center pt-[68px]">
+    <div className={`flex justify-center pt-[68px]`}>
       <div className="swap_container max-w-6xl h-fit px-2 py-1 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
         <div className="conatainer_header flex justify-between items-center p-3 mb-1">
           <div className="container_navigator flex gap-3 text-center font-medium text-gray-500">

@@ -22,18 +22,18 @@ const Navbar = () => {
         <Link to="/#">
           <img src={uniLogo} alt="logo" className="h-9 cursor-pointer" />
         </Link>
-        <u className="list-none no-underline text-slate-400 flex">
-          <li className={style.navigation_li}>
-            <Link to="/swap/#">Swap</Link>
+        <u className="list-none no-underline text-slate-400 flex items-center">
+          <li >
+            <Link to="/swap/#" className={style.navigation_li}>Swap</Link>
           </li>
-          <li className={style.navigation_li}>
-            <Link to="/swap">Tokens</Link>
+          <li >
+            <Link to="/swap" className={style.navigation_li}>Tokens</Link>
           </li>
-          <li className={style.navigation_li}>
-            <Link to="/swap">NFTs</Link>
+          <li>
+            <Link to="/swap" className={style.navigation_li}>NFTs</Link>
           </li>
-          <li className={style.navigation_li}>
-            <Link to="/pools">Pools</Link>
+          <li>
+            <Link to="/pools" className={style.navigation_li}>Pools</Link>
           </li>
           <li className={style.navigation_li}>
             <img

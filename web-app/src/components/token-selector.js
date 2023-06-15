@@ -1,91 +1,11 @@
 import React from 'react'
 import { useContext } from 'react'
 import {AppContext} from '../App';
-import {ethLogo} from '../images/images';
-
+import {Tokens} from "../utils/constants"
 const TokenSelector = () => {
 
   // document.getElementById("App").style.filter = "blur(2px)"
   const {setTokenSelectorToggle} = useContext(AppContext);
-
-  const tokens = [
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    },
-    {
-      tokenImage: ethLogo,
-      tokenName:"Ether",
-      tokenSymbol:"ETH"
-    }
-  ]
-
   return (
     <div className='token_selector_container h-full w-full bg-slate-600 bg-opacity-50 absolute top-0' onClick={()=>setTokenSelectorToggle(false)}>
       <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e)=>{e.stopPropagation()}}>
@@ -107,7 +27,7 @@ const TokenSelector = () => {
           </div>
           <div className="token_container pb-1 overflow-y-scroll max-h-[520px]">
               {
-                tokens.map((token)=>{
+                Tokens.map((token)=>{
                   return(<>
                       <div className="token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center">
                         <span className='token_image'>
