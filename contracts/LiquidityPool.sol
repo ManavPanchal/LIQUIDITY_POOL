@@ -26,11 +26,14 @@ contract LiquidityPool {
     mapping(IERC20 => uint[]) public tokensInPool;
     mapping(uint => mapping(address => uint)) public providersLPT;
     mapping(uint => address[]) liquidityProviders;
-
+    mapping(ERC20Token => mapping(ERC20Token => bool)) private tokenPairExists;
+    mapping(ERC20Token => bool) private LPTokenExists;
     event poolCreated(address _poolCreator, string _tokenPair, uint timestamp);
     event liquidityAdded(
         address _liquidityProvider,
         string _tokenPair,
+        uint _inAmount1,
+        uint _inAmount2,
         uint timestamp
     );
     event liquidityRemoved(
@@ -54,6 +57,12 @@ contract LiquidityPool {
         ERC20Token _LPT
     ) public {
         require(msg.sender == owner, "Only Owner Allowed");
+        require(
+            !tokenPairExists[_token1][_token2] ||
+                !tokenPairExists[_token2][_token1],
+            "Token pair already exists"
+        );
+        require(!LPTokenExists[_LPT], "LPT exists already");
         Pool memory newPool = Pool({
             token1: _token1,
             token2: _token2,
@@ -72,6 +81,9 @@ contract LiquidityPool {
         providersLPT[poolCount][msg.sender] = newPool.LPTsupply;
         tokensInPool[_token1].push(poolCount);
         tokensInPool[_token2].push(poolCount);
+        tokenPairExists[_token1][_token2] = true;
+        tokenPairExists[_token2][_token1] = true;
+        LPTokenExists[_LPT] = true;
         poolCount = poolCount + 1;
         emit poolCreated(
             owner,
@@ -134,6 +146,8 @@ contract LiquidityPool {
         emit liquidityAdded(
             msg.sender,
             string.concat(pool[_id].token1.symbol(), pool[_id].token2.symbol()),
+            _amount1,
+            _amount2,
             block.timestamp
         );
     }
