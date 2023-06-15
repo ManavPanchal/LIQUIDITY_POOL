@@ -11,8 +11,7 @@ export const AppContext = createContext();
 
 function App() {
   const [sliderToggle, setSliderToggle] = useState(false);
-  const [isWalletConnected, setWalletConnection] = useState(false);
-  const [tokens, setTokens] = useState({ token1: '', token2: '' });
+  // const [tokens, setTokens] = useState({ token1: '', token2: '' });
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
 
   return (
@@ -21,8 +20,6 @@ function App() {
         value={{
           sliderToggle,
           setSliderToggle,
-          isWalletConnected,
-          setWalletConnection,
           setTokenSelectorToggle,
         }}
       >

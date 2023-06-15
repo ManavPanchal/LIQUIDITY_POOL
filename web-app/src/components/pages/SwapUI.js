@@ -3,12 +3,13 @@ import { useContext } from 'react';
 import { ethLogo } from '../../images/images';
 import { AppContext } from '../../App';
 import TradeCalculations from '../trade-calculation';
+import { useAccount } from 'wagmi';
 
 const SwapUI = () => {
   const tokenName = 'Ether';
-  const { isWalletConnected, setSliderToggle, setTokenSelectorToggle } =
+  const {setSliderToggle, setTokenSelectorToggle } =
     useContext(AppContext);
-
+  const { isConnected} = useAccount();
   return (
     <div className="flex justify-center pt-[68px]">
       <div className="swap_container max-w-6xl h-fit px-2 py-1 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
@@ -116,7 +117,7 @@ const SwapUI = () => {
         </div>
         <TradeCalculations token1Price={'1'} token2Price="0.2323" />
         <button className="action_btn text-uni-dim-white bg-uni-dark-pink rounded-xl text-center p-3 text-xl font-semibold w-full">
-          {isWalletConnected ? (
+          {isConnected ? (
             <>
               {document.getElementById('token1')?.value === '' ? (
                 <p> Enter Amount</p>

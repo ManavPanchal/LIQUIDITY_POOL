@@ -7,8 +7,7 @@ import { useAccount } from 'wagmi';
 
 const Navbar = () => {
   const [dropdownToogle, setDropdownToggle] = useState(false);
-  const walletAddress = '0x1234...432';
-  const { setSliderToggle, isWalletConnected } = useContext(AppContext);
+  const { setSliderToggle } = useContext(AppContext);
 
   const { isConnected, address } = useAccount();
 

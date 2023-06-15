@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
+import UserActivity from './user-profile-activity'
+import UserPools from './user-profile-pools'
+import UserTokens from './user-profile-tokens'
+import { useDisconnect } from 'wagmi'
 
 const UserProfile = ({address, data, isError, isLoading}) => {
 
-    const [currentNavigation, setCurrentNavigation] = useState("Tokens")
+    const [currentNavigation, setCurrentNavigation] = useState("Tokens");
+    const [disconnectAlert,  setDisconnectAlert] = useState(false);
+    const {disconnect} = useDisconnect()
 
   return (
     <>
@@ -16,8 +22,11 @@ const UserProfile = ({address, data, isError, isLoading}) => {
             className="material-symbols-outlined bg-gray-600 bg-opacity-5 rounded-xl px-2 py-1 text-gray-600 text-xl text-center font-light cursor-pointer">
             settings
             </span>
-            <span class="material-symbols-outlined bg-gray-600 bg-opacity-5 rounded-xl px-2 py-1 text-gray-600 text-xl text-center cursor-pointer">
-            power_settings_new
+            <span className='bg-gray-600 bg-opacity-5 rounded-xl px-2 py-1 flex items-center gap-1 cursor-pointer'onClick={()=>{(disconnectAlert)?  disconnect(): setDisconnectAlert(true)}}>
+                <span class="material-symbols-outlined text-gray-600 text-xl text-center">
+                power_settings_new
+                </span>
+                { disconnectAlert && <span className='text-sm text-medium'>Disconnect</span>}
             </span>
         </div>
     </div>
@@ -25,7 +34,7 @@ const UserProfile = ({address, data, isError, isLoading}) => {
         <span className='text-black text-3xl font-semibold '>{data?.formatted.slice(0,6)}</span>
         <span className='text-black text-2xl font-bold'>{data?.symbol}</span>
     </div>
-    <div className="profile_navigations p-3">
+    <div className="profile_navigations p-3 px-1">
         <div className="navigators flex gap-5">
             <span
                 className={`cursor-pointer font-medium ${(currentNavigation === "Tokens") && "text-black"}`}
@@ -37,6 +46,11 @@ const UserProfile = ({address, data, isError, isLoading}) => {
                 className={`cursor-pointer font-medium ${(currentNavigation === "Activity") && "text-black"}`}
                 onClick={()=>setCurrentNavigation("Activity")}>Activity</span>
         </div>
+    </div>
+    <div className="navigation_containt max-h-full h-3/4 min-h-[50%]:">
+        {(currentNavigation === "Tokens") && <UserTokens/>}
+        {(currentNavigation === "Pools") && <UserPools/>}
+        {(currentNavigation === "Activity") && <UserActivity/>}
     </div>
     </>
   )
