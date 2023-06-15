@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useState , useEffect} from 'react';
 import { useContext } from 'react';
 import { ethLogo } from '../../images/images';
 import { AppContext } from '../../App';
 import TradeCalculations from '../trade-calculation';
 import { useAccount } from 'wagmi';
-
+import TokenSelector from '../token-selector';
 const SwapUI = () => {
 
-  const tokenName = 'Ether';
-  const {setSliderToggle, setTokenSelectorToggle } =
-    useContext(AppContext);
+  const [tokens, setTokens] = useState(
+    {
+        token1:{
+          isSelected:false
+        }, 
+        token2:{
+          isSelected:false
+        }
+    });
   const { isConnected} = useAccount();
+  const {setSliderToggle} = useContext(AppContext);
+  const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
+  useEffect(()=>{console.log(tokens);},[tokens])
 
   return (
     <div className={`flex justify-center pt-[68px]`}>
@@ -38,7 +47,7 @@ const SwapUI = () => {
             </svg>
           </button>
         </div>
-        <div className="token_selector mb-1">
+        <div className="token_select_section mb-1">
           <div className="token_select_section bg-blue-50 p-3 rounded-2xl relative mb-1 flex flex-col gap-2">
             <div className="amount_input_field text-2xl flex gap-2">
               <input
@@ -48,11 +57,14 @@ const SwapUI = () => {
                 placeholder="0"
               />
               <button
-                className="token_selector flex grow items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit"
-                onClick={() => setTokenSelectorToggle(true)}
+                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${(tokens.token1?.name) ? "bg-slate-500 bg-opacity-10" : "bg-uni-dark-pink text-white"} p-1 px-2 rounded-3xl max-w-fit`}
+                onClick={() => {
+                  setTokenSelectorToggle(true);
+                  setTokens({ ...tokens,token1:{ ...tokens.token1,isSelected:true}})
+                  }}
               >
-                <img src={ethLogo} alt="" className="w-6" />
-                <span>{tokenName}</span>
+                {tokens.token1?.logo && <img src={ethLogo} alt="" className="w-6" />}
+                <span>{tokens.token1?.name ?  tokens.token1.name : "Select tokens"}</span>
                 <span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -95,11 +107,14 @@ const SwapUI = () => {
                 placeholder="0"
               />
               <button
-                className="token_selector flex grow items-center gap-1 font-medium text-xl bg-slate-500 bg-opacity-10 p-1 px-2 rounded-3xl max-w-fit"
-                onClick={() => setTokenSelectorToggle(true)}
+                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${(tokens.token2?.name) ? "bg-slate-500 bg-opacity-10" : "bg-uni-dark-pink text-white"} p-1 px-2 rounded-3xl max-w-fit`}
+                onClick={() => {
+                  setTokenSelectorToggle(true);
+                  setTokens({ ...tokens,token2:{ ...tokens.token2,isSelected:true}})
+                  }}
               >
-                <img src={ethLogo} alt="" className="w-6" />
-                <span>{tokenName}</span>
+                {tokens.token2?.logo && <img src={ethLogo} alt="" className="w-6" />}
+                <span>{tokens.token2?.name ?  tokens.token2.name : "Select tokens"}</span>
                 <span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +132,7 @@ const SwapUI = () => {
             </div>
           </div>
         </div>
-        <TradeCalculations token1Price={'1'} token2Price="0.2323" />
+        <TradeCalculations token1Price='1' token2Price="0.2323" />
         <button className="action_btn text-uni-dim-white bg-uni-dark-pink rounded-xl text-center p-3 text-xl font-semibold w-full">
           {isConnected ? (
             <>
@@ -134,6 +149,7 @@ const SwapUI = () => {
           )}
         </button>
       </div>
+      {tokenSelectorToggle && <TokenSelector setTokenSelectorToggle={setTokenSelectorToggle} setTokens={setTokens} tokens={tokens}/>}
     </div>
   );
 };

@@ -1,13 +1,16 @@
-import React from 'react'
-import { useContext } from 'react'
-import {AppContext} from '../App';
-import {Tokens} from "../utils/constants"
-const TokenSelector = () => {
+import React from 'react';
+import {Tokens, tokenABI} from "../utils/constants"
+import { useContractRead } from 'wagmi';
+const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
 
-  // document.getElementById("App").style.filter = "blur(2px)"
-  const {setTokenSelectorToggle} = useContext(AppContext);
+  // const {data, isLoading, isError} = useContractRead({
+  //   address : Tokens[0].tokenAddress,
+  //   abi:tokenABI,
+  //   functionName:"name"
+  // })
+
   return (
-    <div className='token_selector_container h-full w-full bg-slate-600 bg-opacity-50 absolute top-0' onClick={()=>setTokenSelectorToggle(false)}>
+    <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={()=>setTokenSelectorToggle(false)}>
       <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e)=>{e.stopPropagation()}}>
           <div className="container_header p-5 border-b border-violet-100">
             <div className="heading flex justify-between py-2 px-1">
@@ -29,7 +32,16 @@ const TokenSelector = () => {
               {
                 Tokens.map((token)=>{
                   return(<>
-                      <div className="token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center">
+                      <div 
+                        className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) && "opacity-20"}`}
+                        onClick={()=>{
+                          if(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) return;
+                            setTokens((prevVal)=>{
+                              setTokenSelectorToggle(false);
+                              if (prevVal.token1?.isSelected) return { ...prevVal,token1:{name:token.tokenSymbol, isSelected:false, logo:token.tokenImage}}
+                              else if(prevVal.token2?.isSelected) return { ...prevVal,token2:{isSelected:false,name:token.tokenSymbol, logo:token.tokenImage}}
+                            })
+                        }}>
                         <span className='token_image'>
                           <img src={token.tokenImage} alt="" className='w-8'/>
                         </span>
