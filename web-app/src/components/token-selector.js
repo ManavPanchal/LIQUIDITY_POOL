@@ -1,13 +1,21 @@
+import { readContract } from '@wagmi/core';
 import React from 'react';
-import {Tokens, tokenABI} from "../utils/constants"
-import { useContractRead } from 'wagmi';
+import { useAccount } from 'wagmi';
+import {tokenABI, Tokens} from "../utils/constants"
 const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
 
-  // const {data, isLoading, isError} = useContractRead({
-  //   address : Tokens[0].tokenAddress,
-  //   abi:tokenABI,
-  //   functionName:"name"
-  // })
+  const {address} = useAccount();
+
+  const fetchUserTokenBalance = async(tokenAddress)=>{
+
+    const balance = await readContract({
+      address:tokenAddress,
+      abi:tokenABI,
+      functionName:"balanceOf",
+      args:[address]
+    });
+    return Number(balance)/(10**18);
+  }
 
   return (
     <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={()=>setTokenSelectorToggle(false)}>
@@ -32,15 +40,16 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
               {
                 Tokens.map((token)=>{
                   return(<>
-                      <div 
-                        className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) && "opacity-20"}`}
-                        onClick={()=>{
-                          if(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) return;
-                            setTokens((prevVal)=>{
-                              setTokenSelectorToggle(false);
-                              if (prevVal.token1?.isSelected) return { ...prevVal,token1:{name:token.tokenSymbol, isSelected:false, logo:token.tokenImage}}
-                              else if(prevVal.token2?.isSelected) return { ...prevVal,token2:{isSelected:false,name:token.tokenSymbol, logo:token.tokenImage}}
-                            })
+                      <div
+                        className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) && "opacity-20"}`}
+                        onClick={ async ()=>{
+                          if(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) return;
+                          const balance  = await fetchUserTokenBalance(token.tokenAddress)
+                          setTokens( (prevVal)=>{
+                            setTokenSelectorToggle(false);
+                            if (prevVal.token1?.isSelected) return { ...prevVal,token1:{name:token.tokenSymbol, isSelected:false, logo:token.tokenImage, address:token.tokenAddress, balance}}
+                            else if(prevVal.token2?.isSelected) return { ...prevVal,token2:{isSelected:false,name:token.tokenSymbol, logo:token.tokenImage, address:token.tokenAddress, balance}}
+                          })
                         }}>
                         <span className='token_image'>
                           <img src={token.tokenImage} alt="" className='w-8'/>

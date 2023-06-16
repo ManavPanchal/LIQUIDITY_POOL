@@ -9,7 +9,6 @@ const ProfileSlider = () => {
   const { connect, connectors } = useConnect();
   const { isConnected, address } = useAccount();
   const { data, isError, isLoading } = useBalance({ address });
-  console.log(data);
 
   const wallets = [
     {

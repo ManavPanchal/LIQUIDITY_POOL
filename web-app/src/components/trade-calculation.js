@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 
-const TradeCalculations = ({token1Price, token2Price}) => {
+const TradeCalculations = ({token1,token2}) => {
 
     const [dropdownToogle, setDropdownToggle] = useState(false);
     const priceImpact = "-0.20%"
@@ -16,7 +16,7 @@ const TradeCalculations = ({token1Price, token2Price}) => {
   return (
     <div className="trade_calculations border border-violet-200 p-1 px-2 rounded-xl mb-1">
         <div className="price_comparision py-2 px-1 flex justify-between cursor-pointer text-base items-center" onClick={()=>setDropdownToggle(!dropdownToogle)}>
-            <span className='text-base'>{`${token1Price} WETH = ${token2Price} MATIC`}</span>
+            <span className='text-base'>{`${token1.amount} ${token1.name} = ${token2.amount} ${token2.name}`}</span>
             <span>
                 {(!dropdownToogle) ?
                 <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M480-345 240-585l43-43 197 198 197-197 43 43-240 239Z"/></svg> :
