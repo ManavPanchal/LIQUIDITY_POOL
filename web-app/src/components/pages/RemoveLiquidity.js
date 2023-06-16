@@ -1,9 +1,55 @@
 import React from 'react';
+import { ethers } from 'ethers';
+import { useContext, useState } from 'react';
+import { AppContext } from '../../App';
+import { useAccount } from 'wagmi';
 import { Link } from 'react-router-dom';
+import { pools, Tokens } from '../../utils/constants';
+import lptInstance from '../../utils/lptInstance';
+import poolInstance from '../../utils/poolInstance';
 
 const RemoveLiquidity = () => {
+  const { isConnected } = useAccount();
+  const [LPTamount, setLPTAmount] = useState('');
+  const [lptbalance, setBalance] = useState(0);
+  const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
+  const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('/');
+  let balance;
+
+  async function tokenPair() {
+    const pool = pools
+      .filter((pool) => pool.tokenPair === Tokenpair)
+      .map((pool) => pool);
+
+    return pool;
+  }
+  async function checkbalance() {
+    const pool = await tokenPair();
+    const { contract, signerAddress, balance } = await lptInstance(
+      pool[0].LPTAddress,
+    );
+    setBalance(balance);
+  }
+  checkbalance();
+
+  async function removeFunds() {
+    const pool = await tokenPair();
+    console.log(pool, 'dsjfhkjasdpollllllllllllllllllllllllllllll');
+    const { contract, signerAddress, balance } = await lptInstance(
+      pool[0].LPTAddress,
+    );
+
+    const LPTAmount = ethers.utils.parseUnits(LPTamount, '18'); // Adjust the amount and decimals as per your requirement
+
+    await contract.approve(
+      '0xf5d033542c7192e923937C3e0CB7d4Ef8612863F',
+      LPTAmount,
+    );
+    const { contract: poolContract } = await poolInstance();
+    await poolContract.removeLiquidity(pool[0].id, LPTAmount);
+  }
   return (
     <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
       <div className="flex justify-between items-center">
@@ -84,14 +130,29 @@ const RemoveLiquidity = () => {
               type="text"
               className="bg-transparent outline-none basis-1/2 text-4xl w-0 flex-1"
               placeholder="0"
+              value={LPTamount}
+              inputmode="decimal"
+              autocomplete="off"
+              autocorrect="off"
+              pattern="^[0-9]*[.,]?[0-9]*$"
+              onChange={(e) => {
+                setLPTAmount(e.target.value === '0' ? '' : e.target.value);
+              }}
             />
           </div>
           <div className="amount_calculator font-mono text-sm text-opacity-70">
-            <p>Balance:$1.02</p>
+            <p>Balance:{lptbalance}</p>
           </div>
         </div>
       </div>
-      <button onClick={() => {}}>
+      <button
+        onClick={() => {
+          sliderToggle ? setSliderToggle(false) : setSliderToggle(true);
+          if (isConnected) {
+            removeFunds();
+          }
+        }}
+      >
         <div
           className=" text-uni-dark-pink bg-uni-dark-pink bg-opacity-10
         text-center px-8 py-4 text-xl rounded-2xl font-bold mt-4"

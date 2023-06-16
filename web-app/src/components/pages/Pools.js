@@ -12,7 +12,7 @@ const PoolsUI = () => {
   const navigateTo = useNavigate();
   return (
     <div className="flex justify-center w-full">
-      <div className="pools_container flex flex-col justify-center m-auto mt-44 w-[850px] rounded-xl h-64 font-roboto">
+      <div className="pools_container flex flex-col justify-center m-auto mt-60 w-[850px] rounded-xl h-64 font-roboto">
         <div className="flex justify-between mb-7">
           <div className="flex justify-start gap-3 text-left text-black text-4xl ">
             Pools

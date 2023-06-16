@@ -4,27 +4,39 @@ import { useNavigate } from 'react-router';
 const userTokenPairs = [
   {
     poolId: 1,
-    tokenPair: 'ETH/USDT',
+    tokenPair: 'DAI/USDT',
     token1Amount: '200',
     token2Amount: '100',
   },
   {
     poolId: 2,
-    tokenPair: 'BTC/DAI',
+    tokenPair: 'DAI/MYT',
     token1Amount: '55',
     token2Amount: '110',
   },
   {
     poolId: 3,
-    tokenPair: 'ETH/BAT',
+    tokenPair: 'DAI/DFI',
     token1Amount: '120',
     token2Amount: '80',
   },
   {
     poolId: 4,
-    tokenPair: 'DAI/USDT',
+    tokenPair: 'USDT/MYT',
     token1Amount: '75',
     token2Amount: '140',
+  },
+  {
+    poolId: 5,
+    tokenPair: 'USDT/DFI',
+    token1Amount: '200',
+    token2Amount: '100',
+  },
+  {
+    poolId: 6,
+    tokenPair: 'MYT/DFI',
+    token1Amount: '200',
+    token2Amount: '100',
   },
 ];
 
@@ -52,6 +64,7 @@ const Tokenpairprovider = () => {
             <button
               onClick={() => {
                 localStorage.setItem('TokenPair', tokenPairs.tokenPair);
+
                 navigateTo('/pools/removeliquidity');
               }}
             >
