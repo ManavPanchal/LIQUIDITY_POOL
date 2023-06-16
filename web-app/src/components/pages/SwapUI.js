@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { ethLogo } from '../../images/images';
 import { AppContext } from '../../App';
@@ -6,20 +6,20 @@ import TradeCalculations from '../trade-calculation';
 import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
 const SwapUI = () => {
-
-  const [tokens, setTokens] = useState(
-    {
-        token1:{
-          isSelected:false
-        }, 
-        token2:{
-          isSelected:false
-        }
-    });
-  const { isConnected} = useAccount();
-  const {setSliderToggle} = useContext(AppContext);
+  const [tokens, setTokens] = useState({
+    token1: {
+      isSelected: false,
+    },
+    token2: {
+      isSelected: false,
+    },
+  });
+  const { isConnected } = useAccount();
+  const { setSliderToggle } = useContext(AppContext);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  useEffect(()=>{console.log(tokens);},[tokens])
+  useEffect(() => {
+    console.log(tokens);
+  }, [tokens]);
 
   return (
     <div className={`flex justify-center pt-[68px]`}>
@@ -57,14 +57,25 @@ const SwapUI = () => {
                 placeholder="0"
               />
               <button
-                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${(tokens.token1?.name) ? "bg-slate-500 bg-opacity-10" : "bg-uni-dark-pink text-white"} p-1 px-2 rounded-3xl max-w-fit`}
+                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+                  tokens.token1?.name
+                    ? 'bg-slate-500 bg-opacity-10'
+                    : 'bg-uni-dark-pink text-white'
+                } p-1 px-2 rounded-3xl max-w-fit`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
-                  setTokens({ ...tokens,token1:{ ...tokens.token1,isSelected:true}})
-                  }}
+                  setTokens({
+                    ...tokens,
+                    token1: { ...tokens.token1, isSelected: true },
+                  });
+                }}
               >
-                {tokens.token1?.logo && <img src={ethLogo} alt="" className="w-6" />}
-                <span>{tokens.token1?.name ?  tokens.token1.name : "Select tokens"}</span>
+                {tokens.token1?.logo && (
+                  <img src={ethLogo} alt="" className="w-6" />
+                )}
+                <span>
+                  {tokens.token1?.name ? tokens.token1.name : 'Select tokens'}
+                </span>
                 <span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -107,14 +118,25 @@ const SwapUI = () => {
                 placeholder="0"
               />
               <button
-                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${(tokens.token2?.name) ? "bg-slate-500 bg-opacity-10" : "bg-uni-dark-pink text-white"} p-1 px-2 rounded-3xl max-w-fit`}
+                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+                  tokens.token2?.name
+                    ? 'bg-slate-500 bg-opacity-10'
+                    : 'bg-uni-dark-pink text-white'
+                } p-1 px-2 rounded-3xl max-w-fit`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
-                  setTokens({ ...tokens,token2:{ ...tokens.token2,isSelected:true}})
-                  }}
+                  setTokens({
+                    ...tokens,
+                    token2: { ...tokens.token2, isSelected: true },
+                  });
+                }}
               >
-                {tokens.token2?.logo && <img src={ethLogo} alt="" className="w-6" />}
-                <span>{tokens.token2?.name ?  tokens.token2.name : "Select tokens"}</span>
+                {tokens.token2?.logo && (
+                  <img src={ethLogo} alt="" className="w-6" />
+                )}
+                <span>
+                  {tokens.token2?.name ? tokens.token2.name : 'Select tokens'}
+                </span>
                 <span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +154,7 @@ const SwapUI = () => {
             </div>
           </div>
         </div>
-        <TradeCalculations token1Price='1' token2Price="0.2323" />
+        <TradeCalculations token1Price="1" token2Price="0.2323" />
         <button className="action_btn text-uni-dim-white bg-uni-dark-pink rounded-xl text-center p-3 text-xl font-semibold w-full">
           {isConnected ? (
             <>
@@ -149,7 +171,13 @@ const SwapUI = () => {
           )}
         </button>
       </div>
-      {tokenSelectorToggle && <TokenSelector setTokenSelectorToggle={setTokenSelectorToggle} setTokens={setTokens} tokens={tokens}/>}
+      {tokenSelectorToggle && (
+        <TokenSelector
+          setTokenSelectorToggle={setTokenSelectorToggle}
+          setTokens={setTokens}
+          tokens={tokens}
+        />
+      )}
     </div>
   );
 };
