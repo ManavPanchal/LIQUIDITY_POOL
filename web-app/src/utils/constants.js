@@ -58,6 +58,62 @@ export const LiquidityPoolABI = [
     type: 'function',
   },
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount2',
+        type: 'uint256',
+      },
+    ],
+    name: 'addLiquidity',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token1',
+        type: 'address',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token2',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance2',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_LPT',
+        type: 'address',
+      },
+    ],
+    name: 'createPool',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -882,6 +938,7 @@ export const Tokens = [
     tokenAddress: '0x5d9a020d55eF31Bc391c9629471e4B63A3A80aA8',
   },
 ];
+
 export const pools = [
   {
     id: 0,

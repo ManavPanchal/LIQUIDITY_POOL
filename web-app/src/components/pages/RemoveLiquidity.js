@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../App';
@@ -10,6 +10,7 @@ import poolInstance from '../../utils/poolInstance';
 
 const RemoveLiquidity = () => {
   const { isConnected } = useAccount();
+  const [providerInfo, setProviderInfo] = useState([]);
   const [LPTamount, setLPTAmount] = useState('');
   const [lptbalance, setBalance] = useState(0);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
@@ -25,14 +26,30 @@ const RemoveLiquidity = () => {
 
     return pool;
   }
-  async function checkbalance() {
-    const pool = await tokenPair();
-    const { contract, signerAddress, balance } = await lptInstance(
-      pool[0].LPTAddress,
-    );
-    setBalance(balance);
-  }
-  checkbalance();
+  useEffect(() => {
+    async function checkbalance() {
+      const pool = await tokenPair();
+      console.log('LPTAddress', pool[0]);
+      const { contract, signerAddress, balance } = await lptInstance(
+        pool[0].LPTAddress,
+      );
+
+      setBalance(balance);
+      const { contract: poolContract } = await poolInstance();
+      const provider = await poolContract.providerDetails(
+        pool[0].id,
+        signerAddress,
+      );
+      const providerdata = [
+        ethers.utils.formatEther(provider.currentBalance1),
+        ethers.utils.formatEther(provider.currentBalance2),
+        ethers.utils.formatEther(provider.claimedBalance1),
+        ethers.utils.formatEther(provider.claimedBalance2),
+      ];
+      setProviderInfo(providerdata);
+    }
+    checkbalance();
+  }, [setBalance]);
 
   async function removeFunds() {
     const pool = await tokenPair();
@@ -49,6 +66,7 @@ const RemoveLiquidity = () => {
     );
     const { contract: poolContract } = await poolInstance();
     await poolContract.removeLiquidity(pool[0].id, LPTAmount);
+    window.location.reload();
   }
   return (
     <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
@@ -98,11 +116,11 @@ const RemoveLiquidity = () => {
         <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60  rounded-xl">
           <div className="flex justify-between">
             <span className="">{tokens[0]}↗</span>
-            <span className="">0.005696</span>
+            <span className="">{providerInfo[0]}</span>
           </div>
           <div className="flex justify-between">
             <span>{tokens[1]}</span>
-            <span>1.03</span>
+            <span>{providerInfo[1]}</span>
           </div>
         </div>
       </div>
@@ -111,11 +129,11 @@ const RemoveLiquidity = () => {
         <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60  rounded-xl">
           <div className="flex justify-between">
             <span className="">{tokens[0]}</span>
-            <span className="">0</span>
+            <span className="">{providerInfo[2]}</span>
           </div>
           <div className="flex justify-between">
             <span>{tokens[1]}</span>
-            <span>0</span>
+            <span>{providerInfo[3]}</span>
           </div>
         </div>
       </div>

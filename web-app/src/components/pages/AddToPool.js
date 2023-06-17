@@ -9,8 +9,11 @@ import { pools, Tokens } from '../../utils/constants';
 import tokensInstance from '../../utils/tokensInstance';
 import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
+import { TailSpin } from 'react-loader-spinner';
+
 function AddToPool() {
-  const { isConnected } = useAccount();
+  const { isConnected, isConnecting } = useAccount();
+  const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState({
     token1: {
       isSelected: false,
@@ -81,6 +84,11 @@ function AddToPool() {
       setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toString());
     }
   }
+
+  const handleConnectWallet = () => {
+    setLoading(true);
+  };
+
   async function addFunds() {
     const { token1Address, token2Address, poolId } = await tokenPair();
     const { contract: poolContract } = await poolInstance();
@@ -114,6 +122,7 @@ function AddToPool() {
     );
     console.log('RCCC', 'FA1', fundAmount1, 'FA2', fundAmount2);
     await poolContract.addLiquidity(poolId[0], fundAmount1, fundAmount2);
+    setLoading(false);
   }
 
   return (
@@ -266,13 +275,18 @@ function AddToPool() {
         <button
           onClick={() => {
             sliderToggle ? setSliderToggle(false) : setSliderToggle(true);
-            if (isConnected) {
-              addFunds();
-            }
+            // loading ? setLoading(false) : setLoading(true);
+            // setLoading(true);
+            isConnected ? addFunds() : handleConnectWallet();
+            // if (isConnected) {
+            //   addFunds();
+            // }
           }}
           className=" text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-center px-8 py-4 text-xl rounded-2xl font-bold"
         >
-          {isConnected ? 'Add Funds' : 'Connect Wallet'}
+          {isConnected ? `Add Funds` : `Connect Wallet`}
+          {/* {isConnecting ? setLoading(false) : setLoading(true)} */}
+          {isConnected && loading ? <TailSpin /> : ''}
         </button>
       </div>
       {tokenSelectorToggle && (
