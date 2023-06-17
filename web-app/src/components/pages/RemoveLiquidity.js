@@ -44,7 +44,7 @@ const RemoveLiquidity = () => {
     const LPTAmount = ethers.utils.parseUnits(LPTamount, '18'); // Adjust the amount and decimals as per your requirement
 
     await contract.approve(
-      '0xf5d033542c7192e923937C3e0CB7d4Ef8612863F',
+      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
       LPTAmount,
     );
     const { contract: poolContract } = await poolInstance();

@@ -2,6 +2,62 @@ import { ethLogo } from '../images/images';
 
 export const LiquidityPoolABI = [
   {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount2',
+        type: 'uint256',
+      },
+    ],
+    name: 'addLiquidity',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token1',
+        type: 'address',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token2',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance2',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_LPT',
+        type: 'address',
+      },
+    ],
+    name: 'createPool',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
     inputs: [],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -61,6 +117,18 @@ export const LiquidityPoolABI = [
       {
         indexed: false,
         internalType: 'uint256',
+        name: '_outAmount1',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: '_outAmount2',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
         name: 'timestamp',
         type: 'uint256',
       },
@@ -92,6 +160,24 @@ export const LiquidityPoolABI = [
     ],
     name: 'poolCreated',
     type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_LPTAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeLiquidity',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     anonymous: false,
@@ -139,16 +225,16 @@ export const LiquidityPoolABI = [
       },
       {
         internalType: 'uint256',
-        name: '_amount1',
+        name: '_amount',
         type: 'uint256',
       },
       {
-        internalType: 'uint256',
-        name: '_amount2',
-        type: 'uint256',
+        internalType: 'contract ERC20Token',
+        name: '_token',
+        type: 'address',
       },
     ],
-    name: 'addLiquidity',
+    name: 'swapTokens',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -180,39 +266,6 @@ export const LiquidityPoolABI = [
       },
     ],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token1',
-        type: 'address',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token2',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance2',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_LPT',
-        type: 'address',
-      },
-    ],
-    name: 'createPool',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -308,76 +361,26 @@ export const LiquidityPoolABI = [
         type: 'address',
       },
     ],
-    name: 'providersLPT',
+    name: 'providerDetails',
     outputs: [
       {
         internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
+        name: 'currentBalance1',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: '_LPTAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeLiquidity',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
+        name: 'currentBalance2',
         type: 'uint256',
       },
       {
         internalType: 'uint256',
-        name: '_amount',
+        name: 'claimedBalance1',
         type: 'uint256',
       },
       {
-        internalType: 'contract ERC20Token',
-        name: '_token',
-        type: 'address',
-      },
-    ],
-    name: 'swapTokens',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract IERC20',
-        name: '',
-        type: 'address',
-      },
-      {
         internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    name: 'tokensInPool',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
+        name: 'claimedBalance2',
         type: 'uint256',
       },
     ],
@@ -884,42 +887,42 @@ export const pools = [
     id: 0,
     token1Address: '0x6a1149ea9Cc1812C1282D653D0103AdF9F77eD6d',
     token2Address: '0xeB82Ae2ffbc65A8dbF718C74f7d111a2E2bF193c',
-    LPTAddress: '0xeB8B4bd6Dc704974cC66DCAd09DC497623a0d88A',
+    LPTAddress: '0xA409D4670D3dfdf78C28BEF41b290c9952B18CE0',
     tokenPair: 'DAI/USDT',
   },
   {
     id: 1,
     token1Address: '0x6a1149ea9Cc1812C1282D653D0103AdF9F77eD6d',
     token2Address: '0x24e303D9c1A6032463524EFc070649f0AF7f016e',
-    LPTAddress: '0x0C02267c6fdd10B7dfD4696ab124771F59cf3091',
+    LPTAddress: '0x583ed1580F89C9b3541d5Fa393e30360c911D981',
     tokenPair: 'DAI/MYT',
   },
   {
     id: 2,
     token1Address: '0x6a1149ea9Cc1812C1282D653D0103AdF9F77eD6d',
     token2Address: '0x5d9a020d55eF31Bc391c9629471e4B63A3A80aA8',
-    LPTAddress: '0x18774C3900E79B25835726F97202AecE745fD50b',
+    LPTAddress: '0xe559ADEC67b4130FEb019150cb70E570a4bB3556',
     tokenPair: 'DAI/DFI',
   },
   {
     id: 3,
     token1Address: '0xeB82Ae2ffbc65A8dbF718C74f7d111a2E2bF193c',
     token2Address: '0x24e303D9c1A6032463524EFc070649f0AF7f016e',
-    LPTAddress: '0xEA4DD3186248e7dae959892BBF360D205679d90E',
+    LPTAddress: '0xaaf380C61214c351C6357aeF1d40FD98ecafa29e',
     tokenPair: 'USDT/MYT',
   },
   {
     id: 4,
     token1Address: '0xeB82Ae2ffbc65A8dbF718C74f7d111a2E2bF193c',
     token2Address: '0x5d9a020d55eF31Bc391c9629471e4B63A3A80aA8',
-    LPTAddress: ' 0xe62A2A7aC0fD8019A6648D926111cF0fFF87e5D7',
+    LPTAddress: '0x7ABCcc1827651DE342EB204E7912b4c0530124B6',
     tokenPair: 'USDT/DFI',
   },
   {
     id: 5,
     token1Address: '0x24e303D9c1A6032463524EFc070649f0AF7f016e',
     token2Address: '0x5d9a020d55eF31Bc391c9629471e4B63A3A80aA8',
-    LPTAddress: '0xb7E172d2030C264eF4FA525E444DB653F0D2b289',
+    LPTAddress: '0x81bb2B6e13D48f758F0892AD227E7c9A5f096C6b',
     tokenPair: 'MYT/DFI',
   },
 ];

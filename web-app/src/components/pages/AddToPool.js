@@ -103,13 +103,13 @@ function AddToPool() {
     }
     const { contract, signerAddress } = await tokensInstance(token1Address[0]);
     await contract.approve(
-      '0xf5d033542c7192e923937C3e0CB7d4Ef8612863F',
+      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
       fundAmount1,
     );
     console.log(signerAddress, 'SAAAA', contract);
     const { contract: contract2 } = await tokensInstance(token2Address[0]);
     await contract2.approve(
-      '0xf5d033542c7192e923937C3e0CB7d4Ef8612863F',
+      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
       fundAmount2,
     );
     console.log('RCCC', 'FA1', fundAmount1, 'FA2', fundAmount2);

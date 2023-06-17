@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { LiquidityPoolABI } from './constants';
 async function poolInstance() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const contractAddress = '0xf5d033542c7192e923937C3e0CB7d4Ef8612863F';
+  const contractAddress = process.env.REACT_APP_LIQUIDITY_CONTRACT;
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
   const signerAddress = await signer.getAddress();
