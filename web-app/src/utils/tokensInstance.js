@@ -1,7 +1,8 @@
 import { ethers } from 'ethers';
+import { tokenABI } from './constants';
 
 async function tokensInstance(tokenAddress) {
-  const ABI = ['function approve(address,uint256)returns (bool)'];
+  const ABI = tokenABI;
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const contractAddress = tokenAddress;
   await provider.send('eth_requestAccounts', []);

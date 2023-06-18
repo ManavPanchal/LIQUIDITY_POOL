@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { dots, uniLogo, ethLogo } from '../images/images';
 import { AppContext } from '../App';
 import { useAccount } from 'wagmi';
+import ChainSelector from './chain-selector';
 
 const Navbar = () => {
   const [dropdownToogle, setDropdownToggle] = useState(false);
@@ -76,31 +77,7 @@ const Navbar = () => {
       </section>
       <section className="connectors flex gap-1 items-center justify-self-end px-2">
         <section className="chain_selector">
-          <div
-            className="currentchain cursor-pointer hover:bg-gray-600 hover:bg-opacity-5 px-3 py-2 rounded-md flex gap-1 items-center"
-            onClick={() => setDropdownToggle(!dropdownToogle)}
-          >
-            <img src={ethLogo} alt="" className="w-6" />
-            {!dropdownToogle ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                viewBox="0 -960 960 960"
-                width="20"
-              >
-                <path d="M480-345 240-585l43-43 197 198 197-197 43 43-240 239Z" />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="20"
-                viewBox="0 -960 960 960"
-                width="20"
-              >
-                <path d="m283-345-43-43 240-240 240 239-43 43-197-197-197 198Z" />
-              </svg>
-            )}
-          </div>
+          <ChainSelector/>
         </section>
         <section
           className="user_profile rounded-3xl cursor-pointer overflow-hidden"
