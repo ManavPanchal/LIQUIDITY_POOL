@@ -7,14 +7,17 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
   const {address} = useAccount();
 
   const fetchUserTokenBalance = async(tokenAddress)=>{
-
-    const balance = await readContract({
-      address:tokenAddress,
-      abi:tokenABI,
-      functionName:"balanceOf",
-      args:[address]
-    });
-    return Number(balance)/(10**18);
+    try {
+          const balance = await readContract({
+            address:tokenAddress,
+            abi:tokenABI,
+            functionName:"balanceOf",
+            args:[address]
+          });
+          return Number(balance)/(10**18);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -45,8 +48,8 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
                         onClick={ async ()=>{
                           if(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) return;
                           const balance  = await fetchUserTokenBalance(token.tokenAddress)
+                          setTokenSelectorToggle(false);
                           setTokens( (prevVal)=>{
-                            setTokenSelectorToggle(false);
                             if (prevVal.token1?.isSelected) return { ...prevVal,token1:{name:token.tokenSymbol, isSelected:false, logo:token.tokenImage, address:token.tokenAddress, balance}}
                             else if(prevVal.token2?.isSelected) return { ...prevVal,token2:{isSelected:false,name:token.tokenSymbol, logo:token.tokenImage, address:token.tokenAddress, balance}}
                           })

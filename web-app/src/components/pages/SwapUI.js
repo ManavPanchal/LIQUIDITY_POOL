@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
 import { LiquidityPoolABI, pools } from '../../utils/constants';
 import { readContract } from '@wagmi/core';
-import ConfirmSwap from '../confirm-swap';
+import ConfirmSwap from '../confirm-transaction';
 
 const SwapUI = () => {
   const [tokens, setTokens] = useState({
@@ -24,7 +24,7 @@ const SwapUI = () => {
   const [token1Amount, setToken1Amount] = useState("");
   const [token2Amount, setToken2Amount] = useState("");
   const [isWaitingForCalculation, setCalculationLoading] = useState(false);
-  const [confirmswapToggle, setConfirmSwapToggle] = useState(false);
+  const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
 
   useEffect(()=>{
       async function callPool(){
@@ -41,7 +41,7 @@ const SwapUI = () => {
               address: process.env.REACT_APP_LIQUIDITY_CONTRACT,
               abi: LiquidityPoolABI,
               functionName: 'calculateTokenAmount',
-              args:[pool[0].id,token1Amount,tokens.token1?.address]
+              args:[pool[0].id,Number(token1Amount)*(10**18),tokens.token1?.address]
             }) : data = null;
 
           pool
@@ -76,9 +76,9 @@ const SwapUI = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="sc-1x8ot1t-0 bcMbuY"
             >
               <circle cx="12" cy="12" r="3"></circle>
@@ -151,9 +151,9 @@ const SwapUI = () => {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="#98A1C0"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <line x1="12" y1="5" x2="12" y2="19"></line>
                   <polyline points="19 12 12 19 5 12"></polyline>
@@ -226,15 +226,24 @@ const SwapUI = () => {
         >
           {isConnected ? (
             <>
-              {token1Amount ? (
-                <p
-                  className="w-full"
-                  onClick={() => setConfirmSwapToggle(true)}
-                >
-                  {' '}
-                  Swap{' '}
-                </p>
-              ) : (
+              {token1Amount ?
+                (tokens.token1?.name && tokens.token2?.name) ?
+                  <>
+                    <p
+                      className="w-full"
+                      onClick={() => setConfirmTransactionToggle(true)}
+                    >
+                     Swap
+                    </p>
+                  </>:
+                  <>
+                    <p
+                      className="w-full"
+                      onClick={() => setConfirmTransactionToggle(true)}
+                    >
+                      Select token
+                    </p>
+                  </> : (
                 <p> Enter Amount </p>
               )}
             </>
@@ -254,8 +263,9 @@ const SwapUI = () => {
       )}
       {confirmswapToggle && tokens?.pool && (
         <ConfirmSwap
-          setConfirmSwapToggle={setConfirmSwapToggle}
+          setConfirmTransactionToggle={setConfirmTransactionToggle}
           tokens={{ ...tokens, token1Amount, token2Amount }}
+          from = {"SwapUI"}
         />
       )}
     </div>

@@ -6,13 +6,13 @@ import { AppContext } from '../../App';
 import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
 import { pools, Tokens } from '../../utils/constants';
-import tokensInstance from '../../utils/tokensInstance';
 import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
 import { TailSpin } from 'react-loader-spinner';
+import ConfirmInvestment from "../confirm-transaction"
 
 function AddToPool() {
-  const { isConnected, isConnecting } = useAccount();
+  const { isConnected} = useAccount();
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState({
     token1: {
@@ -26,6 +26,7 @@ function AddToPool() {
   const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const [amount1, setAmount1] = useState('');
   const [amount2, setAmount2] = useState('');
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] = useState(false);
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
@@ -50,6 +51,7 @@ function AddToPool() {
   }
   async function calculateTokenAmount(token, event) {
     const { poolId, token1Address, token2Address } = await tokenPair();
+    (!tokens.pool) && setTokens({...tokens,pool:{poolId:poolId[0]}})
     const { contract: poolContract } = await poolInstance();
     console.log(poolId, 'pid');
     console.log(await poolContract.pool(0));
@@ -89,41 +91,7 @@ function AddToPool() {
     setLoading(true);
   };
 
-  async function addFunds() {
-    const { token1Address, token2Address, poolId } = await tokenPair();
-    const { contract: poolContract } = await poolInstance();
-    let fundAmount1;
-    let fundAmount2;
-    const poolData = await poolContract.pool(poolId[0]);
-    const token1 = poolData.token1;
-    const token2 = poolData.token2;
 
-    if (
-      token1.toLowerCase() === token2Address[0].toLowerCase() &&
-      token2.toLowerCase() === token1Address[0].toLowerCase()
-    ) {
-      console.log('Failed.....');
-      fundAmount1 = ethers.utils.parseEther(amount2.toString());
-      fundAmount2 = ethers.utils.parseEther(amount1.toString());
-    } else {
-      fundAmount1 = ethers.utils.parseEther(amount1.toString());
-      fundAmount2 = ethers.utils.parseEther(amount2.toString());
-    }
-    const { contract, signerAddress } = await tokensInstance(token1Address[0]);
-    await contract.approve(
-      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
-      fundAmount1,
-    );
-    console.log(signerAddress, 'SAAAA', contract);
-    const { contract: contract2 } = await tokensInstance(token2Address[0]);
-    await contract2.approve(
-      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
-      fundAmount2,
-    );
-    console.log('RCCC', 'FA1', fundAmount1, 'FA2', fundAmount2);
-    await poolContract.addLiquidity(poolId[0], fundAmount1, fundAmount2);
-    setLoading(false);
-  }
 
   return (
     <>
@@ -275,12 +243,7 @@ function AddToPool() {
         <button
           onClick={() => {
             sliderToggle ? setSliderToggle(false) : setSliderToggle(true);
-            // loading ? setLoading(false) : setLoading(true);
-            // setLoading(true);
-            isConnected ? addFunds() : handleConnectWallet();
-            // if (isConnected) {
-            //   addFunds();
-            // }
+            isConnected ? setConfirmTransactionToggle(true): handleConnectWallet();
           }}
           className=" text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-center px-8 py-4 text-xl rounded-2xl font-bold"
         >
@@ -294,6 +257,13 @@ function AddToPool() {
           setTokenSelectorToggle={setTokenSelectorToggle}
           setTokens={setTokens}
           tokens={tokens}
+        />
+      )}
+      {ConfirmTransactionToggle && tokens?.pool && (
+        <ConfirmInvestment
+          setConfirmTransactionToggle={setConfirmTransactionToggle}
+          tokens={{ ...tokens, token1Amount:amount1, token2Amount:amount2 }}
+          from = {"AddLiquidity"}
         />
       )}
     </>

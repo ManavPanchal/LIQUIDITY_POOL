@@ -7,28 +7,27 @@ import { Link } from 'react-router-dom';
 import { pools, Tokens } from '../../utils/constants';
 import lptInstance from '../../utils/lptInstance';
 import poolInstance from '../../utils/poolInstance';
+import RemoveFunds from "../confirm-transaction"
 
 const RemoveLiquidity = () => {
   const { isConnected } = useAccount();
   const [providerInfo, setProviderInfo] = useState([]);
   const [LPTamount, setLPTAmount] = useState('');
   const [lptbalance, setBalance] = useState(0);
-  const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] = useState(false);
   const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('/');
-  let balance;
 
-  async function tokenPair() {
+  function tokenPair() {
     const pool = pools
       .filter((pool) => pool.tokenPair === Tokenpair)
       .map((pool) => pool);
-
     return pool;
   }
   useEffect(() => {
     async function checkbalance() {
-      const pool = await tokenPair();
+      const pool = tokenPair();
       console.log('LPTAddress', pool[0]);
       const { contract, signerAddress, balance } = await lptInstance(
         pool[0].LPTAddress,
@@ -51,24 +50,8 @@ const RemoveLiquidity = () => {
     checkbalance();
   }, [setBalance]);
 
-  async function removeFunds() {
-    const pool = await tokenPair();
-    console.log(pool, 'dsjfhkjasdpollllllllllllllllllllllllllllll');
-    const { contract, signerAddress, balance } = await lptInstance(
-      pool[0].LPTAddress,
-    );
-
-    const LPTAmount = ethers.utils.parseUnits(LPTamount, '18'); // Adjust the amount and decimals as per your requirement
-
-    await contract.approve(
-      '0x644ee3a7780593C480E4c072A415Dd4034544A95',
-      LPTAmount,
-    );
-    const { contract: poolContract } = await poolInstance();
-    await poolContract.removeLiquidity(pool[0].id, LPTAmount);
-    window.location.reload();
-  }
   return (
+    <>
     <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
       <div className="flex justify-between items-center">
         <Link className="flex " to="/pools">
@@ -167,7 +150,7 @@ const RemoveLiquidity = () => {
         onClick={() => {
           sliderToggle ? setSliderToggle(false) : setSliderToggle(true);
           if (isConnected) {
-            removeFunds();
+            setConfirmTransactionToggle(true)
           }
         }}
       >
@@ -179,6 +162,14 @@ const RemoveLiquidity = () => {
         </div>
       </button>
     </div>
+    {ConfirmTransactionToggle && (
+      <RemoveFunds
+        setConfirmTransactionToggle={setConfirmTransactionToggle}
+        tokens={{ pool:{poolId:tokenPair()[0].id}, LPTAmount: LPTamount}}
+        from = {"RemoveLiquidity"}
+      />
+    )}
+    </>
   );
 };
 
