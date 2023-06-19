@@ -2,118 +2,6 @@ import { ethLogo } from '../images/images';
 
 export const LiquidityPoolABI = [
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount2',
-        type: 'uint256',
-      },
-    ],
-    name: 'addLiquidity',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token1',
-        type: 'address',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token2',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance2',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_LPT',
-        type: 'address',
-      },
-    ],
-    name: 'createPool',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount2',
-        type: 'uint256',
-      },
-    ],
-    name: 'addLiquidity',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token1',
-        type: 'address',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_token2',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_balance2',
-        type: 'uint256',
-      },
-      {
-        internalType: 'contract ERC20Token',
-        name: '_LPT',
-        type: 'address',
-      },
-    ],
-    name: 'createPool',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     inputs: [],
     stateMutability: 'nonpayable',
     type: 'constructor',
@@ -218,24 +106,6 @@ export const LiquidityPoolABI = [
     type: 'event',
   },
   {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: '_id',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_LPTAmount',
-        type: 'uint256',
-      },
-    ],
-    name: 'removeLiquidity',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -281,16 +151,16 @@ export const LiquidityPoolABI = [
       },
       {
         internalType: 'uint256',
-        name: '_amount',
+        name: '_amount1',
         type: 'uint256',
       },
       {
-        internalType: 'contract ERC20Token',
-        name: '_token',
-        type: 'address',
+        internalType: 'uint256',
+        name: '_amount2',
+        type: 'uint256',
       },
     ],
-    name: 'swapTokens',
+    name: 'addLiquidity',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
@@ -322,6 +192,39 @@ export const LiquidityPoolABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token1',
+        type: 'address',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token2',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_balance2',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_LPT',
+        type: 'address',
+      },
+    ],
+    name: 'createPool',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -441,6 +344,47 @@ export const LiquidityPoolABI = [
       },
     ],
     stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_LPTAmount',
+        type: 'uint256',
+      },
+    ],
+    name: 'removeLiquidity',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '_id',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'contract ERC20Token',
+        name: '_token',
+        type: 'address',
+      },
+    ],
+    name: 'swapTokens',
+    outputs: [],
+    stateMutability: 'nonpayable',
     type: 'function',
   },
 ];

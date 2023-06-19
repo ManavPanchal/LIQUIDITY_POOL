@@ -3,76 +3,95 @@ import { ethers } from 'ethers';
 import { useNavigate } from 'react-router';
 import poolInstance from '../utils/poolInstance';
 import { useState } from 'react';
+import { pools } from '../utils/constants';
 
 const Tokenpairprovider = () => {
   const navigateTo = useNavigate();
-  const [events, setEvents] = useState([]);
-
-  // useEffect(() => {
-  //   async function instances() {
-  //     const { contract: poolContract } = await poolInstance();
-  //     const provider = await poolContract.providerDetails(
-  //       pool[0].id,
-  //       signerAddress,
-  //     );
-  //   }
-  //   instances();
-  // }, []);
+  const [poolInfo, setpoolInfo] = useState([]);
   let poolcount = 0;
   let addedEvents;
-  async function addevents() {
-    const { contract, signerAddress } = await poolInstance();
-    let liquidityAdded = await contract.queryFilter('liquidityAdded');
-    addedEvents = liquidityAdded
-      .filter((pool) => {
-        return signerAddress === pool.args[0];
-      })
-      .map((pool) => {
-        return pool.args;
-      });
+  useEffect(() => {
+    async function addevents() {
+      let poolsInfo;
+      const { contract, signerAddress } = await poolInstance();
+      let liquidityAdded = await contract.queryFilter('liquidityAdded');
 
-    setEvents(addedEvents);
-    addedEvents.map((pool) => {});
-    // console.log('liquidityAdded', addedEvents);
-    let liquidityRemoved = await contract.queryFilter('liquidityRemoved');
-    // console.log('liquidityAdded', liquidityRemoved);
-    const removedEvents = liquidityRemoved
-      .filter((pool) => {
-        return signerAddress === pool.args;
-      })
-      .map((pool) => {
-        return pool.args;
+      addedEvents = liquidityAdded
+        .filter((pool) => {
+          return signerAddress === pool.args[0];
+        })
+        .map((pool) => {
+          return pool.args[1];
+        });
+
+      const userTokens = Array.from(new Set(addedEvents));
+      console.log('userTokens', userTokens);
+      const pool = userTokens.map((tokenPair) => {
+        return pools.filter((pool) => {
+          return pool.tokenPair == tokenPair;
+        });
       });
-  }
-  addevents();
+      console.log('pool......................', pool);
+      const Pools = pool;
+      console.log(Pools);
+      poolsInfo = await Promise.all(
+        Pools.map(async (Poollist) => {
+          return Promise.all(
+            Poollist.map(async (pooldata) => {
+              const provider = await contract.providerDetails(
+                pooldata.id,
+                signerAddress,
+              );
+              pooldata['currentBalance1'] = ethers.utils.formatEther(
+                provider.currentBalance1,
+              );
+              pooldata['currentBalance2'] = ethers.utils.formatEther(
+                provider.currentBalance2,
+              );
+              console.log('final pool............', pooldata);
+              return pooldata;
+            }),
+          );
+        }),
+      );
+      poolsInfo = poolsInfo.flat();
+      setpoolInfo([...poolsInfo]);
+    }
+    addevents();
+  }, []);
+
+  console.log('poolInfo', poolInfo);
+
   return (
     <div
       className={`flex flex-col gap-1 items-center w-full font-roboto ${
-        events.length ? 'py-0' : 'py-8'
+        poolInfo.length ? 'py-0' : 'py-8'
       }`}
     >
       <span className="text-lg font-bold ">Your Positions</span>
       {/* {console.log(tokenPairs)} */}
-      {events.length &&
-        events.map((tokenPairs) => {
+      {poolInfo.length &&
+        poolInfo.map((positions) => {
+          console.log('positions.........', positions);
+          const tokens = positions.tokenPair.split('/');
           poolcount += 1;
           return (
             <div className="flex justify-between items-center text-gray-700 font-medium text-lg px-5 py-2 w-full mx-5 border-t border-violet-200">
               <div className="flex gap-3">
                 <div className="text-lg">{poolcount}</div>
                 <div className="flex flex-col">
-                  <div className="text-lg font-bold">{tokenPairs[1]}</div>
+                  <div className="text-lg font-bold">{positions.tokenPair}</div>
                   <div className="text-sm">
-                    {ethers.utils.formatEther(tokenPairs[2])}
-                    {tokenPairs[1]} ⇆ {ethers.utils.formatEther(tokenPairs[3])}
-                    {tokenPairs[1]}
+                    {positions.currentBalance1}
+                    {tokens[0]} ⇆ {positions.currentBalance2}
+                    {tokens[1]}
                   </div>
                 </div>
               </div>
               {/* {console.log(tokenPairs)} */}
               <button
                 onClick={() => {
-                  localStorage.setItem('TokenPair', tokenPairs[1]);
+                  localStorage.setItem('TokenPair', positions.tokenPair);
 
                   navigateTo('/pools/removeliquidity');
                 }}
@@ -84,7 +103,7 @@ const Tokenpairprovider = () => {
             </div>
           );
         })}
-      {!events.length && (
+      {!poolInfo.length && (
         <>
           {' '}
           <svg
