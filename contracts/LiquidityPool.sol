@@ -58,6 +58,14 @@ contract LiquidityPool {
         uint timestamp
     );
 
+    modifier checkValidTokenPair(uint _id, uint _amount, IERC20 _token) {
+        require(
+            (_token == pool[_id].token1) || (_token == pool[_id].token2),
+            "invalid pool id or token address"
+        );
+        _;
+    }
+
     function createPool(
         ERC20Token _token1,
         ERC20Token _token2,
@@ -110,13 +118,29 @@ contract LiquidityPool {
         uint _id,
         uint _amount,
         IERC20 _token
-    ) external view returns (uint _tokenAmount) {
+    ) external checkValidTokenPair(_id, _amount, _token) view returns (uint _tokenAmount) {
         uint reserve1 = pool[_id].balance1;
         uint reserve2 = pool[_id].balance2;
         if (_token == pool[_id].token1) {
             return _tokenAmount = (_amount.mul(reserve2).div(reserve1));
         } else {
             return _tokenAmount = (_amount.mul(reserve1).div(reserve2));
+        }
+    }
+
+    function calculateSwappingAmount(
+        uint _id,
+        uint _amount,
+        IERC20 _token
+    ) external checkValidTokenPair(_id, _amount, _token) view returns (uint _tokenAmount) {
+        uint reserve1 = pool[_id].balance1;
+        uint reserve2 = pool[_id].balance2;
+        if (_token == pool[_id].token1) {
+            uint denominator = reserve1.add(_amount);
+            return _tokenAmount = (_amount.mul(reserve2).div(denominator));
+        } else {
+            uint denominator = reserve2.add(_amount);
+            return _tokenAmount = (_amount.mul(reserve1).div(denominator));
         }
     }
 
@@ -215,7 +239,7 @@ contract LiquidityPool {
         }
     }
 
-    function swapTokens(uint _id, uint _amount, ERC20Token _token) external {
+    function swapTokens(uint _id, uint _amount, ERC20Token _token) external checkValidTokenPair(_id, _amount, _token) {
         uint userTokenBalance = _token.balanceOf(msg.sender);
         require(userTokenBalance >= _amount, "Insufficient Balance");
         uint reserve1 = pool[_id].balance1;
@@ -234,7 +258,7 @@ contract LiquidityPool {
             pool[_id].token1.transferFrom(msg.sender, address(this), _amount);
             outAmount = reserve2.sub(_tokenAmount);
             status = pool[_id].token2.transfer(msg.sender, outAmount);
-        } else {
+        } else{
             uint denominator = reserve2.add(_amount);
             uint _tokenAmount = reserve1.mul(reserve2).div(denominator);
             require(
@@ -256,8 +280,7 @@ contract LiquidityPool {
             msg.sender,
             string.concat(
                 pool[_id].token1.symbol(),
-                "/",
-                pool[_id].token2.symbol()
+                "/"
             ),
             _amount,
             outAmount,
