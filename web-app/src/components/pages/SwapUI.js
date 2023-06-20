@@ -21,28 +21,39 @@ const SwapUI = () => {
   const { isConnected } = useAccount();
   const { setSliderToggle } = useContext(AppContext);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  const [token1Amount, setToken1Amount] = useState("");
-  const [token2Amount, setToken2Amount] = useState("");
+  const [token1Amount, setToken1Amount] = useState('');
+  const [token2Amount, setToken2Amount] = useState('');
   const [isWaitingForCalculation, setCalculationLoading] = useState(false);
   const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
 
-  useEffect(()=>{
-      async function callPool(){
-        try {
-          if(tokens.token1?.name && (token1Amount || token2Amount)){
-            const pool = pools.filter((pool) => {
-              if(tokens.token1?.address && tokens.token2?.address)
-                return ((pool.token1Address === tokens.token1?.address && pool.token2Address === tokens.token2?.address) || (pool.token1Address === tokens.token2?.address && pool.token2Address === tokens.token1?.address))
-              return null;
-            })
-            let data
-            setCalculationLoading(true)
-            pool ? data = await readContract({
-              address: process.env.REACT_APP_LIQUIDITY_CONTRACT,
-              abi: LiquidityPoolABI,
-              functionName: 'calculateTokenAmount',
-              args:[pool[0].id,Number(token1Amount)*(10**18),tokens.token1?.address]
-            }) : data = null;
+  useEffect(() => {
+    async function callPool() {
+      try {
+        if (tokens.token1?.name && (token1Amount || token2Amount)) {
+          const pool = pools.filter((pool) => {
+            if (tokens.token1?.address && tokens.token2?.address)
+              return (
+                (pool.token1Address === tokens.token1?.address &&
+                  pool.token2Address === tokens.token2?.address) ||
+                (pool.token1Address === tokens.token2?.address &&
+                  pool.token2Address === tokens.token1?.address)
+              );
+            return null;
+          });
+          let data;
+          setCalculationLoading(true);
+          pool
+            ? (data = await readContract({
+                address: process.env.REACT_APP_LIQUIDITY_CONTRACT,
+                abi: LiquidityPoolABI,
+                functionName: 'calculateTokenAmount',
+                args: [
+                  pool[0].id,
+                  Number(token1Amount) * 10 ** 18,
+                  tokens.token1?.address,
+                ],
+              }))
+            : (data = null);
 
           pool
             ? setTokens({ ...tokens, pool: { poolId: pool[0].id } })
@@ -50,7 +61,7 @@ const SwapUI = () => {
 
           if (data) {
             setCalculationLoading(false);
-            setToken2Amount((Number(data)/(10**18)).toFixed(4).toString());
+            setToken2Amount((Number(data) / 10 ** 18).toFixed(4).toString());
           }
         }
       } catch (error) {
@@ -65,7 +76,7 @@ const SwapUI = () => {
       <div className="swap_container max-w-6xl h-fit px-2 py-1 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
         <div className="conatainer_header flex justify-between items-center p-3 mb-1">
           <div className="container_navigator flex gap-3 text-center font-medium text-gray-500">
-            <span className='text-black font-medium'>Swap</span>
+            <span className="text-black font-medium">Swap</span>
             <span>Buy</span>
           </div>
           <button className="setting hover:opacity-70 text-gray-500">
@@ -226,16 +237,17 @@ const SwapUI = () => {
         >
           {isConnected ? (
             <>
-              {token1Amount ?
-                (tokens.token1?.name && tokens.token2?.name) ?
+              {token1Amount ? (
+                tokens.token1?.name && tokens.token2?.name ? (
                   <>
                     <p
                       className="w-full"
                       onClick={() => setConfirmTransactionToggle(true)}
                     >
-                     Swap
+                      Swap
                     </p>
-                  </>:
+                  </>
+                ) : (
                   <>
                     <p
                       className="w-full"
@@ -243,7 +255,9 @@ const SwapUI = () => {
                     >
                       Select token
                     </p>
-                  </> : (
+                  </>
+                )
+              ) : (
                 <p> Enter Amount </p>
               )}
             </>
@@ -265,7 +279,7 @@ const SwapUI = () => {
         <ConfirmSwap
           setConfirmTransactionToggle={setConfirmTransactionToggle}
           tokens={{ ...tokens, token1Amount, token2Amount }}
-          from = {"SwapUI"}
+          from={'SwapUI'}
         />
       )}
     </div>

@@ -9,10 +9,10 @@ import { pools, Tokens } from '../../utils/constants';
 import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
 import { TailSpin } from 'react-loader-spinner';
-import ConfirmInvestment from "../confirm-transaction"
+import ConfirmInvestment from '../confirm-transaction';
 
 function AddToPool() {
-  const { isConnected} = useAccount();
+  const { isConnected } = useAccount();
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState({
     token1: {
@@ -26,15 +26,16 @@ function AddToPool() {
   const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const [amount1, setAmount1] = useState('');
   const [amount2, setAmount2] = useState('');
-  const [ConfirmTransactionToggle, setConfirmTransactionToggle] = useState(false);
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
+    useState(false);
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
-      (token) => token.tokenName === tokens.token1.name,
+      (token) => token.tokenName === tokens?.token1.name,
     ).map((token) => token.tokenAddress);
 
     const token2Address = Tokens.filter(
-      (token) => token.tokenName === tokens.token2.name,
+      (token) => token.tokenName === tokens?.token2.name,
     ).map((token) => token.tokenAddress);
 
     const poolId = pools
@@ -49,49 +50,50 @@ function AddToPool() {
 
     return { token1Address, token2Address, poolId };
   }
+
   async function calculateTokenAmount(token, event) {
-    const { poolId, token1Address, token2Address } = await tokenPair();
-    (!tokens.pool) && setTokens({...tokens,pool:{poolId:poolId[0]}})
-    const { contract: poolContract } = await poolInstance();
-    console.log(poolId, 'pid');
-    console.log(await poolContract.pool(0));
-    let bal1;
-    let bal2;
-    const poolData = await poolContract.pool(poolId[0]);
-    if (
-      poolData.token1 === token2Address[0] &&
-      poolData.token2 === token1Address[0]
-    ) {
-      bal1 = poolData.balance2;
-      bal2 = poolData.balance1;
-    } else {
-      bal1 = poolData.balance1;
-      bal2 = poolData.balance2;
-    }
+    try {
+      const { poolId, token1Address, token2Address } = await tokenPair();
+      !tokens.pool && setTokens({ ...tokens, pool: { poolId: poolId[0] } });
+      const { contract: poolContract } = await poolInstance();
+      console.log(poolId, 'pid');
+      console.log(await poolContract.pool(0));
+      let bal1;
+      let bal2;
+      const poolData = await poolContract.pool(poolId[0]);
+      if (
+        poolData.token1 === token2Address[0] &&
+        poolData.token2 === token1Address[0]
+      ) {
+        bal1 = poolData.balance2;
+        bal2 = poolData.balance1;
+      } else {
+        bal1 = poolData.balance1;
+        bal2 = poolData.balance2;
+      }
 
-    const reserve1 = ethers.utils.formatEther(bal1);
-    const reserve2 = ethers.utils.formatEther(bal2);
-    console.log(reserve1, '.....', reserve2);
-    console.log(amount1);
-    if (token === 'token1') {
-      const amountToDisplay =
-        (Number(event.target.value) * reserve2) / reserve1;
-      console.log('AMT DIS', amountToDisplay);
+      const reserve1 = ethers.utils.formatEther(bal1);
+      const reserve2 = ethers.utils.formatEther(bal2);
+      console.log(reserve1, '.....', reserve2);
+      console.log(amount1);
+      if (token === 'token1') {
+        const amountToDisplay =
+          (Number(event.target.value) * reserve2) / reserve1;
+        console.log('AMT DIS', amountToDisplay);
 
-      setAmount2(amountToDisplay === '0' ? '' : amountToDisplay.toString());
-    } else {
-      const amountToDisplay =
-        (Number(event.target.value) * reserve1) / reserve2;
+        setAmount2(amountToDisplay === '0' ? '' : amountToDisplay.toString());
+      } else {
+        const amountToDisplay =
+          (Number(event.target.value) * reserve1) / reserve2;
 
-      setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toString());
-    }
+        setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toString());
+      }
+    } catch (error) {}
   }
 
   const handleConnectWallet = () => {
     setLoading(true);
   };
-
-
 
   return (
     <>
@@ -160,7 +162,7 @@ function AddToPool() {
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
               } p-1 px-2 rounded-3xl max-w-fit`}
-              onClick={() => {
+              onClick={async () => {
                 setTokenSelectorToggle(true);
                 setTokens({
                   ...tokens,
@@ -186,7 +188,9 @@ function AddToPool() {
               </span>
             </button>
           </div>
-          <div className="w-fit h-5"></div>
+          <div className="w-fit h-5 text-slate-500">
+            {tokens.token1?.name ? tokens.token1?.balance : ''}
+          </div>
         </div>
         <div className="text-center text-xl font-bold opacity-60">+</div>
         <div className="bg-blue-50 flex flex-col p-5 rounded-xl">
@@ -212,7 +216,7 @@ function AddToPool() {
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
               } p-1 px-2 rounded-3xl max-w-fit`}
-              onClick={() => {
+              onClick={async () => {
                 setTokenSelectorToggle(true);
                 setTokens({
                   ...tokens,
@@ -238,18 +242,44 @@ function AddToPool() {
               </span>
             </button>
           </div>
-          <div className="w-fit h-5"></div>
+          <div className="w-fit h-5 text-slate-500 ">
+            {tokens.token2?.name ? tokens.token2?.balance : ''}
+          </div>
         </div>
         <button
+          disabled={
+            isConnected
+              ? amount1 &&
+                amount2 &&
+                amount1 <= tokens.token1.balance &&
+                amount2 <= tokens.token2.balance
+                ? false
+                : true
+              : false
+          }
           onClick={() => {
-            sliderToggle ? setSliderToggle(false) : setSliderToggle(true);
-            isConnected ? setConfirmTransactionToggle(true): handleConnectWallet();
+            !isConnected && setSliderToggle(false);
+            isConnected
+              ? setConfirmTransactionToggle(true)
+              : handleConnectWallet();
           }}
-          className=" text-uni-dark-pink bg-uni-dark-pink bg-opacity-10 text-center px-8 py-4 text-xl rounded-2xl font-bold"
+          className={`${
+            isConnected
+              ? amount1 &&
+                amount2 &&
+                amount1 <= tokens.token1.balance &&
+                amount2 <= tokens.token2.balance
+                ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
+                : 'text-gray-400 bg-gray-100 '
+              : 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
+          } text-center px-8 py-4 text-xl rounded-2xl font-bold`}
         >
-          {isConnected ? `Add Funds` : `Connect Wallet`}
-          {/* {isConnecting ? setLoading(false) : setLoading(true)} */}
-          {isConnected && loading ? <TailSpin /> : ''}
+          {isConnected
+            ? amount1 >= tokens.token1.balance ||
+              amount2 >= tokens.token2.balance
+              ? `Insufficient Balance`
+              : `Add Funds`
+            : `Connect Wallet`}
         </button>
       </div>
       {tokenSelectorToggle && (
@@ -262,8 +292,8 @@ function AddToPool() {
       {ConfirmTransactionToggle && tokens?.pool && (
         <ConfirmInvestment
           setConfirmTransactionToggle={setConfirmTransactionToggle}
-          tokens={{ ...tokens, token1Amount:amount1, token2Amount:amount2 }}
-          from = {"AddLiquidity"}
+          tokens={{ ...tokens, token1Amount: amount1, token2Amount: amount2 }}
+          from={'AddLiquidity'}
         />
       )}
     </>
