@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract ERC20Token is ERC20 {
-    address liquidityPoolContractAddress;
+    address public liquidityPoolContractAddress;
 
     constructor(
         address _liquidityPoolContractAddress
-    ) ERC20("LP Token", "LPT") {
+    ) ERC20("TestLPTMYT-DFI", "MYT-DFI") {
         liquidityPoolContractAddress = _liquidityPoolContractAddress;
         _mint(liquidityPoolContractAddress, 1000 * (10 ** 18));
     }

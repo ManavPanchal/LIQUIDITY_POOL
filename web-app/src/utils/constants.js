@@ -150,16 +150,6 @@ export const LiquidityPoolABI = [
         type: 'uint256',
       },
       {
-        internalType: 'uint256',
-        name: '_amount1',
-        type: 'uint256',
-      },
-      {
-        internalType: 'uint256',
-        name: '_amount2',
-        type: 'uint256',
-      },
-      {
         internalType: 'contract IERC20',
         name: '_token1',
         type: 'address',
@@ -168,6 +158,16 @@ export const LiquidityPoolABI = [
         internalType: 'contract IERC20',
         name: '_token2',
         type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount1',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: '_amount2',
+        type: 'uint256',
       },
     ],
     name: 'addLiquidity',
