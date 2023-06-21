@@ -22,8 +22,8 @@ contract LiquidityPool {
         uint minBalance2;
     }
     struct Provider {
-        uint currentBalance1;
-        uint currentBalance2;
+        uint providedBalance1;
+        uint providedBalance2;
         uint claimedBalance1;
         uint claimedBalance2;
     }
@@ -95,9 +95,9 @@ contract LiquidityPool {
         newPool.token2.transferFrom(msg.sender, address(this), _balance2);
         liquidityProviders[poolCount].push(msg.sender);
         newPool.LPT.transfer(msg.sender, newPool.LPTsupply);
-        Provider storage provider = providerDetails[poolCount][msg.sender];
-        provider.currentBalance1 = provider.currentBalance1.add(_balance1);
-        provider.currentBalance2 = provider.currentBalance2.add(_balance2);
+        Provider memory provider = providerDetails[poolCount][msg.sender];
+        provider.providedBalance1 = provider.providedBalance1.add(_balance1);
+        provider.providedBalance2 = provider.providedBalance2.add(_balance2);
         providerDetails[poolCount][msg.sender] = provider;
         tokenPairExists[_token1][_token2] = true;
         tokenPairExists[_token2][_token1] = true;
@@ -160,9 +160,9 @@ contract LiquidityPool {
         uint token2LPT = _amount2.mul(LPTAmount).div(reserve2);
         pool[_id].token1.transferFrom(msg.sender, address(this), _amount1);
         pool[_id].token2.transferFrom(msg.sender, address(this), _amount2);
-        Provider storage provider = providerDetails[_id][msg.sender];
-        provider.currentBalance1 = provider.currentBalance1.add(_amount1);
-        provider.currentBalance2 = provider.currentBalance2.add(_amount2);
+        Provider memory provider = providerDetails[_id][msg.sender];
+        provider.providedBalance1 = provider.providedBalance1.add(_amount1);
+        provider.providedBalance2 = provider.providedBalance2.add(_amount2);
         providerDetails[_id][msg.sender] = provider;
         if (token1LPT < token2LPT) {
             lpToken.mint(msg.sender, token1LPT);
@@ -202,13 +202,7 @@ contract LiquidityPool {
         pool[_id].balance2 = reserve2.sub(withdrawableToken2);
         pool[_id].token1.transfer(msg.sender, withdrawableToken1);
         pool[_id].token2.transfer(msg.sender, withdrawableToken2);
-        Provider storage provider = providerDetails[_id][msg.sender];
-        provider.currentBalance1 = provider.currentBalance1.sub(
-            withdrawableToken1
-        );
-        provider.currentBalance2 = provider.currentBalance2.sub(
-            withdrawableToken2
-        );
+        Provider memory provider = providerDetails[_id][msg.sender];
         provider.claimedBalance1 = provider.claimedBalance1.add(
             withdrawableToken1
         );

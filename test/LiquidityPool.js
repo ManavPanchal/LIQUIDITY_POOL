@@ -122,7 +122,7 @@ describe("Liquidity Pool Testing", function () {
       await token1.connect(liquidityProvider).approve(poolInstance.target, ethers.parseEther("10"))
       await poolInstance.connect(liquidityProvider).swapTokens(0, ethers.parseEther("10"),token1.target);
       const updatedBalance = await token2.balanceOf(liquidityProvider.address);
-      expect(ethers.formatEther(updatedBalance)).to.be.eq(ethers.formatEther(token2Balance + expectedAmount))
+      expect(Number(updatedBalance)).to.be.eq(Number(token2Balance + expectedAmount))
     })
 
   })
@@ -149,6 +149,5 @@ describe("Liquidity Pool Testing", function () {
       await poolInstance.removeLiquidity(0,ethers.parseEther("10"));
       expect(await lpt.balanceOf(owner.address)).to.be.equal(userLPTbalance - ethers.parseEther("10"));
     })
-
   })
 });
