@@ -9,7 +9,7 @@ const swappedTokens = async (req, res) => {
       tokenPair,
       amount1,
       amount2,
-      newtworkId,
+      networkId,
     } = req.body;
     const addedLiquidity = await Activities.create({
       useraddress: userAddress,
@@ -18,7 +18,7 @@ const swappedTokens = async (req, res) => {
       tokenpair: tokenPair,
       amount1,
       amount2,
-      networkid: newtworkId,
+      networkid: networkId,
     });
     res.status(200).json({
       message: 'Tokens swapped successfully',

@@ -2,7 +2,7 @@ const { sequelize } = require('../models');
 const Providers = sequelize.models.Providers;
 const getProvider = async (req, res) => {
   try {
-    const { userAddress, networkId } = req.body;
+    const { userAddress, networkId } = req.params;
     const allProviderPools = await Providers.findAll({
       where: {
         provideraddress: userAddress,

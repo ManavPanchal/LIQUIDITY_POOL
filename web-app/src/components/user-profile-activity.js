@@ -3,95 +3,43 @@ import poolInstance from '../utils/poolInstance';
 import { ethers } from 'ethers';
 import moment from 'moment';
 const UserActivity = () => {
-  const [swappedActivities, setSwappedActivities] = useState([]);
-  const [addedActivities, setAddedActivities] = useState([]);
-  const [removedActivities, setRemovedActivities] = useState([]);
+  const [allActivities, setAllActivities] = useState([]);
+
   useEffect(() => {
     async function activityEvents() {
-      const { contract, signerAddress } = await poolInstance();
-      const swappedEvents = await contract.queryFilter('swappedTokens');
-      const swappedActivity = swappedEvents
-        .filter((pool) => {
-          return signerAddress === pool.args[0];
-        })
-        .map((pool) => {
-          return pool.args;
-        });
-      setSwappedActivities(swappedActivity);
+      const { signerAddress, networkId } = await poolInstance();
 
-      const addedEvents = await contract.queryFilter('liquidityAdded');
-      const addedActivity = addedEvents
-        .filter((pool) => {
-          return signerAddress === pool.args[0];
-        })
-        .map((pool) => {
-          return pool.args;
-        });
-      setAddedActivities(addedActivity);
-
-      const removedEvents = await contract.queryFilter('liquidityRemoved');
-      console.log(removedEvents);
-      const removedActivity = removedEvents
-        .filter((pool) => {
-          return signerAddress === pool.args[0];
-        })
-        .map((pool) => {
-          console.log(pool.args, '.....');
-          return pool.args;
-        });
-      console.log(removedActivity, 'raaaaa');
-      setRemovedActivities(removedActivity);
+      const response = await fetch(
+        `http://localhost:5000/api/getActivities/${signerAddress}/${networkId}`,
+      );
+      const swappedEvents = await response.json();
+      console.log(swappedEvents.allActivities, 'deeeeeeeeeeeeee');
+      setAllActivities(swappedEvents.allActivities);
     }
     activityEvents();
   }, []);
 
   let activities = [
-    ...swappedActivities.map((swappedActivity, index) => ({
-      name: 'Swapped',
+    ...allActivities.map((userActivity, index) => ({
+      name: userActivity.activity,
       image1: '',
       image2: '',
-      activity: `${ethers.utils.formatUnits(swappedActivity[2])} ${
-        swappedActivity[1].split('-')[0]
-      } for ${ethers.utils.formatUnits(swappedActivity[3])}  ${
-        swappedActivity[1].split('-')[1]
-      }`,
-      duration: moment(swappedActivity[4] * 1000).fromNow(),
-      key: `swapped-${index}`,
-    })),
-    ...addedActivities.map((addedActivity, index) => ({
-      name: 'Liquidity Added',
-      image1: '',
-      image2: '',
-      activity: `${ethers.utils.formatUnits(addedActivity[2])} ${
-        addedActivity[1].split('-')[0]
-      } for  ${ethers.utils.formatUnits(addedActivity[3])}  ${
-        addedActivity[1].split('-')[1]
-      }`,
-      duration: moment(addedActivity[4] * 1000).fromNow(),
-      key: `added-${index}`,
-    })),
-    ...removedActivities.map((removedActivity, index) => ({
-      name: 'Liquidity Removed',
-      image1: '',
-      image2: '',
-      activity: `${ethers.utils.formatUnits(removedActivity[2])} ${
-        removedActivity[1].split('-')[0]
-      }for  ${ethers.utils.formatUnits(removedActivity[3])}  ${
-        removedActivity[1].split('-')[1]
-      }`,
-      duration: moment(removedActivity[4] * 1000).fromNow(),
-      key: `removed-${index}`,
+      activity: `${userActivity.amount1} ${
+        userActivity.tokenpair.split('-')[0]
+      } for ${userActivity.amount2}  ${userActivity.tokenpair.split('-')[1]}`,
+      duration: moment(userActivity.createdAt).fromNow(),
+      key: `activity-${index}`,
     })),
   ];
-
+  console.log(activities);
   return (
     <div className="break-words w-full h-full">
       {activities ? (
         <div className="Activities w-full h-full flex flex-col gap-1">
           {activities?.map((activity) => {
             let fillColor =
-              (activity.name === 'Liquidity Added' && 'fill-green-500') ||
-              (activity.name === 'Liquidity Removed' && 'fill-red-600');
+              (activity.name === 'Added' && 'fill-green-500') ||
+              (activity.name === 'Removed' && 'fill-red-600');
             return (
               <div className="activity flex justify-between items-center cursor-pointer hover:bg-slate-400 hover:bg-opacity-10 px-3 py-1">
                 <div className="activity_details flex items-center gap-2">
@@ -101,8 +49,8 @@ const UserActivity = () => {
                         swap_vertical_circle
                       </span>
                     )}
-                    {(activity.name === 'Liquidity Added' ||
-                      activity.name === 'Liquidity Removed') && (
+                    {(activity.name === 'Added' ||
+                      activity.name === 'Removed') && (
                       <svg
                         width="35"
                         height="25"

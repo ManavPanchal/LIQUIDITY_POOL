@@ -10,7 +10,7 @@ const addLiquidity = async (req, res) => {
       tokenPair,
       amount1,
       amount2,
-      newtworkId,
+      networkId,
     } = req.body;
     const addedLiquidity = await Activities.create({
       useraddress: userAddress,
@@ -19,12 +19,12 @@ const addLiquidity = async (req, res) => {
       tokenpair: tokenPair,
       amount1,
       amount2,
-      networkid: newtworkId,
+      networkid: networkId,
     });
     const provider = await Providers.findOne({
       where: {
         provideraddress: userAddress,
-        networkid: newtworkId,
+        networkid: networkId,
         poolid: poolId,
       },
     });
@@ -37,7 +37,7 @@ const addLiquidity = async (req, res) => {
         providedamount2: amount2,
         claimedamount1: 0,
         claimedamount2: 0,
-        networkid: newtworkId,
+        networkid: networkId,
       });
     } else {
       provider.update({

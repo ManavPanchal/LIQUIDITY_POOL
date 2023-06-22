@@ -11,7 +11,7 @@ const removeLiquidity = async (req, res) => {
       tokenPair,
       amount1,
       amount2,
-      newtworkId,
+      networkId,
     } = req.body;
     const removedLiquidity = await Activities.create({
       useraddress: userAddress,
@@ -20,12 +20,12 @@ const removeLiquidity = async (req, res) => {
       tokenpair: tokenPair,
       amount1,
       amount2,
-      networkid: newtworkId,
+      networkid: networkId,
     });
     const provider = await Providers.findOne({
       where: {
         provideraddress: userAddress,
-        networkid: newtworkId,
+        networkid: networkId,
         poolid: poolId,
       },
     });
