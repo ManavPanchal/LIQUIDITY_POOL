@@ -18,6 +18,9 @@ module.exports = {
         'uni-hover-pink': '#cf0c86',
         'uni-slate': '#e8ecfb',
       },
+      screens: {
+        'xsm': '300px',
+      },
       width: {
         120: '480px',
       },

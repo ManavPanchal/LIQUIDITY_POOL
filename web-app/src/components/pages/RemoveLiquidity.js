@@ -63,7 +63,7 @@ const RemoveLiquidity = () => {
 
   return (
     <>
-      <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-6 p-5 font-roboto">
+      <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-16 p-5 font-roboto">
         <div className="flex justify-between items-center">
           <Link className="flex " to="/pools">
             <svg
@@ -171,7 +171,7 @@ const RemoveLiquidity = () => {
         >
           <div
             className={`${
-              Number(LPTamount) <= lptbalance
+              (Number(LPTamount) <= lptbalance && LPTamount)
                 ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
                 : 'text-gray-400 bg-gray-100 '
             } text-center px-8 py-4 text-xl rounded-2xl font-bold mt-4`}

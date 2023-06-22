@@ -28,7 +28,7 @@ const Navbar = () => {
             <Link to="/swap/#" className={style.navigation_li}>Swap</Link>
           </li>
           <li >
-            <Link to="/swap" className={style.navigation_li}>Tokens</Link>
+            <Link to="/tokens" className={style.navigation_li}>Tokens</Link>
           </li>
           <li>
             <Link to="/swap" className={style.navigation_li}>NFTs</Link>
