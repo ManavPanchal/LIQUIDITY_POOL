@@ -1,36 +1,31 @@
 import {
     mainnet,
-    goerli,
     sepolia,
     polygon,
     polygonMumbai,
   } from '@wagmi/core/chains';
+import {polygonSvg, ethLogo} from '../images/images';
 
   export const blockchains = [
     {
       ...mainnet,
       name: 'Mainnet',
-    //   logo: EthereumLogo,
-    },
-    {
-      ...goerli,
-      name: 'Goerli',
-    //   logo: EthereumLogo,
+      logo: ethLogo,
     },
     {
       ...sepolia,
       name: 'Sepolia',
-    //   logo: EthereumLogo,
+      logo: ethLogo,
     },
     {
       ...polygon,
       name: 'Polygon',
-    //   logo: PolygonLogo,
+      logo: polygonSvg,
     },
     {
       ...polygonMumbai,
       name: 'Mumbai',
-    //   logo: PolygonLogo,
+      logo: polygonSvg,
     },
     // {
     //   ...bsc,

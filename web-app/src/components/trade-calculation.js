@@ -4,9 +4,7 @@ import { useState } from 'react';
 const TradeCalculations = ({token1,token2,review}) => {
 
     const [dropdownToogle, setDropdownToggle] = useState(false);
-    const priceImpact = "-0.20%"
-    const minimumOutput = "0.00456604 WETH"
-    const expectedOutput = "0.00457061 WETH"
+    const priceImpact = "-"
     const orderRouting = "Uniswap API"
 
     const style = {
@@ -33,11 +31,11 @@ const TradeCalculations = ({token1,token2,review}) => {
                 </div>
                 <div className={style.trade_span}>
                     <span>Minimmum Output</span>
-                    <span>{minimumOutput}</span>
+                    <span>{token2?.amount} {token2?.name}</span>
                 </div>
                 <div className={style.trade_span}>
                     <span>Expected Output</span>
-                    <span>{expectedOutput}</span>
+                    <span>{token2?.amount} {token2?.name}</span>
                 </div>
                 <div className={style.trade_span + " border-t border-violet-100"}>
                     <span>Order Routing</span>

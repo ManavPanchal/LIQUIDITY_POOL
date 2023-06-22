@@ -4,59 +4,71 @@ import { useNavigate } from 'react-router';
 import poolInstance from '../utils/poolInstance';
 import { useState } from 'react';
 import { pools } from '../utils/constants';
+import { watchAccount, watchNetwork } from '@wagmi/core';
 
 const Tokenpairprovider = () => {
   const navigateTo = useNavigate();
   const [poolInfo, setpoolInfo] = useState([]);
   let poolcount = 0;
   let addedEvents;
-  useEffect(() => {
-    async function addevents() {
-      let poolsInfo;
-      const { contract, signerAddress } = await poolInstance();
-      let liquidityAdded = await contract.queryFilter('liquidityAdded');
 
-      addedEvents = liquidityAdded
-        .filter((pool) => {
-          return signerAddress === pool.args[0];
-        })
-        .map((pool) => {
-          return pool.args[1];
-        });
 
-      const userTokens = Array.from(new Set(addedEvents));
-      console.log('userTokens', userTokens);
-      const pool = userTokens.map((tokenPair) => {
-        return pools.filter((pool) => {
-          return pool.tokenPair == tokenPair;
-        });
+  const addevents = async() => {
+    let poolsInfo;
+    const { contract, signerAddress } = await poolInstance();
+    let liquidityAdded = await contract.queryFilter('liquidityAdded');
+
+    addedEvents = liquidityAdded
+      .filter((pool) => {
+        return signerAddress === pool.args[0];
+      })
+      .map((pool) => {
+        return pool.args[1];
       });
-      console.log('pool......................', pool);
-      const Pools = pool;
-      console.log(Pools);
-      poolsInfo = await Promise.all(
-        Pools.map(async (Poollist) => {
-          return Promise.all(
-            Poollist.map(async (pooldata) => {
-              const provider = await contract.providerDetails(
-                pooldata.id,
-                signerAddress,
-              );
-              pooldata['providedBalance1'] = ethers.utils.formatEther(
-                provider.providedBalance1,
-              );
-              pooldata['providedBalance2'] = ethers.utils.formatEther(
-                provider.providedBalance2,
-              );
-              console.log('final pool............', pooldata);
-              return pooldata;
-            }),
-          );
-        }),
-      );
-      poolsInfo = poolsInfo.flat();
-      setpoolInfo([...poolsInfo]);
-    }
+
+    const userTokens = Array.from(new Set(addedEvents));
+    console.log('userTokens', userTokens);
+    const pool = userTokens.map((tokenPair) => {
+      return pools.filter((pool) => {
+        return pool.tokenPair == tokenPair;
+      });
+    });
+    console.log('pool......................', pool);
+    const Pools = pool;
+    console.log(Pools);
+    poolsInfo = await Promise.all(
+      Pools.map(async (Poollist) => {
+        return Promise.all(
+          Poollist.map(async (pooldata) => {
+            const provider = await contract.providerDetails(
+              pooldata.id,
+              signerAddress,
+            );
+            pooldata['providedBalance1'] = ethers.utils.formatEther(
+              provider.providedBalance1,
+            );
+            pooldata['providedBalance2'] = ethers.utils.formatEther(
+              provider.providedBalance2,
+            );
+            console.log('final pool............', pooldata);
+            return pooldata;
+          }),
+        );
+      }),
+    );
+    poolsInfo = poolsInfo.flat();
+    setpoolInfo([...poolsInfo]);
+  }
+
+  watchNetwork( () => {
+    addevents()
+  })
+  watchAccount( (accountData) => {
+    addevents()
+  })
+
+
+  useEffect(() => {
     addevents();
   }, []);
 

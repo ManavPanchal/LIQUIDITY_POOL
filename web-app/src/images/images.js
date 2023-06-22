@@ -5,6 +5,7 @@ import ethLogo from "./ethereum.png"
 import expandMore from "./expand_more_FILL0_wght400_GRAD0_opsz48.svg"
 import metamaskIcon from "./metamaskIcon.webp"
 import coinbaseIcon from "./coinBaseimag.webp"
+import polygonSvg from "./polygon.svg"
 
 export {
     lionlogo,
@@ -13,5 +14,6 @@ export {
     ethLogo,
     expandMore,
     metamaskIcon,
-    coinbaseIcon
+    coinbaseIcon,
+    polygonSvg
 }

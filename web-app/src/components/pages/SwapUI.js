@@ -5,20 +5,24 @@ import { AppContext } from '../../App';
 import TradeCalculations from '../trade-calculation';
 import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
-import { LiquidityPoolABI, pools } from '../../utils/constants';
-import { readContract } from '@wagmi/core';
+import { LiquidityPoolABI, pools, tokenABI } from '../../utils/constants';
+import { readContract, watchAccount, watchNetwork } from '@wagmi/core';
 import ConfirmSwap from '../confirm-transaction';
+import { toast } from 'react-toastify';
+import { fetchUserTokenBalance } from '../../utils/tokensInstance';
 
 const SwapUI = () => {
   const [tokens, setTokens] = useState({
     token1: {
       isSelected: false,
+      balance:0
     },
     token2: {
       isSelected: false,
+      balance:0
     },
   });
-  const { isConnected } = useAccount();
+  const { isConnected, address} = useAccount();
   const { setSliderToggle } = useContext(AppContext);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
   const [token1Amount, setToken1Amount] = useState('');
@@ -27,6 +31,26 @@ const SwapUI = () => {
   const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
 
   const numberRegex = /^\d*\.?\d*$/
+
+  const getTokenBalances = async (address)=>{
+    const token1Balance = await fetchUserTokenBalance(tokens.token1?.address, address)
+    const token2Balance = await fetchUserTokenBalance(tokens.token2?.address, address)
+    setTokens({token1:{...tokens.token1,balance:token1Balance}, token2:{...tokens.token2,balance:token2Balance}})
+    setToken1Amount("")
+    setToken2Amount("")
+  }
+
+  watchNetwork( () => {
+    if(tokens.token2?.name && tokens.token1?.name){
+      getTokenBalances(address)
+    }
+  })
+  watchAccount( (accountData) => {
+    console.log(accountData);
+    if(tokens.token2?.name && tokens.token1?.name){
+      getTokenBalances(accountData.address)
+    }
+  })
 
   useEffect(() => {
     async function calculateSwappingToken() {
@@ -63,16 +87,26 @@ const SwapUI = () => {
 
           if (data) {
             setCalculationLoading(false);
-            console.log(data);
             setToken2Amount((Number(data[0]) / 10 ** 18).toFixed(4).toString());
           }
         }
       } catch (error) {
+        if(error.toString().includes("Exceeds Min Balance"))
+        toast.info('Sorry! Swapping is not possible at this much amount you can try again on less amount', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
         console.error(error);
       }
     }
     calculateSwappingToken();
-  }, [tokens.token2?.name && (token1Amount || token2Amount)]);
+  }, [tokens.token2?.name && tokens.token1?.name && token1Amount]);
 
   return (
     <div className={`flex justify-center pt-[68px]`}>
@@ -112,11 +146,11 @@ const SwapUI = () => {
                 value={token1Amount}
               />
               <button
-                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+                className={`token_selector flex justify-between items-center gap-1 font-semibold text-lg font-Inter-c ${
                   tokens.token1?.name
                     ? 'bg-slate-500 bg-opacity-10'
                     : 'bg-uni-dark-pink text-white'
-                } p-1 px-2 rounded-3xl max-w-fit`}
+                } px-3 rounded-3xl box-border`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
                   setTokens({
@@ -187,11 +221,11 @@ const SwapUI = () => {
                 value={token2Amount}
               />
               <button
-                className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+                className={`token_selector flex justify-between items-center gap-1 font-semibold text-lg font-Inter-c ${
                   tokens.token2?.name
                     ? 'bg-slate-500 bg-opacity-10'
                     : 'bg-uni-dark-pink text-white'
-                } p-1 px-2 rounded-3xl max-w-fit`}
+                } px-3 rounded-3xl box-border`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
                   setTokens({
@@ -236,18 +270,18 @@ const SwapUI = () => {
               : (token1Amount >= tokens.token1?.balance ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
           } ${
             isWaitingForCalculation && 'animate-pulse'
-          }  rounded-2xl text-center p-3 text-xl font-semibold w-full`}
+          }  rounded-2xl text-center text-xl font-semibold w-full`}
         >
           {isConnected ? (
             <p
-              className="w-full"
+              className="w-full p-3"
               onClick={() => (token1Amount && tokens.token1?.name && tokens.token2?.name && token1Amount <= tokens.token1?.balance ) && setConfirmTransactionToggle(true)}
             >
               {(tokens.token1?.name && tokens.token2?.name) ? (token1Amount ? (token1Amount > tokens.token1?.balance ? "Insufficient Balance":  "Swap") : "Enter Amount")  : "Select token"  }
             </p>
 
           ) : (
-            <p className="w-full" onClick={() => setSliderToggle(true)}>
+            <p className="w-full p-3" onClick={() => setSliderToggle(true)}>
               Connect Wallet
             </p>
           )}

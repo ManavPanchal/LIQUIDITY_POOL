@@ -4,10 +4,11 @@ import { useContext, useState } from 'react';
 import { AppContext } from '../../App';
 import { useAccount } from 'wagmi';
 import { Link } from 'react-router-dom';
-import { pools, Tokens } from '../../utils/constants';
+import { pools } from '../../utils/constants';
 import lptInstance from '../../utils/lptInstance';
 import poolInstance from '../../utils/poolInstance';
 import RemoveFunds from '../confirm-transaction';
+import { watchAccount, watchNetwork } from '@wagmi/core';
 
 const RemoveLiquidity = () => {
   const { isConnected } = useAccount();
@@ -16,10 +17,39 @@ const RemoveLiquidity = () => {
   const [lptbalance, setBalance] = useState(0);
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
     useState(false);
-  const { sliderToggle, setSliderToggle } = useContext(AppContext);
+  const { setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('-');
   const numberRegex = /^\d*\.?\d*$/
+
+  async function checkbalance() {
+    const pool = tokenPair();
+    console.log('LPTAddress', pool[0]);
+    const {signerAddress, balance } = await lptInstance(
+      pool[0].LPTAddress,
+    );
+
+    setBalance(balance);
+    const { contract: poolContract } = await poolInstance();
+    const provider = await poolContract.providerDetails(
+      pool[0].id,
+      signerAddress,
+    );
+    const providerdata = [
+      ethers.utils.formatEther(provider.providedBalance1),
+      ethers.utils.formatEther(provider.providedBalance2),
+      ethers.utils.formatEther(provider.claimedBalance1),
+      ethers.utils.formatEther(provider.claimedBalance2),
+    ];
+    setProviderInfo(providerdata);
+  }
+
+  watchNetwork( () => {
+      checkbalance()
+  })
+  watchAccount( () => {
+      checkbalance()
+  })
 
   function tokenPair() {
     const pool = pools
@@ -28,27 +58,6 @@ const RemoveLiquidity = () => {
     return pool;
   }
   useEffect(() => {
-    async function checkbalance() {
-      const pool = tokenPair();
-      console.log('LPTAddress', pool[0]);
-      const { contract, signerAddress, balance } = await lptInstance(
-        pool[0].LPTAddress,
-      );
-
-      setBalance(balance);
-      const { contract: poolContract } = await poolInstance();
-      const provider = await poolContract.providerDetails(
-        pool[0].id,
-        signerAddress,
-      );
-      const providerdata = [
-        ethers.utils.formatEther(provider.providedBalance1),
-        ethers.utils.formatEther(provider.providedBalance2),
-        ethers.utils.formatEther(provider.claimedBalance1),
-        ethers.utils.formatEther(provider.claimedBalance2),
-      ];
-      setProviderInfo(providerdata);
-    }
     checkbalance();
   }, [setBalance]);
 

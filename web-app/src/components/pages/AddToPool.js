@@ -10,9 +10,11 @@ import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
 import { TailSpin } from 'react-loader-spinner';
 import ConfirmInvestment from '../confirm-transaction';
+import { fetchUserTokenBalance } from '../../utils/tokensInstance';
+import { watchAccount, watchNetwork } from '@wagmi/core';
 
 function AddToPool() {
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState({
     token1: {
@@ -23,12 +25,32 @@ function AddToPool() {
     },
   });
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  const { sliderToggle, setSliderToggle } = useContext(AppContext);
+  const { setSliderToggle } = useContext(AppContext);
   const [amount1, setAmount1] = useState('');
   const [amount2, setAmount2] = useState('');
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
     useState(false);
   const numberRegex = /^\d*\.?\d*$/
+
+  const getTokenBalances = async (address)=>{
+    const token1Balance = await fetchUserTokenBalance(tokens.token1?.address, address)
+    const token2Balance = await fetchUserTokenBalance(tokens.token2?.address, address)
+    setTokens({token1:{...tokens.token1,balance:token1Balance}, token2:{...tokens.token2,balance:token2Balance}})
+    setAmount1("")
+    setAmount2("")
+  }
+
+  watchNetwork( () => {
+    if(tokens.token2?.name && tokens.token1?.name){
+      getTokenBalances(address)
+    }
+  })
+  watchAccount( (accountData) => {
+    console.log(accountData);
+    if(tokens.token2?.name && tokens.token1?.name){
+      getTokenBalances(accountData.address)
+    }
+  })
 
   async function tokenPair() {
     const token1Address = Tokens.filter(

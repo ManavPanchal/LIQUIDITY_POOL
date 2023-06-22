@@ -1,3 +1,4 @@
+import { readContract } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { tokenABI } from './constants';
 
@@ -14,5 +15,20 @@ async function tokensInstance(tokenAddress) {
   localStorage.setItem('nid', networkId);
   return { contract, networkId, signerAddress };
 }
+
+export const fetchUserTokenBalance = async(tokenAddress, accountAddress)=>{
+  try {
+        const balance = await readContract({
+          address:tokenAddress,
+          abi:tokenABI,
+          functionName:"balanceOf",
+          args:[accountAddress]
+        });
+        return Number(balance)/(10**18);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 export default tokensInstance;
