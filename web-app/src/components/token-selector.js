@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import { readContract } from '@wagmi/core';
+import React from 'react';
 import { useAccount } from 'wagmi';
-import { Tokens} from "../utils/constants"
-import { fetchUserTokenBalance } from '../utils/tokensInstance';
+import {tokenABI, Tokens} from "../utils/constants"
 const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
 
   const {address} = useAccount();
-  const [balanceFetchingLoader, setBalanceLoader] =  useState(false);
+
+  const fetchUserTokenBalance = async(tokenAddress)=>{
+    try {
+          const balance = await readContract({
+            address:tokenAddress,
+            abi:tokenABI,
+            functionName:"balanceOf",
+            args:[address]
+          });
+          return Number(balance)/(10**18);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={()=>setTokenSelectorToggle(false)}>
@@ -26,7 +39,7 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
               <input type="text" className='w-11/12 outline-none bg-transparent text-lg' placeholder='Search name or paste address'/>
             </div>
           </div>
-          <div className="token_container pb-1 overflow-y-scroll max-h-[520px] relative">
+          <div className="token_container pb-1 overflow-y-scroll max-h-[520px]">
               {
                 Tokens.map((token)=>{
                   return(<>
@@ -34,14 +47,12 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
                         className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) && "opacity-20"}`}
                         onClick={ async ()=>{
                           if(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) return;
-                          setBalanceLoader(true);
-                          const balance  = await fetchUserTokenBalance(token.tokenAddress, address)
+                          const balance  = await fetchUserTokenBalance(token.tokenAddress)
                           setTokenSelectorToggle(false);
                           setTokens( (prevVal)=>{
                             if (prevVal.token1?.isSelected) return { ...prevVal,token1:{name:token.tokenSymbol, isSelected:false, logo:token.tokenImage, address:token.tokenAddress, balance}}
                             else if(prevVal.token2?.isSelected) return { ...prevVal,token2:{isSelected:false,name:token.tokenSymbol, logo:token.tokenImage, address:token.tokenAddress, balance}}
                           })
-                          setBalanceLoader(false)
                         }}>
                         <span className='token_image'>
                           <img src={token.tokenImage} alt="" className='w-8'/>
@@ -55,12 +66,6 @@ const TokenSelector = ({setTokenSelectorToggle, setTokens, tokens}) => {
                 })
               }
           </div>
-          {
-            balanceFetchingLoader &&
-            <div className=" w-full h-full absolute bg-slate-600 bg-opacity-10 top-0 flex justify-center items-center">
-              fetching balance ...
-            </div>
-          }
       </div>
     </div>
   )

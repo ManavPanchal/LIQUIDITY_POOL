@@ -15,49 +15,28 @@ const Tokenpairprovider = () => {
 
   const addevents = async() => {
     let poolsInfo;
-    const { contract, signerAddress } = await poolInstance();
-    let liquidityAdded = await contract.queryFilter('liquidityAdded');
-
-    addedEvents = liquidityAdded
-      .filter((pool) => {
-        return signerAddress === pool.args[0];
-      })
-      .map((pool) => {
-        return pool.args[1];
-      });
-
-    const userTokens = Array.from(new Set(addedEvents));
-    console.log('userTokens', userTokens);
-    const pool = userTokens.map((tokenPair) => {
-      return pools.filter((pool) => {
-        return pool.tokenPair == tokenPair;
-      });
-    });
-    console.log('pool......................', pool);
-    const Pools = pool;
-    console.log(Pools);
-    poolsInfo = await Promise.all(
-      Pools.map(async (Poollist) => {
-        return Promise.all(
-          Poollist.map(async (pooldata) => {
-            const provider = await contract.providerDetails(
-              pooldata.id,
-              signerAddress,
-            );
-            pooldata['providedBalance1'] = ethers.utils.formatEther(
-              provider.providedBalance1,
-            );
-            pooldata['providedBalance2'] = ethers.utils.formatEther(
-              provider.providedBalance2,
-            );
-            console.log('final pool............', pooldata);
-            return pooldata;
-          }),
-        );
-      }),
+    const { contract, signerAddress,networkId } = await poolInstance();
+    const response = await fetch(
+      `http://localhost:5000/api/getProvider/${signerAddress}/${networkId}`,
     );
-    poolsInfo = poolsInfo.flat();
-    setpoolInfo([...poolsInfo]);
+    // let liquidityAdded = await contract.queryFilter('liquidityAdded');
+
+    // addedEvents = liquidityAdded
+    //   .filter((pool) => {
+    //     return signerAddress === pool.args[0];
+    //   })
+    //   .map((pool) => {
+    //     return pool.args[1];
+    //   });
+    const poolPositions = await response.json()
+    console.log(poolPositions)
+    setpoolInfo(poolPositions.allProviderPools)
+    // const userTokens = Array.from(new Set(addedEvents));
+    // console.log('userTokens', userTokens);
+    
+      
+     
+      
   }
 
   watchNetwork( () => {
@@ -85,25 +64,24 @@ const Tokenpairprovider = () => {
       {poolInfo.length &&
         poolInfo.map((positions) => {
           console.log('positions.........', positions);
-          const tokens = positions.tokenPair.split('-');
+          const tokens = positions.tokenpair.split('-');
           poolcount += 1;
           return (
             <div className="flex justify-between items-center text-gray-700 font-medium text-lg px-5 py-2 w-full mx-5 border-t border-violet-200">
               <div className="flex gap-3">
                 <div className="text-lg">{poolcount}</div>
                 <div className="flex flex-col">
-                  <div className="text-lg font-bold">{positions.tokenPair}</div>
+                  <div className="text-lg font-bold">{positions.tokenpair}</div>
                   <div className="text-sm">
-                    {positions.providedBalance1}
-                    {tokens[0]} ⇆ {positions.providedBalance2}
+                    {positions.providedamount1}
+                    {tokens[0]} ⇆ {positions.providedamount2}
                     {tokens[1]}
                   </div>
                 </div>
               </div>
-              {/* {console.log(tokenPairs)} */}
               <button
                 onClick={() => {
-                  localStorage.setItem('TokenPair', positions.tokenPair);
+                  localStorage.setItem('TokenPair', positions.tokenpair);
 
                   navigateTo('/pools/removeliquidity');
                 }}
