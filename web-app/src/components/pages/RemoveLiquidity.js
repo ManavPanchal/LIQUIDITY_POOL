@@ -18,7 +18,7 @@ const RemoveLiquidity = () => {
     useState(false);
   const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
-  const tokens = Tokenpair.split('/');
+  const tokens = Tokenpair.split('-');
   const numberRegex = /^\d*\.?\d*$/
 
   function tokenPair() {
@@ -42,8 +42,8 @@ const RemoveLiquidity = () => {
         signerAddress,
       );
       const providerdata = [
-        ethers.utils.formatEther(provider.currentBalance1),
-        ethers.utils.formatEther(provider.currentBalance2),
+        ethers.utils.formatEther(provider.providedBalance1),
+        ethers.utils.formatEther(provider.providedBalance2),
         ethers.utils.formatEther(provider.claimedBalance1),
         ethers.utils.formatEther(provider.claimedBalance2),
       ];

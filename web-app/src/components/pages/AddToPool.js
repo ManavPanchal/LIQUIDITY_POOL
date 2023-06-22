@@ -82,12 +82,12 @@ function AddToPool() {
           (Number(event.target.value) * reserve2) / reserve1;
         console.log('AMT DIS', amountToDisplay);
 
-        setAmount2(amountToDisplay === '0' ? '' : amountToDisplay.toString());
+        setAmount2(amountToDisplay === '0' ? '' : amountToDisplay.toFixed(4).toString());
       } else {
         const amountToDisplay =
           (Number(event.target.value) * reserve1) / reserve2;
 
-        setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toString());
+        setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toFixed(4).toString());
       }
     } catch (error) {}
   }
@@ -259,7 +259,7 @@ function AddToPool() {
               : false
           }
           onClick={() => {
-            !isConnected && setSliderToggle(false);
+            !isConnected && setSliderToggle(true);
             isConnected
               ? setConfirmTransactionToggle(true)
               : handleConnectWallet();

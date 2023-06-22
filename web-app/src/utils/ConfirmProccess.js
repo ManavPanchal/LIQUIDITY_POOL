@@ -94,7 +94,7 @@ export const confirmProccess = async (
       );
       if (Number(LPTAllowance) / 10 ** 18 < tokens?.LPTAmount) {
         const tx = await LPTContract.approve(
-          '0x644ee3a7780593C480E4c072A415Dd4034544A95',
+          process.env.REACT_APP_LIQUIDITY_CONTRACT,
 
           ethers.utils.parseEther(tokens?.LPTAmount),
         );

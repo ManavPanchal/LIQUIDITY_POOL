@@ -42,11 +42,11 @@ const Tokenpairprovider = () => {
                 pooldata.id,
                 signerAddress,
               );
-              pooldata['currentBalance1'] = ethers.utils.formatEther(
-                provider.currentBalance1,
+              pooldata['providedBalance1'] = ethers.utils.formatEther(
+                provider.providedBalance1,
               );
-              pooldata['currentBalance2'] = ethers.utils.formatEther(
-                provider.currentBalance2,
+              pooldata['providedBalance2'] = ethers.utils.formatEther(
+                provider.providedBalance2,
               );
               console.log('final pool............', pooldata);
               return pooldata;
@@ -73,7 +73,7 @@ const Tokenpairprovider = () => {
       {poolInfo.length &&
         poolInfo.map((positions) => {
           console.log('positions.........', positions);
-          const tokens = positions.tokenPair.split('/');
+          const tokens = positions.tokenPair.split('-');
           poolcount += 1;
           return (
             <div className="flex justify-between items-center text-gray-700 font-medium text-lg px-5 py-2 w-full mx-5 border-t border-violet-200">
@@ -82,8 +82,8 @@ const Tokenpairprovider = () => {
                 <div className="flex flex-col">
                   <div className="text-lg font-bold">{positions.tokenPair}</div>
                   <div className="text-sm">
-                    {positions.currentBalance1}
-                    {tokens[0]} ⇆ {positions.currentBalance2}
+                    {positions.providedBalance1}
+                    {tokens[0]} ⇆ {positions.providedBalance2}
                     {tokens[1]}
                   </div>
                 </div>

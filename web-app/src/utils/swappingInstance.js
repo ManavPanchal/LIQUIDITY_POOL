@@ -12,7 +12,7 @@ async function SwappingInstance(tokens) {
 
   } catch (error) {
     if(error.toString().includes("reverted: Exceeds Min Balance"))
-    toast.info('Sorry! Swapping is not possible at this much amount you can try again on less amount', {
+    toast.info('Sorry! Swapping is not possible with entered amount you can try again on less amount', {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,

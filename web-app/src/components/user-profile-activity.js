@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import poolInstance from '../utils/poolInstance';
+import { ethers } from 'ethers';
 import moment from 'moment';
 const UserActivity = () => {
   const [swappedActivities, setSwappedActivities] = useState([]);
@@ -29,13 +30,16 @@ const UserActivity = () => {
       setAddedActivities(addedActivity);
 
       const removedEvents = await contract.queryFilter('liquidityRemoved');
+      console.log(removedEvents);
       const removedActivity = removedEvents
         .filter((pool) => {
           return signerAddress === pool.args[0];
         })
         .map((pool) => {
+          console.log(pool.args, '.....');
           return pool.args;
         });
+      console.log(removedActivity, 'raaaaa');
       setRemovedActivities(removedActivity);
     }
     activityEvents();
@@ -46,10 +50,10 @@ const UserActivity = () => {
       name: 'Swapped',
       image1: '',
       image2: '',
-      activity: `${parseFloat(swappedActivity[2] / 10 ** 18)} ${
-        swappedActivity[1].split('/')[0]
-      } for ${parseFloat(swappedActivity[3] / 10 ** 18)}  ${
-        swappedActivity[1].split('/')[1]
+      activity: `${ethers.utils.formatUnits(swappedActivity[2])} ${
+        swappedActivity[1].split('-')[0]
+      } for ${ethers.utils.formatUnits(swappedActivity[3])}  ${
+        swappedActivity[1].split('-')[1]
       }`,
       duration: moment(swappedActivity[4] * 1000).fromNow(),
       key: `swapped-${index}`,
@@ -58,10 +62,10 @@ const UserActivity = () => {
       name: 'Liquidity Added',
       image1: '',
       image2: '',
-      activity: `${parseFloat(addedActivity[2] / 10 ** 18)} ${
-        addedActivity[1].split('/')[0]
-      } for  ${parseFloat(addedActivity[3] / 10 ** 18)}  ${
-        addedActivity[1].split('/')[1]
+      activity: `${ethers.utils.formatUnits(addedActivity[2])} ${
+        addedActivity[1].split('-')[0]
+      } for  ${ethers.utils.formatUnits(addedActivity[3])}  ${
+        addedActivity[1].split('-')[1]
       }`,
       duration: moment(addedActivity[4] * 1000).fromNow(),
       key: `added-${index}`,
@@ -70,10 +74,10 @@ const UserActivity = () => {
       name: 'Liquidity Removed',
       image1: '',
       image2: '',
-      activity: `${parseFloat(removedActivity[2] / 10 ** 18)} ${
-        removedActivity[1].split('/')[0]
-      }for  ${parseFloat(removedActivity[3] / 10 ** 18)}  ${
-        removedActivity[1].split('/')[1]
+      activity: `${ethers.utils.formatUnits(removedActivity[2])} ${
+        removedActivity[1].split('-')[0]
+      }for  ${ethers.utils.formatUnits(removedActivity[3])}  ${
+        removedActivity[1].split('-')[1]
       }`,
       duration: moment(removedActivity[4] * 1000).fromNow(),
       key: `removed-${index}`,
@@ -81,9 +85,9 @@ const UserActivity = () => {
   ];
 
   return (
-    <div className="break-words w-full h-full overflow-hidden">
+    <div className="break-words w-full h-full">
       {activities ? (
-        <div className="Activities w-full h-full flex flex-col gap-1 overflow-y-auto">
+        <div className="Activities w-full h-full flex flex-col gap-1">
           {activities?.map((activity) => {
             let fillColor =
               (activity.name === 'Liquidity Added' && 'fill-green-500') ||
@@ -92,11 +96,12 @@ const UserActivity = () => {
               <div className="activity flex justify-between items-center cursor-pointer hover:bg-slate-400 hover:bg-opacity-10 px-3 py-1">
                 <div className="activity_details flex items-center gap-2">
                   <div className="activity_icon flex items-center">
-                    {activity.name === 'Swapped' ? (
+                    {activity.name === 'Swapped' && (
                       <span class="material-symbols-outlined text-4xl w-full h-full text-uni-dark-pink">
                         swap_vertical_circle
                       </span>
-                    ) : (activity.name === 'Liquidity Added' ||
+                    )}
+                    {(activity.name === 'Liquidity Added' ||
                       activity.name === 'Liquidity Removed') && (
                       <svg
                         width="35"
