@@ -47,7 +47,7 @@ const UserProfile = ({address, data, isError, isLoading}) => {
                 onClick={()=>setCurrentNavigation("Activity")}>Activity</span>
         </div>
     </div>
-    <div className="navigation_containt max-h-full h-3/4 min-h-[50%]:">
+    <div className="navigation_containt max-h-full h-3/4 xl:h-4/5 min-h-[50%]:">
         {(currentNavigation === "Tokens") && <UserTokens/>}
         {(currentNavigation === "Pools") && <UserPools/>}
         {(currentNavigation === "Activity") && <UserActivity/>}

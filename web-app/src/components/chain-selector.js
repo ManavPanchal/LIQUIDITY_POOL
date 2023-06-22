@@ -30,9 +30,9 @@ function ChainSelector() {
     });
   };
 
-  const toggleDropdown = () => {
-    setDropdownToggle(!dropdownToogle);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownToggle(!dropdownToogle);
+  // };
 
   const changeChain = async (chainId) => {
     try {

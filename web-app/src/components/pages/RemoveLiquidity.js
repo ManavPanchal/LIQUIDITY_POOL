@@ -19,6 +19,7 @@ const RemoveLiquidity = () => {
   const { sliderToggle, setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('/');
+  const numberRegex = /^\d*\.?\d*$/
 
   function tokenPair() {
     const pool = pools
@@ -140,7 +141,7 @@ const RemoveLiquidity = () => {
                 autocorrect="off"
                 pattern="^[0-9]*[.,]?[0-9]*$"
                 onChange={(e) => {
-                  setLPTAmount(e.target.value === '0' ? '' : e.target.value);
+                  numberRegex.test(e.target.value) && setLPTAmount(e.target.value === '0' ? '' : e.target.value);
                 }}
               />
             </div>

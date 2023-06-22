@@ -26,8 +26,10 @@ const SwapUI = () => {
   const [isWaitingForCalculation, setCalculationLoading] = useState(false);
   const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
 
+  const numberRegex = /^\d*\.?\d*$/
+
   useEffect(() => {
-    async function callPool() {
+    async function calculateSwappingToken() {
       try {
         if (tokens.token1?.name && (token1Amount || token2Amount)) {
           const pool = pools.filter((pool) => {
@@ -46,7 +48,7 @@ const SwapUI = () => {
             ? (data = await readContract({
                 address: process.env.REACT_APP_LIQUIDITY_CONTRACT,
                 abi: LiquidityPoolABI,
-                functionName: 'calculateTokenAmount',
+                functionName: 'calculateSwappingAmount',
                 args: [
                   pool[0].id,
                   Number(token1Amount) * 10 ** 18,
@@ -61,19 +63,20 @@ const SwapUI = () => {
 
           if (data) {
             setCalculationLoading(false);
-            setToken2Amount((Number(data) / 10 ** 18).toFixed(4).toString());
+            console.log(data);
+            setToken2Amount((Number(data[0]) / 10 ** 18).toFixed(4).toString());
           }
         }
       } catch (error) {
         console.error(error);
       }
     }
-    callPool();
+    calculateSwappingToken();
   }, [tokens.token2?.name && (token1Amount || token2Amount)]);
 
   return (
     <div className={`flex justify-center pt-[68px]`}>
-      <div className="swap_container max-w-6xl h-fit px-2 py-1 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
+      <div className="swap_container max-w-6xl h-fit p-2 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
         <div className="conatainer_header flex justify-between items-center p-3 mb-1">
           <div className="container_navigator flex gap-3 text-center font-medium text-gray-500">
             <span className="text-black font-medium">Swap</span>
@@ -105,7 +108,7 @@ const SwapUI = () => {
                 id="token1"
                 className="bg-transparent outline-none text-4xl w-0 flex-1"
                 placeholder="0"
-                onChange={(e) => setToken1Amount(e.target.value)}
+                onChange={(e) => numberRegex.test(e.target.value) && setToken1Amount(e.target.value)}
                 value={token1Amount}
               />
               <button
@@ -176,11 +179,11 @@ const SwapUI = () => {
             <div className="amount_input_field text-2xl flex gap-2">
               <input
                 type="text"
-                className={`bg-transparent outline-none basis-1/2 text-4xl w-0 flex-1 ${
+                className={`bg-transparent outline-none text-4xl w-0 flex-1 ${
                   isWaitingForCalculation && 'animate-pulse'
                 }`}
                 placeholder="0"
-                onChange={(e) => setToken2Amount(e.target.value)}
+                onChange={(e) => (numberRegex.test(e.target.value) && setToken2Amount(e.target.value))}
                 value={token2Amount}
               />
               <button
@@ -229,38 +232,20 @@ const SwapUI = () => {
         <button
           className={`action_btn mt-[2px] ${
             !isConnected
-              ? 'text-uni-dark-pink bg-opacity-10'
-              : 'text-uni-dim-white'
+              ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
+              : (token1Amount >= tokens.token1?.balance ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
           } ${
             isWaitingForCalculation && 'animate-pulse'
-          } bg-uni-dark-pink rounded-2xl text-center p-3 text-xl font-semibold w-full`}
+          }  rounded-2xl text-center p-3 text-xl font-semibold w-full`}
         >
           {isConnected ? (
-            <>
-              {token1Amount ? (
-                tokens.token1?.name && tokens.token2?.name ? (
-                  <>
-                    <p
-                      className="w-full"
-                      onClick={() => setConfirmTransactionToggle(true)}
-                    >
-                      Swap
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p
-                      className="w-full"
-                      onClick={() => setConfirmTransactionToggle(true)}
-                    >
-                      Select token
-                    </p>
-                  </>
-                )
-              ) : (
-                <p> Enter Amount </p>
-              )}
-            </>
+            <p
+              className="w-full"
+              onClick={() => (token1Amount && tokens.token1?.name && tokens.token2?.name && token1Amount <= tokens.token1?.balance ) && setConfirmTransactionToggle(true)}
+            >
+              {(tokens.token1?.name && tokens.token2?.name) ? (token1Amount ? (token1Amount > tokens.token1?.balance ? "Insufficient Balance":  "Swap") : "Enter Amount")  : "Select token"  }
+            </p>
+
           ) : (
             <p className="w-full" onClick={() => setSliderToggle(true)}>
               Connect Wallet

@@ -4,6 +4,7 @@ import lptInstance from './lptInstance';
 import poolInstance from './poolInstance';
 import SwappingInstance from './swappingInstance';
 import tokensInstance from './tokensInstance';
+import { toast } from 'react-toastify';
 export const confirmProccess = async (
   tokens,
   from,
@@ -12,13 +13,6 @@ export const confirmProccess = async (
   setConfirmTransactionToggle,
 ) => {
   try {
-    console.log(
-      tokens,
-      from,
-      setAllowanceWaiting,
-      setTransactionFlag,
-      setConfirmTransactionToggle,
-    );
     const { contract: poolContract } = await poolInstance();
     if (!(from === 'RemoveLiquidity')) {
       let { contract: token1Contract, signerAddress } = await tokensInstance(
@@ -69,6 +63,8 @@ export const confirmProccess = async (
           setTransactionFlag(true);
           const tx = await poolContract.addLiquidity(
             tokens.pool?.poolId,
+            tokens.token1?.address,
+            tokens.token2?.address,
             ethers.utils.parseEther(tokens?.token1Amount),
             ethers.utils.parseEther(tokens?.token2Amount),
           );
@@ -124,7 +120,8 @@ export const confirmProccess = async (
       }
     }
   } catch (error) {
-    console.log('inner' + error);
+    if(!error?.message.includes("user rejected transaction"))
+      console.log('inner' + error);
     setConfirmTransactionToggle(false);
   }
 };

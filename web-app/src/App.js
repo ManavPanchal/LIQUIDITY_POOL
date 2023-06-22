@@ -5,7 +5,8 @@ import ProfileSlider from './components/ProfileSlider';
 import AppRoutes from './AppRoutes';
 import { WagmiConfig } from 'wagmi';
 import { config } from './utils/wagmi_configuration';
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export const AppContext = createContext();
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Navbar />
           </header>
           <main>
+            <ToastContainer/>
             <AppRoutes />
           </main>
         </div>

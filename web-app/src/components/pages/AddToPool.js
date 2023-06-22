@@ -28,6 +28,7 @@ function AddToPool() {
   const [amount2, setAmount2] = useState('');
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
     useState(false);
+  const numberRegex = /^\d*\.?\d*$/
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
@@ -146,7 +147,7 @@ function AddToPool() {
               className="bg-transparent outline-none text-4xl w-0 flex-1"
               placeholder="0"
               onChange={(e) => {
-                setAmount1(e.target.value === '0' ? '' : e.target.value);
+                numberRegex.test(e.target.value) && setAmount1(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token1', e);
               }}
               value={amount1}
@@ -200,7 +201,7 @@ function AddToPool() {
               className="bg-transparent outline-none text-4xl w-0 flex-1"
               placeholder="0"
               onChange={(e) => {
-                setAmount2(e.target.value === '0' ? '' : e.target.value);
+                numberRegex.test(e.target.value) && setAmount2(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token2', e);
               }}
               value={amount2}

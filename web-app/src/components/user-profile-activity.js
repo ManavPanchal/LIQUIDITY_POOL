@@ -29,16 +29,13 @@ const UserActivity = () => {
       setAddedActivities(addedActivity);
 
       const removedEvents = await contract.queryFilter('liquidityRemoved');
-      console.log(removedEvents);
       const removedActivity = removedEvents
         .filter((pool) => {
           return signerAddress === pool.args[0];
         })
         .map((pool) => {
-          console.log(pool.args, '.....');
           return pool.args;
         });
-      console.log(removedActivity, 'raaaaa');
       setRemovedActivities(removedActivity);
     }
     activityEvents();
@@ -84,9 +81,9 @@ const UserActivity = () => {
   ];
 
   return (
-    <div className="break-words w-full h-full">
+    <div className="break-words w-full h-full overflow-hidden">
       {activities ? (
-        <div className="Activities w-full h-full flex flex-col gap-1">
+        <div className="Activities w-full h-full flex flex-col gap-1 overflow-y-auto">
           {activities?.map((activity) => {
             let fillColor =
               (activity.name === 'Liquidity Added' && 'fill-green-500') ||
@@ -95,12 +92,11 @@ const UserActivity = () => {
               <div className="activity flex justify-between items-center cursor-pointer hover:bg-slate-400 hover:bg-opacity-10 px-3 py-1">
                 <div className="activity_details flex items-center gap-2">
                   <div className="activity_icon flex items-center">
-                    {activity.name === 'Swapped' && (
+                    {activity.name === 'Swapped' ? (
                       <span class="material-symbols-outlined text-4xl w-full h-full text-uni-dark-pink">
                         swap_vertical_circle
                       </span>
-                    )}
-                    {(activity.name === 'Liquidity Added' ||
+                    ) : (activity.name === 'Liquidity Added' ||
                       activity.name === 'Liquidity Removed') && (
                       <svg
                         width="35"
