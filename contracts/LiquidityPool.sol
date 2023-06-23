@@ -117,7 +117,7 @@ contract LiquidityPool {
         uint _amount,
         IERC20 _token
     )
-        external
+        public
         view
         checkValidTokenPair(_id, _amount, _token)
         returns (uint _tokenAmount)
@@ -181,6 +181,11 @@ contract LiquidityPool {
                 pool[_id].token2.balanceOf(msg.sender) >= _amount2,
             "Insufficient Balance"
         );
+
+        require(
+            _amount2 == calculateTokenAmount(_id, _amount1, _token1),
+            "Invalid Ratio"
+        );
         if (_token1 == pool[_id].token2) {
             uint temp = _amount1;
             _amount1 = _amount2;
@@ -242,6 +247,8 @@ contract LiquidityPool {
         );
         provider.LPTCount = provider.LPTCount.sub(_LPTAmount);
         providerDetails[_id][msg.sender] = provider;
+        pool[_id].balance1 = reserve1.sub(withdrawableToken1);
+        pool[_id].balance2 = reserve2.sub(withdrawableToken2);
         pool[_id].token1.transfer(msg.sender, withdrawableToken1);
         pool[_id].token2.transfer(msg.sender, withdrawableToken2);
         pool[_id].LPTsupply = LPTsupply.sub(_LPTAmount);
@@ -291,7 +298,10 @@ contract LiquidityPool {
             pool[_id].balance1 = pool[_id].balance1.sub(transferableAmount);
             pool[_id].balance2 = pool[_id].balance2.add(_amount);
         }
-        _token.transferFrom(msg.sender, address(this), _amount);
+        require(
+            _token.transferFrom(msg.sender, address(this), _amount),
+            "Token Transfer Failed"
+        );
         status = _tokenToTransfer.transfer(msg.sender, transferableAmount);
         uint feeAmount = _amount.mul(3).div(1000);
         if (status) {
@@ -303,6 +313,8 @@ contract LiquidityPool {
                 transferableAmount,
                 block.timestamp
             );
+        } else {
+            _token.transfer(msg.sender, _amount);
         }
     }
 }
