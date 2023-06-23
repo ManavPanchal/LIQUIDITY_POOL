@@ -12,6 +12,7 @@ const addLiquidity = async (req, res) => {
       amount2,
       networkId,
     } = req.body;
+    console.log(req.body);
     const addedLiquidity = await Activities.create({
       useraddress: userAddress,
       poolid: poolId,
@@ -49,6 +50,7 @@ const addLiquidity = async (req, res) => {
       message: 'Liquidity added successfully',
     });
   } catch (error) {
+    console.log(error);
     res.status(422).json({ error });
   }
 };

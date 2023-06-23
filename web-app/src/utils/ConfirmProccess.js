@@ -4,7 +4,11 @@ import lptInstance from './lptInstance';
 import poolInstance from './poolInstance';
 import SwappingInstance from './swappingInstance';
 import tokensInstance from './tokensInstance';
-import { toast } from 'react-toastify';
+
+const headers = {
+  'Content-Type': 'application/json',
+}
+
 export const confirmProccess = async (
   tokens,
   from,
@@ -13,7 +17,7 @@ export const confirmProccess = async (
   setConfirmTransactionToggle,
 ) => {
   try {
-    const { contract: poolContract } = await poolInstance();
+    const { contract: poolContract, networkId } = await poolInstance();
     if (!(from === 'RemoveLiquidity')) {
       let { contract: token1Contract, signerAddress } = await tokensInstance(
         tokens.token1?.address,
@@ -88,10 +92,8 @@ export const confirmProccess = async (
             'http://localhost:5000/api/addLiquidity',
             {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
               body: JSON.stringify(requestBody),
+              headers
             },
           );
 
@@ -107,6 +109,19 @@ export const confirmProccess = async (
         if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1Amount) {
           setTransactionFlag(true);
           await SwappingInstance(tokens);
+          await fetch("/api/swapTokens",{
+            method:"POST",
+            body:JSON.stringify({
+              userAddress:signerAddress,
+              poolId:tokens.pool?.poolId,
+              activity:"Swapped",
+              tokenPair:pools[tokens.pool?.poolId].tokenPair,
+              amount1:tokens.token1Amount,
+              amount2:tokens.token2Amount,
+              networkId
+            }),
+            headers
+          })
           setConfirmTransactionToggle(false);
         } else {
           alert('please give sufficient Allowance');

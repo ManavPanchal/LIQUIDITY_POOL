@@ -46,7 +46,6 @@ const SwapUI = () => {
     }
   })
   watchAccount( (accountData) => {
-    console.log(accountData);
     if(tokens.token2?.name && tokens.token1?.name){
       getTokenBalances(accountData.address)
     }
@@ -92,7 +91,7 @@ const SwapUI = () => {
         }
       } catch (error) {
         if(error.toString().includes("Exceeds Min Balance"))
-        toast.info('Sorry! Swapping is not possible at this much amount you can try again on less amount', {
+        toast.info('Sorry! Swapping is not possible with entered amount you can try again on less amount', {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
