@@ -45,6 +45,7 @@ export const confirmProccess = async (
           signerAddress,
           networkId,
         } = await tokensInstance(tokens.token2?.address);
+        console.log();
         let token2Allowance = await tokenContract.allowance(
           signerAddress,
           process.env.REACT_APP_LIQUIDITY_CONTRACT,
@@ -67,6 +68,7 @@ export const confirmProccess = async (
           Number(token2Allowance) / 10 ** 18 >= tokens?.token2Amount
         ) {
           setTransactionFlag(true);
+          console.log('...', tokens.pool?.poolId);
           const tx = await poolContract.addLiquidity(
             tokens.pool?.poolId,
             tokens.token1?.address,

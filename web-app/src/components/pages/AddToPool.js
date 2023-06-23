@@ -12,6 +12,7 @@ import { TailSpin } from 'react-loader-spinner';
 import ConfirmInvestment from '../confirm-transaction';
 import { fetchUserTokenBalance } from '../../utils/tokensInstance';
 import { watchAccount, watchNetwork } from '@wagmi/core';
+import { formatEther } from 'viem';
 
 function AddToPool() {
   const { isConnected, address } = useAccount();
@@ -30,27 +31,36 @@ function AddToPool() {
   const [amount2, setAmount2] = useState('');
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
     useState(false);
-  const numberRegex = /^\d*\.?\d*$/
+  const numberRegex = /^\d*\.?\d*$/;
 
-  const getTokenBalances = async (address)=>{
-    const token1Balance = await fetchUserTokenBalance(tokens.token1?.address, address)
-    const token2Balance = await fetchUserTokenBalance(tokens.token2?.address, address)
-    setTokens({token1:{...tokens.token1,balance:token1Balance}, token2:{...tokens.token2,balance:token2Balance}})
-    setAmount1("")
-    setAmount2("")
-  }
+  const getTokenBalances = async (address) => {
+    const token1Balance = await fetchUserTokenBalance(
+      tokens.token1?.address,
+      address,
+    );
+    const token2Balance = await fetchUserTokenBalance(
+      tokens.token2?.address,
+      address,
+    );
+    setTokens({
+      token1: { ...tokens.token1, balance: token1Balance },
+      token2: { ...tokens.token2, balance: token2Balance },
+    });
+    setAmount1('');
+    setAmount2('');
+  };
 
-  watchNetwork( () => {
-    if(tokens.token2?.name && tokens.token1?.name){
-      getTokenBalances(address)
+  watchNetwork(() => {
+    if (tokens.token2?.name && tokens.token1?.name) {
+      getTokenBalances(address);
     }
-  })
-  watchAccount( (accountData) => {
+  });
+  watchAccount((accountData) => {
     console.log(accountData);
-    if(tokens.token2?.name && tokens.token1?.name){
-      getTokenBalances(accountData.address)
+    if (tokens.token2?.name && tokens.token1?.name) {
+      getTokenBalances(accountData.address);
     }
-  })
+  });
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
@@ -100,16 +110,26 @@ function AddToPool() {
       console.log(reserve1, '.....', reserve2);
       console.log(amount1);
       if (token === 'token1') {
-        const amountToDisplay =
-          (Number(event.target.value) * reserve2) / reserve1;
-        console.log('AMT DIS', amountToDisplay);
+        const amountSent = ethers.utils.parseEther(event.target.value);
+        const amountToDisplay = await poolContract.calculateTokenAmount(
+          poolId,
+          amountSent,
+          token1Address[0],
+        );
 
-        setAmount2(amountToDisplay === '0' ? '' : amountToDisplay.toFixed(4).toString());
+        const formatAmount = ethers.utils.formatEther(amountToDisplay);
+        setAmount2(amountToDisplay === '0' ? '' : formatAmount);
       } else {
-        const amountToDisplay =
-          (Number(event.target.value) * reserve1) / reserve2;
+        const amountSent = ethers.utils.parseEther(event.target.value);
+        const amountToDisplay = await poolContract.calculateTokenAmount(
+          poolId,
+          amountSent,
+          token2Address[0],
+        );
 
-        setAmount1(amountToDisplay === '0' ? '' : amountToDisplay.toFixed(4).toString());
+        const formatAmount = ethers.utils.formatEther(amountToDisplay);
+
+        setAmount1(amountToDisplay === '0' ? '' : formatAmount);
       }
     } catch (error) {}
   }
@@ -169,7 +189,8 @@ function AddToPool() {
               className="bg-transparent outline-none text-4xl w-0 flex-1"
               placeholder="0"
               onChange={(e) => {
-                numberRegex.test(e.target.value) && setAmount1(e.target.value === '0' ? '' : e.target.value);
+                numberRegex.test(e.target.value) &&
+                  setAmount1(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token1', e);
               }}
               value={amount1}
@@ -223,7 +244,8 @@ function AddToPool() {
               className="bg-transparent outline-none text-4xl w-0 flex-1"
               placeholder="0"
               onChange={(e) => {
-                numberRegex.test(e.target.value) && setAmount2(e.target.value === '0' ? '' : e.target.value);
+                numberRegex.test(e.target.value) &&
+                  setAmount2(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token2', e);
               }}
               value={amount2}
