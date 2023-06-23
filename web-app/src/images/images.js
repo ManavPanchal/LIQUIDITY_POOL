@@ -6,7 +6,7 @@ import expandMore from "./expand_more_FILL0_wght400_GRAD0_opsz48.svg"
 import metamaskIcon from "./metamaskIcon.webp"
 import coinbaseIcon from "./coinBaseimag.webp"
 import polygonSvg from "./polygon.svg"
-
+import searchIcon from "./magnifying-glass.png"
 export {
     lionlogo,
     uniLogo,
@@ -15,5 +15,6 @@ export {
     expandMore,
     metamaskIcon,
     coinbaseIcon,
-    polygonSvg
+    polygonSvg,
+    searchIcon
 }

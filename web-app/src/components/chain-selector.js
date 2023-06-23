@@ -48,7 +48,7 @@ function ChainSelector() {
             className="currentchain cursor-pointer hover:bg-blue-500 hover:bg-opacity-10 px-3 py-2 rounded-md flex gap-1 items-center"
             onClick={() => setDropdownToggle(!dropdownToogle)}
           >
-            <img src={currentChain.logo} alt="" className="w-6" />
+            <img src={currentChain.logo} alt="" className="w-5 lg:w-6" />
             {!dropdownToogle ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ function ChainSelector() {
             )}
           </div>
           {dropdownToogle && (
-            <div className="absolute right-0 mt-2 w-fit p-2 bg-uni-dim-white rounded-xl shadow-md shadow-slate-300">
+            <div className="absolute right-0 mt-2 w-fit p-2 bg-uni-dim-white rounded-xl shadow-md shadow-slate-300 z-10">
               {blockchains.map((blockchain) => {
                 return (
                   <>

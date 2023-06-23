@@ -23,11 +23,13 @@ const ProfileSlider = () => {
 
   return (
     <section
-      className={` absolute h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 bottom-0 z-10 duration-1000 sm:w-fit w-full`}
+      className={` fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
+      onClick={()=>setSliderToggle(false)}
     >
       <section
-        className={`flex relative text-slate-400 sm:h-full bg-transparent hover:bg-gray-600 hover:bg-opacity-5 rounded-xl ease-in-out
+        className={`flex absolute bottom-0 sm:relative text-slate-400 sm:h-full h-fit bg-transparent hover:bg-gray-600 hover:bg-opacity-5 sm:rounded-xl rounded-t-xl ease-in-out
          sm:w-fit w-full`}
+          onClick={(e)=>{e.stopPropagation()}}
       >
         <span
           className="profile_container_closer material-symbols-outlined p-3 mt-4 text-center hidden sm:block cursor-pointer"

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { dots, uniLogo, ethLogo } from '../images/images';
+import { dots, uniLogo, ethLogo , searchIcon} from '../images/images';
 import { AppContext } from '../App';
 import { useAccount } from 'wagmi';
 import ChainSelector from './chain-selector';
@@ -14,18 +14,19 @@ const Navbar = () => {
 
   const style = {
     navigation_li:
-      'hover:bg-gray-600 hover:bg-opacity-5 px-3 py-2 cursor-pointer rounded-md',
+      'hover:bg-gray-600 hover:bg-opacity-5 px-6 sm:px-3 py-2 cursor-pointer rounded-md text-lg sm:text-base xl:text-lg',
   };
 
   return (
-    <section className="navbar_div h-22 w-full p-3 lg:grid lg:grid-cols-3">
-      <section className="navigation flex gap-5 items-center">
-        <Link to="/#">
-          <img src={uniLogo} alt="logo" className="h-9 cursor-pointer" />
+    <section className="navbar_div h-22 w-full p-3 xl:grid xl:grid-cols-3 flex justify-between items-center">
+      <section className="navigation flex items-center gap-5">
+        <Link to="/#" className='text-center'>
+          <img src={uniLogo} alt="logo" className="h-9 cursor-pointer self-center pb-1" />
         </Link>
-        <u className="list-none no-underline text-slate-400 flex items-center">
+        <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 block sm:hidden cursor-pointer' />
+        <u className="list-none no-underline text-slate-400 left-0 p-3 m-0 sm:p-0 border-slate-200 border-t sm:border-none flex items-center fixed bottom-0 sm:relative sm:justify-normal sm:bg-transparent bg-uni-dim-white justify-between w-full box-border">
           <li >
-            <Link to="/swap/#" className={style.navigation_li}>Swap</Link>
+            <Link to="/swap/#" className={style.navigation_li + ""}>Swap</Link>
           </li>
           <li >
             <Link to="/tokens" className={style.navigation_li}>Tokens</Link>
@@ -42,12 +43,12 @@ const Navbar = () => {
               alt="..."
               width="20px"
               height="20px"
-              className="hover:cursor-pointer opacity-50"
+              className="hover:cursor-pointer opacity-50 w-4 xl:w-5 h-4 xl:h-5"
             />
           </li>
         </u>
       </section>
-      <section className="searchbar justify-self-center w-fit bg-opacity-40 rounded-xl border hover:border-violet-700 border-violet-200 backdrop-blur-3xl text-gray-600 md:hidden lg:block">
+      <section className="searchbar justify-self-center w-2/6 xl:w-fit bg-opacity-40 rounded-xl border hover:border-violet-700 border-violet-200 backdrop-blur-3xl text-gray-600 hidden lg:block">
         <div className="input_field flex items-center gap-3 justify-evenly  px-5 py-2 bg-opacity-40 ">
           <svg
             width="16"
@@ -76,6 +77,7 @@ const Navbar = () => {
         <section className="list_section"></section>
       </section>
       <section className="connectors flex gap-1 items-center justify-self-end px-2">
+        <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 hidden sm:block lg:hidden cursor-pointer'/>
         <section className="chain_selector">
           <ChainSelector/>
         </section>
@@ -84,7 +86,7 @@ const Navbar = () => {
           onClick={() => setSliderToggle(true)}
         >
           {isConnected ? (
-            <div className="flex items-center gap-3 rounded-3xl font-medium px-2 py-1 hover:border-violet-300 border border-transparent">
+            <div className="lg:flex items-center gap-3 rounded-full lg:rounded-3xl font-medium p-1 lg:px-2 lg:py-1 hover:border-violet-300 border border-transparent">
               <svg x="0" y="0" width="24" height="24" className="rounded-full">
                 <rect
                   x="0"
@@ -111,7 +113,7 @@ const Navbar = () => {
                   fill="#2366E1"
                 ></rect>
               </svg>
-              <p className="wallet_address">
+              <p className="wallet_address hidden lg:block">
                 {address.slice(0, 6) + '...' + address.slice(-4)}
               </p>
             </div>
