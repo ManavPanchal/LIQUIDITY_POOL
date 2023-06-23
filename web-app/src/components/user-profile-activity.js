@@ -33,7 +33,7 @@ const UserActivity = () => {
   ];
   console.log(activities);
   return (
-    <div className="break-words w-full h-full">
+    <div className="break-words w-full h-full overflow-y-scroll overflow-x-hidden">
       {activities ? (
         <div className="Activities w-full h-full flex flex-col gap-1">
           {activities?.map((activity) => {

@@ -948,7 +948,7 @@ export const pools = [
     id: 0,
     token1Address: '0x6a1149ea9Cc1812C1282D653D0103AdF9F77eD6d',
     token2Address: '0xeB82Ae2ffbc65A8dbF718C74f7d111a2E2bF193c',
-    LPTAddress: '0xA409D4670D3dfdf78C28BEF41b290c9952B18CE0',
+    LPTAddress: '0x7C2140866f0FC6cc6Fbc337abAF69Cf2966971C8',
     tokenPair: 'DAI-USDT',
   },
   {
