@@ -8,15 +8,12 @@ import TokenSelector from '../token-selector';
 import { pools, Tokens } from '../../utils/constants';
 import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
-import { TailSpin } from 'react-loader-spinner';
 import ConfirmInvestment from '../confirm-transaction';
 import { fetchUserTokenBalance } from '../../utils/tokensInstance';
 import { watchAccount, watchNetwork } from '@wagmi/core';
-import { formatEther } from 'viem';
 
 function AddToPool() {
   const { isConnected, address } = useAccount();
-  const [loading, setLoading] = useState(false);
   const [tokens, setTokens] = useState({
     token1: {
       isSelected: false,
@@ -26,12 +23,18 @@ function AddToPool() {
     },
   });
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  const { setSliderToggle } = useContext(AppContext);
+  const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
   const [amount1, setAmount1] = useState('');
   const [amount2, setAmount2] = useState('');
-  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
-    useState(false);
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =  useState(false);
   const numberRegex = /^\d*\.?\d*$/;
+
+  useEffect(()=>{
+    setAmount1('');
+    setAmount2('');
+    setConfirmTransactionFlag(false)
+  },[confirmTransactionFlag])
+
 
   const getTokenBalances = async (address) => {
     const token1Balance = await fetchUserTokenBalance(
@@ -133,10 +136,6 @@ function AddToPool() {
       }
     } catch (error) {}
   }
-
-  const handleConnectWallet = () => {
-    setLoading(true);
-  };
 
   return (
     <>
@@ -304,9 +303,8 @@ function AddToPool() {
           }
           onClick={() => {
             !isConnected && setSliderToggle(true);
-            isConnected
-              ? setConfirmTransactionToggle(true)
-              : handleConnectWallet();
+            isConnected && setConfirmTransactionToggle(true)
+;
           }}
           className={`${
             isConnected
@@ -320,8 +318,8 @@ function AddToPool() {
           } text-center px-8 py-4 text-xl rounded-2xl font-bold`}
         >
           {isConnected
-            ? amount1 >= tokens.token1.balance ||
-              amount2 >= tokens.token2.balance
+            ? amount1 > tokens.token1.balance ||
+              amount2 > tokens.token2.balance
               ? `Insufficient Balance`
               : `Add Funds`
             : `Connect Wallet`}

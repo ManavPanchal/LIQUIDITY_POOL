@@ -16,7 +16,7 @@ const RemoveLiquidity = () => {
   const [LPTamount, setLPTAmount] = useState('');
   const [lptbalance, setBalance] = useState(0);
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] = useState(false);
-  const { setSliderToggle } = useContext(AppContext);
+  const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('-');
   const numberRegex = /^\d*\.?\d*$/
@@ -40,6 +40,12 @@ const RemoveLiquidity = () => {
     ];
     setProviderInfo(providerdata);
   }
+
+  useEffect(()=>{
+    setLPTAmount('');
+    checkbalance();
+    setConfirmTransactionFlag(false);
+  },[confirmTransactionFlag])
 
   watchNetwork( () => {
       checkbalance()

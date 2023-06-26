@@ -16,6 +16,7 @@ export const confirmProccess = async (
   setAllowanceWaiting,
   setTransactionFlag,
   setConfirmTransactionToggle,
+  setConfirmTransactionFlag
 ) => {
   try {
     const { contract: poolContract } = await poolInstance();
@@ -115,6 +116,7 @@ export const confirmProccess = async (
           confirmProccess();
         }
       }
+      setConfirmTransactionFlag(true);
     } else {
       const {
         contract: LPTContract,
@@ -191,6 +193,7 @@ export const confirmProccess = async (
         alert('please give sufficient Allowance');
         confirmProccess();
       }
+      setConfirmTransactionFlag(true);
     }
   } catch (error) {
     // const errorMessage =

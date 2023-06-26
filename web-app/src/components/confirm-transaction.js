@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import 'react-dots-loader/index.css'
 import { ethLogo } from "../images/images";
 import { ThreeDots } from "react-loader-spinner"
@@ -6,6 +6,7 @@ import TradeCalculations from "./trade-calculation";
 import { confirmProccess } from "../utils/ConfirmProccess";
 import walletInstance from "../utils/walletInstance";
 import { ethers } from "ethers";
+import { AppContext } from "../App";
 
 const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
 
@@ -14,6 +15,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
     const [startTransactionFlag, setTransactionFlag] = useState(false);
     const [removableTokens, setRemovableTokens] = useState();
     const [fetchingClaimableBalance, setBalanceFetching] = useState(false);
+    const {setConfirmTransactionFlag} = useContext(AppContext);
 
     const getclaimableLiquidity = async () => {
         try {
@@ -116,7 +118,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                             <div className={`confirm_btn w-full ${fetchingClaimableBalance && "animate-pulse"}`} onClick={() => {
                                 if(!fetchingClaimableBalance){
                                     setReviewFlag(false);
-                                    confirmProccess(tokens, from, setAllowanceWaiting, setTransactionFlag, setConfirmTransactionToggle)
+                                    confirmProccess(tokens, from, setAllowanceWaiting, setTransactionFlag, setConfirmTransactionToggle, setConfirmTransactionFlag)
                                 }
                             }}>
                                 <button className="bg-uni-dark-pink text-uni-dim-white text-xl w-full text-center p-3 font-medium rounded-2xl mt-3">Confirm {(from === "SwapUI") ? "Swap" : "Transaction "}</button>

@@ -11,6 +11,7 @@ export const AppContext = createContext();
 
 function App() {
   const [sliderToggle, setSliderToggle] = useState(false);
+  const [confirmTransactionFlag, setConfirmTransactionFlag] = useState(false);
 
   return (
     <WagmiConfig config={config}>
@@ -18,6 +19,8 @@ function App() {
         value={{
           sliderToggle,
           setSliderToggle,
+          confirmTransactionFlag,
+          setConfirmTransactionFlag
         }}
       >
         <div id="App" className="h-screen w-screen overflow-x-hidden">

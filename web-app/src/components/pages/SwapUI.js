@@ -23,12 +23,18 @@ const SwapUI = () => {
     },
   });
   const { isConnected, address} = useAccount();
-  const { setSliderToggle } = useContext(AppContext);
+  const { setSliderToggle,confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
   const [token1Amount, setToken1Amount] = useState('');
   const [token2Amount, setToken2Amount] = useState('');
   const [isWaitingForCalculation, setCalculationLoading] = useState(false);
   const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
+
+  useEffect(()=>{
+    setToken1Amount('');
+    setToken2Amount('');
+    setConfirmTransactionFlag(false);
+  },[confirmTransactionFlag])
 
   const numberRegex = /^\d*\.?\d*$/
 
