@@ -24,6 +24,12 @@ module.exports = {
       lptoken: {
         type: Sequelize.STRING,
       },
+      lptsupply: {
+        type: Sequelize.DECIMAL,
+      },
+      networkid: {
+        type: Sequelize.INTEGER,
+      },
     });
   },
   async down(queryInterface, Sequelize) {

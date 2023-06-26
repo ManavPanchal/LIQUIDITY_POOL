@@ -9,6 +9,7 @@ const removeLiquidityRoute = require('./routes/removeLiquidity');
 const swapTokensRoute = require('./routes/swapTokens');
 const getActivitiesRoute = require('./routes/getActivities');
 const getProviderRoute = require('./routes/getProvider');
+const getRemovalTokensAmountRoute = require('./routes/getRemovalTokensAmount');
 require('dotenv').config();
 app.use(express.json());
 
@@ -20,6 +21,7 @@ app.use('/api/removeLiquidity', removeLiquidityRoute);
 app.use('/api/swapTokens', swapTokensRoute);
 app.use('/api/getActivities', getActivitiesRoute);
 app.use('/api/getProvider', getProviderRoute);
+app.use('/api/getRemovableTokens', getRemovalTokensAmountRoute);
 
 app.listen(PORT, () => {
   console.log('server is up and running on port :', PORT);

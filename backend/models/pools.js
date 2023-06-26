@@ -13,11 +13,33 @@ module.exports = (sequelize, DataTypes) => {
   }
   pools.init(
     {
-      poolid: DataTypes.INTEGER,
-      tokenpair: DataTypes.STRING,
-      token1: DataTypes.STRING,
-      token2: DataTypes.STRING,
-      lptoken: DataTypes.STRING,
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
+      poolid: {
+        type: DataTypes.INTEGER,
+      },
+      tokenpair: {
+        type: DataTypes.STRING,
+      },
+      token1: {
+        type: DataTypes.STRING,
+      },
+      token2: {
+        type: DataTypes.STRING,
+      },
+      lptoken: {
+        type: DataTypes.STRING,
+      },
+      lptsupply: {
+        type: DataTypes.DECIMAL,
+      },
+      networkid: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,
