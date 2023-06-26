@@ -1,10 +1,10 @@
-import { pools, Tokens } from './constants';
-import { ethers } from 'ethers';
-import lptInstance from './lptInstance';
-import poolInstance from './poolInstance';
-import SwappingInstance from './swappingInstance';
-import tokensInstance from './tokensInstance';
-import { toast } from 'react-toastify';
+import { pools } from "./constants";
+import { ethers } from "ethers";
+import lptInstance from "./lptInstance";
+import poolInstance from "./poolInstance";
+import SwappingInstance from "./swappingInstance";
+import tokensInstance from "./tokensInstance";
+import { toast } from "react-toastify";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -78,11 +78,14 @@ export const confirmProccess = async (
             ethers.utils.parseEther(tokens?.token2Amount),
           );
           await tx.wait();
+          const currentTokenPair = pools.filter(
+            (pool) => pool.id === tokens.pool?.poolId,
+          );
           const requestBody = {
             userAddress: signerAddress,
             poolId: tokens.pool?.poolId,
             activity: 'Added',
-            tokenPair: `${tokens.token1?.name}-${tokens.token2?.name}`,
+            tokenPair: currentTokenPair[0].tokenPair,
             amount1: Number(tokens?.token1Amount),
             amount2: Number(tokens?.token2Amount),
             networkId,
@@ -152,20 +155,6 @@ export const confirmProccess = async (
           return { currentClaimed1, currentClaimed2 };
         }
         const { currentClaimed1, currentClaimed2 } = await checkClaimedAmount();
-        const reqBody = {
-          poolId: tokens.pool?.poolId,
-          providedLPT: ethers.utils.parseEther(tokens?.LPTAmount),
-          networkId,
-        };
-        const removableTokensresponse = await fetch('/api/getRemovableTokens', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(reqBody),
-        });
-        const removableTokens = await removableTokensresponse.json();
-        console.log(removableTokens);
-        console.log(removableTokens.withdrawableToken1, 'from apiiiiiiii8');
-        console.log(removableTokens.withdrawableToken2, 'from apiiiiiiii8');
         const tx = await poolContract.removeLiquidity(
           tokens.pool?.poolId,
           ethers.utils.parseEther(tokens?.LPTAmount),
@@ -208,7 +197,6 @@ export const confirmProccess = async (
     //   'cannot estimate gas; transaction may fail or may require manual gas limit [ See: https://links.ethers.org/v5-errors-UNPREDICTABLE_GAS_LIMIT ] (reason="execution reverted: Invalid Ratio", method="estimateGas", transaction={...})';
     const regex = /reverted: (.*?)\",/;
     const match = error.message.match(regex);
-
     if (match && match.length > 1) {
       const revertedMessage = match[1];
       toast.error(revertedMessage, {
@@ -219,9 +207,31 @@ export const confirmProccess = async (
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'colored',
-      });
-    } else {
+        theme: "colored",
+        })
+    } else if(error.message.includes("user rejected transaction")) {
+      toast.error("user rejected the transaction",{
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        })
+    } else if(error.message.includes("user rejected transaction")) {
+      toast.error("user rejected the transaction",{
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        })
+    }else{
       console.log(error);
     }
     setConfirmTransactionToggle(false);

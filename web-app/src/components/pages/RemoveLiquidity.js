@@ -49,9 +49,11 @@ const RemoveLiquidity = () => {
   })
 
   function tokenPair() {
+    console.log(Tokenpair);
     const pool = pools
       .filter((pool) => pool.tokenPair === Tokenpair)
       .map((pool) => pool);
+    console.log(pool);
     return pool;
   }
   useEffect(() => {
@@ -182,7 +184,7 @@ const RemoveLiquidity = () => {
       {ConfirmTransactionToggle && (
         <RemoveFunds
           setConfirmTransactionToggle={setConfirmTransactionToggle}
-          tokens={{ pool: { poolId: tokenPair()[0].id }, LPTAmount: LPTamount }}
+          tokens={{ pool: { poolId: tokenPair()[0].id }, LPTAmount: LPTamount, token1:{name:tokens[0]}, token2:{name:tokens[1]} }}
           from={'RemoveLiquidity'}
         />
       )}

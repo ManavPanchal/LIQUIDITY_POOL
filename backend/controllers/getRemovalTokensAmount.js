@@ -14,7 +14,6 @@ const calculateRemovableTokens = async (req, res) => {
         `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_MUMBAI_API}`,
       );
     }
-
     const contract = new ethers.Contract(
       process.env.POOL_CONTRACT,
       LiquidityPoolABI,
@@ -32,7 +31,6 @@ const calculateRemovableTokens = async (req, res) => {
       (parseFloat(LPTSupplied) * parseFloat(reserve2)) /
       parseFloat(LPTSupplyOfPool);
 
-    console.log(withdrawableToken1);
     res.status(200).json({ withdrawableToken1, withdrawableToken2 });
   } catch (error) {
     console.log('Err at calculation of withdrwable tokens', error);
