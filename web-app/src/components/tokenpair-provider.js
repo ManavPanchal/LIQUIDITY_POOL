@@ -19,24 +19,9 @@ const Tokenpairprovider = () => {
     const response = await fetch(
       `http://localhost:5000/api/getProvider/${signerAddress}/${networkId}`,
     );
-    // let liquidityAdded = await contract.queryFilter('liquidityAdded');
-
-    // addedEvents = liquidityAdded
-    //   .filter((pool) => {
-    //     return signerAddress === pool.args[0];
-    //   })
-    //   .map((pool) => {
-    //     return pool.args[1];
-    //   });
     const poolPositions = await response.json()
     console.log(poolPositions)
-    setpoolInfo(poolPositions.allProviderPools)
-    // const userTokens = Array.from(new Set(addedEvents));
-    // console.log('userTokens', userTokens);
-    
-      
-     
-      
+    setpoolInfo(poolPositions.allProviderPools) 
   }
 
   watchNetwork( () => {

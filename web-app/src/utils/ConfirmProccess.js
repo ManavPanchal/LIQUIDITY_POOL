@@ -204,10 +204,10 @@ export const confirmProccess = async (
       }
     }
   } catch (error) {
-    const errorMessage =
-      'cannot estimate gas; transaction may fail or may require manual gas limit [ See: https://links.ethers.org/v5-errors-UNPREDICTABLE_GAS_LIMIT ] (reason="execution reverted: Invalid Ratio", method="estimateGas", transaction={...})';
+    // const errorMessage =
+    //   'cannot estimate gas; transaction may fail or may require manual gas limit [ See: https://links.ethers.org/v5-errors-UNPREDICTABLE_GAS_LIMIT ] (reason="execution reverted: Invalid Ratio", method="estimateGas", transaction={...})';
     const regex = /reverted: (.*?)\",/;
-    const match = errorMessage.match(regex);
+    const match = error.message.match(regex);
 
     if (match && match.length > 1) {
       const revertedMessage = match[1];

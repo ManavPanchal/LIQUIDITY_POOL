@@ -15,8 +15,7 @@ const RemoveLiquidity = () => {
   const [providerInfo, setProviderInfo] = useState([]);
   const [LPTamount, setLPTAmount] = useState('');
   const [lptbalance, setBalance] = useState(0);
-  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
-    useState(false);
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] = useState(false);
   const { setSliderToggle } = useContext(AppContext);
   const Tokenpair = localStorage.getItem('TokenPair');
   const tokens = Tokenpair.split('-');
@@ -25,9 +24,7 @@ const RemoveLiquidity = () => {
   async function checkbalance() {
     const pool = tokenPair();
     console.log('LPTAddress', pool[0]);
-    const {signerAddress, balance } = await lptInstance(
-      pool[0].LPTAddress,
-    );
+    const {signerAddress, balance } = await lptInstance( pool[0].LPTAddress);
 
     setBalance(balance);
     const { contract: poolContract } = await poolInstance();

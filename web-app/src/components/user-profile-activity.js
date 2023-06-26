@@ -26,11 +26,33 @@ const UserActivity = () => {
       image2: '',
       activity: `${userActivity.amount1} ${
         userActivity.tokenpair.split('-')[0]
-      } for ${userActivity.amount2}  ${userActivity.tokenpair.split('-')[1]}`,
-      duration: moment(userActivity.createdAt).fromNow(),
+      } for ${userActivity.amount2} ${userActivity.tokenpair.split('-')[1]}`,
+      duration: formatDuration(Math.abs(moment(userActivity.createdAt).diff(moment()))),
       key: `activity-${index}`,
     })),
   ];
+  
+  // Helper function to format the duration
+  function formatDuration(duration) {
+    const seconds = Math.floor(duration / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+  
+    if (days > 0) {
+      return `${days}d`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else if (minutes > 0) {
+      return `${minutes}m`;
+    } else {
+      return `${seconds}s`;
+    }
+  }
+  
+  
+  
+  
   console.log(activities);
   return (
     <div className="break-words w-full h-full overflow-y-scroll overflow-x-hidden">
