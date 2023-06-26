@@ -19,6 +19,7 @@ const UserActivity = () => {
     activityEvents();
   }, []);
 
+  
   let activities = [
     ...allActivities.map((userActivity, index) => ({
       name: userActivity.activity,
@@ -32,7 +33,6 @@ const UserActivity = () => {
     })),
   ];
   
-  // Helper function to format the duration
   function formatDuration(duration) {
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
