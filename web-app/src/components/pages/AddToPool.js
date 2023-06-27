@@ -53,17 +53,21 @@ function AddToPool() {
     setAmount2('');
   };
 
-  watchNetwork(() => {
+  watchNetwork((network) => {
     if (tokens.token2?.name && tokens.token1?.name) {
-      getTokenBalances(address);
+      network.chain && getTokenBalances(address);
     }
   });
-  watchAccount((accountData) => {
-    console.log(accountData);
-    if (tokens.token2?.name && tokens.token1?.name) {
-      getTokenBalances(accountData.address);
+  watchAccount( (accountData) => {
+    if(!accountData.isConnected){
+      setTokens({token1: {isSelected: false,},token2: {isSelected: false,},});
+      setAmount1('');
+      setAmount2('')
     }
-  });
+    else if(tokens.token2?.name && tokens.token1?.name){
+      getTokenBalances(accountData.address)
+    }
+  })
 
   async function tokenPair() {
     const token1Address = Tokens.filter(

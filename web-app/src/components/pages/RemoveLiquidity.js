@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../App';
 import { useAccount } from 'wagmi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { pools } from '../../utils/constants';
 import lptInstance from '../../utils/lptInstance';
 import poolInstance from '../../utils/poolInstance';
@@ -42,16 +42,21 @@ const RemoveLiquidity = () => {
   }
 
   useEffect(()=>{
-    setLPTAmount('');
-    checkbalance();
-    setConfirmTransactionFlag(false);
+    if (isConnected) {
+      setLPTAmount('');
+      checkbalance();
+      setConfirmTransactionFlag(false);
+    }
   },[confirmTransactionFlag])
 
-  watchNetwork( () => {
-      checkbalance()
+
+  watchNetwork( (network) => {
+    if(network.chain)  checkbalance()
   })
-  watchAccount( () => {
+  watchAccount( (accountData) => {
+    if(accountData.isConnected){
       checkbalance()
+    }
   })
 
   function tokenPair() {

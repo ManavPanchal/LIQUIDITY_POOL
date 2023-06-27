@@ -1,6 +1,6 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import ProfileSlider from './components/ProfileSlider';
 import AppRoutes from './AppRoutes';
 import { WagmiConfig } from 'wagmi';
@@ -12,6 +12,21 @@ export const AppContext = createContext();
 function App() {
   const [sliderToggle, setSliderToggle] = useState(false);
   const [confirmTransactionFlag, setConfirmTransactionFlag] = useState(false);
+
+  // useEffect(() => {
+  //   const crntPath = window.location.pathname
+  //   if( crntPath === "/pools" || crntPath === "/swap" || crntPath === "/pools/addliquidity" || crntPath === "/pools/removeliquidity" ){
+  //     window.addEventListener("beforeunload", alertUser);
+  //     return () => {
+  //       window.removeEventListener("beforeunload", alertUser);
+  //     };
+  //   }
+  // }, []);
+  // const alertUser = (e) => {
+  //   e.preventDefault();
+  //   e.returnValue = "";
+  // };
+
 
   return (
     <WagmiConfig config={config}>

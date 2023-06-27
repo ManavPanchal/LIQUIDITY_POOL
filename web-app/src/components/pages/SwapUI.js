@@ -52,7 +52,12 @@ const SwapUI = () => {
     }
   })
   watchAccount( (accountData) => {
-    if(tokens.token2?.name && tokens.token1?.name){
+    if(!accountData.isConnected){
+      setTokens({token1: {isSelected: false,},token2: {isSelected: false,},});
+      setToken1Amount('');
+      setToken2Amount('')
+    }
+    else if(tokens.token2?.name && tokens.token1?.name){
       getTokenBalances(accountData.address)
     }
   })

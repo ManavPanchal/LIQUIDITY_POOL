@@ -5,35 +5,35 @@ import poolInstance from '../utils/poolInstance';
 import { useState } from 'react';
 import { pools } from '../utils/constants';
 import { watchAccount, watchNetwork } from '@wagmi/core';
+import { useAccount } from 'wagmi';
 
 const Tokenpairprovider = () => {
   const navigateTo = useNavigate();
   const [poolInfo, setpoolInfo] = useState([]);
   let poolcount = 0;
-  let addedEvents;
-
+  const {isConnected} = useAccount()
 
   const addevents = async() => {
-    let poolsInfo;
-    const { contract, signerAddress,networkId } = await poolInstance();
+    const { signerAddress,networkId } = await poolInstance();
     const response = await fetch(
       `http://localhost:5000/api/getProvider/${signerAddress}/${networkId}`,
     );
     const poolPositions = await response.json()
-    console.log(poolPositions)
-    setpoolInfo(poolPositions.allProviderPools) 
+    setpoolInfo(poolPositions.allProviderPools)
   }
 
-  watchNetwork( () => {
-    addevents()
+  watchNetwork( (network) => {
+    if(network.chain) addevents()
   })
   watchAccount( (accountData) => {
-    addevents()
+    if(accountData.isConnected){
+      addevents()
+    }
   })
 
 
   useEffect(() => {
-    addevents();
+    isConnected && addevents();
   }, []);
 
   console.log('poolInfo', poolInfo);

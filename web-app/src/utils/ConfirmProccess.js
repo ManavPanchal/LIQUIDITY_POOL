@@ -10,6 +10,32 @@ const headers = {
   'Content-Type': 'application/json',
 };
 
+const generateToast = (message)=>{
+  toast.info(message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
+}
+
+const generateErrorToast = (message) =>{
+  toast.error(message ,{
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    })
+}
+
 export const confirmProccess = async (
   tokens,
   from,
@@ -101,27 +127,26 @@ export const confirmProccess = async (
           if (response.status === 200) {
             console.log('success');
           }
-          setConfirmTransactionToggle(false);
+          setConfirmTransactionFlag(true);
         } else {
-          alert('please give sufficient Allowance');
-          confirmProccess();
+          generateToast('please give sufficient Allowance')
         }
       } else {
         if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1Amount) {
           setTransactionFlag(true);
           await SwappingInstance(tokens);
-          setConfirmTransactionToggle(false);
+
+          setConfirmTransactionFlag(true);
         } else {
-          alert('please give sufficient Allowance');
-          confirmProccess();
+          generateToast('please give sufficient Allowance')
         }
       }
-      setConfirmTransactionFlag(true);
+      setConfirmTransactionToggle(false);
     } else {
       const {
         contract: LPTContract,
         signerAddress,
-        networkId,
+        networkId
       } = await lptInstance(pools[tokens.pool?.poolId].LPTAddress);
       let LPTAllowance = await LPTContract.allowance(
         signerAddress,
@@ -188,55 +213,24 @@ export const confirmProccess = async (
         if (response.status === 200) {
           console.log('success');
         }
-        setConfirmTransactionToggle(false);
+        setConfirmTransactionFlag(true);
       } else {
-        alert('please give sufficient Allowance');
-        confirmProccess();
+        generateToast('please give sufficient Allowance')
       }
-      setConfirmTransactionFlag(true);
+      setConfirmTransactionToggle(false);
+
     }
   } catch (error) {
-    // const errorMessage =
-    //   'cannot estimate gas; transaction may fail or may require manual gas limit [ See: https://links.ethers.org/v5-errors-UNPREDICTABLE_GAS_LIMIT ] (reason="execution reverted: Invalid Ratio", method="estimateGas", transaction={...})';
     const regex = /reverted: (.*?)\",/;
     const match = error.message.match(regex);
     if (match && match.length > 1) {
       const revertedMessage = match[1];
-      toast.error(revertedMessage, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        })
-    } else if(error.message.includes("user rejected transaction")) {
-      toast.error("user rejected the transaction",{
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        })
-    } else if(error.message.includes("user rejected transaction")) {
-      toast.error("user rejected the transaction",{
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        })
-    }else{
-      console.log(error);
+      generateErrorToast(revertedMessage);
     }
+    else if(error.message.includes("user rejected transaction"))
+      generateErrorToast("user rejected the transaction")
+    else
+      console.log(error);
     setConfirmTransactionToggle(false);
   }
 };
