@@ -36,7 +36,6 @@ const Tokenpairprovider = () => {
     isConnected && addevents();
   }, []);
 
-  console.log('poolInfo', poolInfo);
 
   return (
     <div

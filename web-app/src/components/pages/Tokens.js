@@ -4,7 +4,7 @@ import tokensInstance from '../../utils/tokensInstance';
 import { Link } from 'react-router-dom';
 import { Tokens } from '../../utils/constants';
 import { useNavigate } from 'react-router';
-import { useNetwork } from 'wagmi';
+import { useAccount, useNetwork } from 'wagmi';
 
 
 
@@ -13,30 +13,36 @@ const TokensUI = () => {
   const [networkUrl,setNetworkUrl] = useState('')
   const [networkID,setNetworkID] = useState('')
   const { chain, chains } = useNetwork()
+  const {isConnected} = useAccount()
   const NavigateTo = useNavigate();
+  let totalSupply;
 
 
   useEffect(() => {
-    const fetchTokenData = async () => {
-      const tokenDataPromises = Tokens.map(async (token) => {
-        const { contract,networkId } = await tokensInstance(token.tokenAddress);
-        setNetworkID(networkId)
-        console.log(networkId)
-        const totalSupply = ethers.utils.formatEther(await contract.totalSupply());
-        return {
-          tokenImage: token.tokenImage,
-          tokenName: token.tokenName,
-          tokenSymbol: token.tokenSymbol,
-          tokenAddress: token.tokenAddress,
-          totalSupply: totalSupply,
-        };
-      },[]);
+   
+      const fetchTokenData = async () => {
+        const tokenDataPromises = Tokens.map(async (token) => {
+          if(isConnected){
+            const { contract,networkId } = await tokensInstance(token.tokenAddress);
+            setNetworkID(networkId)
+            console.log(networkId)
+            totalSupply = ethers.utils.formatEther(await contract.totalSupply());
+          }
+          return {
+            tokenImage: token.tokenImage,
+            tokenName: token.tokenName,
+            tokenSymbol: token.tokenSymbol,
+            tokenAddress: token.tokenAddress,
+            totalSupply: totalSupply?totalSupply:0,
+          };
+        },[]);
+  
+        const resolvedTokenData = await Promise.all(tokenDataPromises);
+        setTokenData(resolvedTokenData);
 
-      const resolvedTokenData = await Promise.all(tokenDataPromises);
-      setTokenData(resolvedTokenData);
-    };
-
-    fetchTokenData();
+  
+      };
+      fetchTokenData();
   }, [chain]);
 
   function blockExplorer(tokenAddress){
@@ -59,12 +65,12 @@ const TokensUI = () => {
             <span className='max-xsm:text-sm'>Token</span>
             </div>
             <span className='max-md:hidden'>Token address</span>
-            <span className='mr-14 max-xsm:text-sm max-xsm:mr-5'>Total supply</span>
+        <span className='mr-14 max-xsm:text-sm max-xsm:mr-5'>Total supply</span>
           </div>
           <div className='flex flex-col w-full h-max justify-around items-center '>
             {tokenData.map((token, index) => (
               <Link className="w-full" to = {networkUrl} target="_blank" >
-              <div className='flex flex-wrap w-full py-5 items-center justify-between hover:bg-slate-50' onClick={()=>{blockExplorer(token.tokenAddress)} } key={index}>
+              <div className={`flex flex-wrap w-full py-5 items-center justify-between hover:bg-slate-50`} onClick={()=>{blockExplorer(token.tokenAddress)} } key={index}>
                 <div className='flex'>
                 <span className='mx-7'>{index + 1}</span>
                 <div className='flex gap-2 items-center'>
@@ -76,7 +82,7 @@ const TokensUI = () => {
                 <div onClick={()=>{blockExplorer(token.tokenAddress)} } className="max-md:hidden">{token.tokenAddress}</div>
                 </Link>
                
-                <div className='pr-16 text-gray-600 max-xsm:text-sm max-xsm:pr-5'>{token.totalSupply}</div>
+              <div className={`flex ${isConnected?"pr-16":"pr-24"} text-gray-600 max-xsm:text-sm max-xsm:pr-5 `}>{isConnected?token.totalSupply:"---"}</div>
               </div>
               </Link>
             ))}
