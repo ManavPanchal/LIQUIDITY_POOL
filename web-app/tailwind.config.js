@@ -20,6 +20,7 @@ module.exports = {
       },
       screens: {
         'xsm': '300px',
+        'xmd':'430px'
       },
       width: {
         120: '480px',

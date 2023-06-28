@@ -11,7 +11,7 @@ const PoolsUI = () => {
   const { isConnected } = useAccount();
   const navigateTo = useNavigate();
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full max-xl:px-5">
       <div className="pools_container flex flex-col justify-center m-auto mt-60 w-[850px] rounded-xl h-64 font-roboto">
         <div className="flex justify-between mb-7">
           <div className="flex justify-start gap-3 text-left text-black text-4xl ">

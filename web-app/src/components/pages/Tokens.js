@@ -66,8 +66,8 @@ const TokensUI = () => {
             </div>
             <span className='max-md:hidden'>Token address</span>
         <span className='mr-14 max-xsm:text-sm max-xsm:mr-5'>Total supply</span>
-          </div>
-          <div className='flex flex-col w-full h-max justify-around items-center '>
+          </div> 
+          <div className='flex flex-col w-full h-max justify-around items-center '> 
             {tokenData.map((token, index) => (
               <Link className="w-full" to = {networkUrl} target="_blank" >
               <div className={`flex flex-wrap w-full py-5 items-center justify-between hover:bg-slate-50`} onClick={()=>{blockExplorer(token.tokenAddress)} } key={index}>

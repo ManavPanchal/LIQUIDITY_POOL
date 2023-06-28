@@ -13,21 +13,6 @@ function App() {
   const [sliderToggle, setSliderToggle] = useState(false);
   const [confirmTransactionFlag, setConfirmTransactionFlag] = useState(false);
 
-  // useEffect(() => {
-  //   const crntPath = window.location.pathname
-  //   if( crntPath === "/pools" || crntPath === "/swap" || crntPath === "/pools/addliquidity" || crntPath === "/pools/removeliquidity" ){
-  //     window.addEventListener("beforeunload", alertUser);
-  //     return () => {
-  //       window.removeEventListener("beforeunload", alertUser);
-  //     };
-  //   }
-  // }, []);
-  // const alertUser = (e) => {
-  //   e.preventDefault();
-  //   e.returnValue = "";
-  // };
-
-
   return (
     <WagmiConfig config={config}>
       <AppContext.Provider

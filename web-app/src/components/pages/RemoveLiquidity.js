@@ -73,7 +73,7 @@ const RemoveLiquidity = () => {
 
   return (
     <>
-      <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-16 p-5 font-roboto">
+      <div className="flex flex-col  gap-2 bg-white max-w-[420px] rounded-xl m-auto mt-16 p-5 font-roboto max-xmd:mx-5">
         <div className="flex justify-between items-center">
           <Link className="flex " to="/pools">
             <svg
@@ -93,7 +93,7 @@ const RemoveLiquidity = () => {
               <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
           </Link>
-          <div className="m-auto text-xl font-roboto font-medium">
+          <div className="m-auto text-xl max-xmd:text-sm font-roboto font-medium ">
             Remove Liquidity
           </div>
           <div className="flex ">
@@ -115,11 +115,11 @@ const RemoveLiquidity = () => {
             </svg>
           </div>
         </div>
-        <div className="bg-white flex flex-col p-3 rounded-xl mt-5">
-          <span className="text-md font-semibold mb-2 ">
+        <div className="bg-white flex flex-col p-3 rounded-xl mt-5 ">
+          <span className="text-md font-semibold mb-2 max-xmd:text-sm">
             Provided Liquidity
           </span>
-          <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60  rounded-xl">
+          <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60 max-xmd:text-sm max-xmd:overflow-hidden rounded-xl">
             <div className="flex justify-between">
               <span className="">{tokens[0]}↗</span>
               <span className="">{providerInfo[0]}</span>
@@ -130,9 +130,9 @@ const RemoveLiquidity = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white flex flex-col p-3 rounded-xl">
-          <span className="text-md font-semibold mb-2 ">Claimed Liquidity</span>
-          <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60  rounded-xl">
+        <div className="bg-white flex flex-col p-3 rounded-xl ">
+          <span className="text-md font-semibold mb-2 max-xmd:text-sm">Claimed Liquidity</span>
+          <div className="bg-uni-slate outline-none p-3 flex flex-col opacity-60 max-xmd:text-sm max-xmd:overflow-hidden rounded-xl">
             <div className="flex justify-between">
               <span className="">{tokens[0]}</span>
               <span className="">{providerInfo[2]}</span>
@@ -145,7 +145,7 @@ const RemoveLiquidity = () => {
         </div>
 
         <div className="bg-white flex flex-col rounded-xl">
-          <span className="text-md font-semibold mb-2 mx-3 ">
+          <span className="text-md font-semibold mb-2 mx-3 max-xmd:text-sm ">
             Enter LPT Amount:
           </span>
           <div className=" bg-blue-50 p-3 rounded-2xl flex gap-3 flex-col mx-3">
@@ -164,7 +164,7 @@ const RemoveLiquidity = () => {
                 }}
               />
             </div>
-            <div className="amount_calculator font-mono text-sm text-slate-500 text-opacity-70">
+            <div className="amount_calculator font-mono text-sm text-slate-500 text-opacity-70 max-xmd:text-sm max-xmd:overflow-hidden">
               <p>Balance:{lptbalance}</p>
             </div>
           </div>

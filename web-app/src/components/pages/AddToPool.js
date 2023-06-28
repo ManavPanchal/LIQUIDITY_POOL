@@ -146,7 +146,7 @@ function AddToPool() {
 
   return (
     <>
-      <div className="flex flex-col  gap-5 bg-white max-w-[420px] rounded-xl m-auto mt-16 p-5 ">
+      <div className="flex flex-col  gap-5 bg-white max-w-[420px] rounded-xl m-auto mt-16 p-5 max-xmd:mx-5">
         <div className="flex justify-between items-center">
           <Link className="flex " to="/pools">
             <svg
