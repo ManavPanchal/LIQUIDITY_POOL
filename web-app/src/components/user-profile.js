@@ -3,10 +3,12 @@ import UserActivity from './user-profile-activity';
 import UserPools from './user-profile-pools';
 import UserTokens from './user-profile-tokens';
 import { useDisconnect } from 'wagmi';
-
+import clipBoardPic from '../images/clipboard.png';
+import { Tooltip } from '@mui/material';
 const UserProfile = ({ address, data, isError, isLoading }) => {
   const [currentNavigation, setCurrentNavigation] = useState('Tokens');
   const [disconnectAlert, setDisconnectAlert] = useState(false);
+  const [clipboardTitle, setClipboardTitle] = useState('copy to clipboard');
   const { disconnect } = useDisconnect();
 
   return (
@@ -39,10 +41,28 @@ const UserProfile = ({ address, data, isError, isLoading }) => {
               fill="#2366E1"
             ></rect>
           </svg>
-          <span className="text-md font-medium text-black">
-            {address?.slice(0, 6) + '...' + address.slice(-4)}
-          </span>
+          <Tooltip title={clipboardTitle} placement="bottom" arrow>
+            <span
+              className="text-md font-medium text-black flex py-2 px-3 rounded-md cursor-pointer hover:bg-slate-400 hover:bg-opacity-10"
+              onClick={() => {
+                navigator.clipboard.writeText(address);
+                setClipboardTitle('copied');
+                setTimeout(() => {
+                  setClipboardTitle('copy to clipboard');
+                }, 2000);
+              }}
+            >
+              {address?.slice(0, 6) + '...' + address.slice(-4)}
+
+              <img
+                src={clipBoardPic}
+                alt="copy to clipboard"
+                className="h-4 mt-1"
+              />
+            </span>
+          </Tooltip>
         </div>
+
         <div className="flex items-center gap-1">
           <span className="material-symbols-outlined bg-gray-600 bg-opacity-5 rounded-xl px-2 py-1 text-gray-600 text-xl text-center font-light cursor-pointer">
             settings
@@ -62,6 +82,7 @@ const UserProfile = ({ address, data, isError, isLoading }) => {
           </span>
         </div>
       </div>
+
       <div
         className={`py-2 px-1 flex gap-2 ${
           (isLoading || isError) && 'animate-pulse'

@@ -23,18 +23,19 @@ function AddToPool() {
     },
   });
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
+  const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } =
+    useContext(AppContext);
   const [amount1, setAmount1] = useState('');
   const [amount2, setAmount2] = useState('');
-  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =  useState(false);
+  const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
+    useState(false);
   const numberRegex = /^\d*\.?\d*$/;
 
-  useEffect(()=>{
+  useEffect(() => {
     setAmount1('');
     setAmount2('');
-    setConfirmTransactionFlag(false)
-  },[confirmTransactionFlag])
-
+    setConfirmTransactionFlag(false);
+  }, [confirmTransactionFlag]);
 
   const getTokenBalances = async (address) => {
     const token1Balance = await fetchUserTokenBalance(
@@ -58,16 +59,18 @@ function AddToPool() {
       network.chain && getTokenBalances(address);
     }
   });
-  watchAccount( (accountData) => {
-    if(!accountData.isConnected){
-      setTokens({token1: {isSelected: false,},token2: {isSelected: false,},});
+  watchAccount((accountData) => {
+    if (!accountData.isConnected) {
+      setTokens({
+        token1: { isSelected: false },
+        token2: { isSelected: false },
+      });
       setAmount1('');
-      setAmount2('')
+      setAmount2('');
+    } else if (tokens.token2?.name && tokens.token1?.name) {
+      getTokenBalances(accountData.address);
     }
-    else if(tokens.token2?.name && tokens.token1?.name){
-      getTokenBalances(accountData.address)
-    }
-  })
+  });
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
@@ -204,7 +207,7 @@ function AddToPool() {
               pattern="^[0-9]*[.,]?[0-9]*$"
             />
             <button
-              className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+              className={`token_selector flex grow items-center gap-1 font-semibold text-lg font-Inter-c ${
                 tokens.token1?.name
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
@@ -259,7 +262,7 @@ function AddToPool() {
               pattern="^[0-9]*[.,]?[0-9]*$"
             />
             <button
-              className={`token_selector flex grow items-center gap-1 font-medium text-xl ${
+              className={`token_selector flex grow items-center gap-1 font-semibold text-lg font-Inter-c ${
                 tokens.token2?.name
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
@@ -307,8 +310,7 @@ function AddToPool() {
           }
           onClick={() => {
             !isConnected && setSliderToggle(true);
-            isConnected && setConfirmTransactionToggle(true)
-;
+            isConnected && setConfirmTransactionToggle(true);
           }}
           className={`${
             isConnected
@@ -322,8 +324,7 @@ function AddToPool() {
           } text-center px-8 py-4 text-xl rounded-2xl font-bold`}
         >
           {isConnected
-            ? amount1 > tokens.token1.balance ||
-              amount2 > tokens.token2.balance
+            ? amount1 > tokens.token1.balance || amount2 > tokens.token2.balance
               ? `Insufficient Balance`
               : `Add Funds`
             : `Connect Wallet`}
