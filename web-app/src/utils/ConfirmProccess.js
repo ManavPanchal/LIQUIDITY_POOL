@@ -23,6 +23,19 @@ const generateToast = (message)=>{
     });
 }
 
+const generateConfirmationToast = (message)=>{
+  toast.success(message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    });
+}
+
 const generateErrorToast = (message) =>{
   toast.error(message ,{
     position: "top-right",
@@ -32,7 +45,7 @@ const generateErrorToast = (message) =>{
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "colored",
+    theme: "light",
     })
 }
 
@@ -128,6 +141,7 @@ export const confirmProccess = async (
             console.log('success');
           }
           setConfirmTransactionFlag(true);
+          generateConfirmationToast("Liquidity Added")
         } else {
           generateToast('please give sufficient Allowance')
         }
@@ -135,7 +149,7 @@ export const confirmProccess = async (
         if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1Amount) {
           setTransactionFlag(true);
           await SwappingInstance(tokens);
-
+          generateConfirmationToast("Swapped succesfully")
           setConfirmTransactionFlag(true);
         } else {
           generateToast('please give sufficient Allowance')
@@ -213,12 +227,12 @@ export const confirmProccess = async (
         if (response.status === 200) {
           console.log('success');
         }
+        generateConfirmationToast("Liquidity Removed")
         setConfirmTransactionFlag(true);
       } else {
         generateToast('please give sufficient Allowance')
       }
       setConfirmTransactionToggle(false);
-
     }
   } catch (error) {
     const regex = /reverted: (.*?)\",/;

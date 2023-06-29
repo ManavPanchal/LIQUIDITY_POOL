@@ -119,7 +119,7 @@ const SwapUI = () => {
   }, [tokens.token2?.name && tokens.token1?.name && token1Amount]);
 
   return (
-    <div className={`flex justify-center pt-[68px]`}>
+    <div className={`flex justify-center pt-[68px] p-2`}>
       <div className="swap_container max-w-6xl h-fit p-2 rounded-xl bg-uni-dim-white border border-violet-200 w-120">
         <div className="conatainer_header flex justify-between items-center p-3 mb-1">
           <div className="container_navigator flex gap-3 text-center font-medium text-gray-500">
@@ -277,7 +277,7 @@ const SwapUI = () => {
           className={`action_btn mt-[2px] ${
             !isConnected
               ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
-              : (token1Amount >= tokens.token1?.balance ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
+              : (token1Amount >= tokens.token1?.balance || !tokens.token2?.name ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
           } ${
             isWaitingForCalculation && 'animate-pulse'
           }  rounded-2xl text-center text-xl font-semibold w-full`}

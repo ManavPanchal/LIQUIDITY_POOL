@@ -23,7 +23,7 @@ const TokenSelector = ({ setTokenSelectorToggle, setTokens, tokens }) => {
 
   return (
     <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={() => setTokenSelectorToggle(false)}>
-      <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e) => { e.stopPropagation() }}>
+      <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] max-w-full sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e) => { e.stopPropagation() }}>
         <div className="container_header p-5 border-b border-violet-100">
           <div className="heading flex justify-between py-2 px-1">
             <span className='font-medium'>Select a token</span>
