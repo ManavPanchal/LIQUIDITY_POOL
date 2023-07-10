@@ -2,7 +2,7 @@ import { readContract } from '@wagmi/core';
 import React, {useState} from 'react';
 import { useAccount } from 'wagmi';
 import { tokenABI, Tokens } from "../utils/constants"
-const TokenSelector = ({ setTokenSelectorToggle, setTokens, tokens }) => {
+const TokenSelector = ({ setTokenSelectorToggle, tokens }) => {
 
   const { address } = useAccount();
   const [balanceFetchingLoader, setBalanceLoader] =  useState(false)
@@ -23,7 +23,7 @@ const TokenSelector = ({ setTokenSelectorToggle, setTokens, tokens }) => {
 
   return (
     <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={() => setTokenSelectorToggle(false)}>
-      <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e) => { e.stopPropagation() }}>
+      <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] max-w-full sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e) => { e.stopPropagation() }}>
         <div className="container_header p-5 border-b border-violet-100">
           <div className="heading flex justify-between py-2 px-1">
             <span className='font-medium'>Select a token</span>
@@ -45,15 +45,23 @@ const TokenSelector = ({ setTokenSelectorToggle, setTokens, tokens }) => {
             Tokens.map((token) => {
               return (<>
                 <div
-                  className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) && "opacity-20"}`}
+                  className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) && "opacity-20"}`}
                   onClick={async () => {
-                    if (tokens.token1?.name === token.tokenName || tokens.token2?.name === token.tokenName) return;
+                    if (tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) return;
                     setBalanceLoader(true);
                     const balance = await fetchUserTokenBalance(token.tokenAddress)
-                    setTokens((prevVal) => {
-                      if (prevVal.token1?.isSelected) return { ...prevVal, token1: { name: token.tokenSymbol, isSelected: false, logo: token.tokenImage, address: token.tokenAddress, balance } }
-                      else if (prevVal.token2?.isSelected) return { ...prevVal, token2: { isSelected: false, name: token.tokenSymbol, logo: token.tokenImage, address: token.tokenAddress, balance } }
-                    })
+                    if (tokens.token1.isSelected){
+                      tokens.token1.setName(token.tokenSymbol);
+                      tokens.token1.setBalance(balance);
+                      tokens.token1.setAddress(token.tokenAddress)
+                      tokens.token1.setLogo(token.tokenImage)
+                    }
+                    else if (tokens.token2.isSelected){
+                      tokens.token2.setName(token.tokenSymbol);
+                      tokens.token2.setBalance(balance);
+                      tokens.token2.setAddress(token.tokenAddress);
+                      tokens.token2.setLogo(token.tokenImage)
+                    }
                     setTokenSelectorToggle(false);
                   }}>
                   <span className='token_image'>
@@ -69,7 +77,7 @@ const TokenSelector = ({ setTokenSelectorToggle, setTokens, tokens }) => {
           }
         </div>
         { balanceFetchingLoader &&
-          <div className="absolute bg-slate-500 bg-opacity-10 top-0 w-full h-full flex justify-center items-center ">
+          <div className=       "absolute bg-slate-500 bg-opacity-10 top-0 w-full h-full flex justify-center items-center ">
              fetching Balance...
           </div>
         }

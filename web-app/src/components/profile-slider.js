@@ -23,11 +23,11 @@ const ProfileSlider = () => {
 
   return (
     <section
-      className={` fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
+      className={`fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
       onClick={()=>setSliderToggle(false)}
     >
       <section
-        className={`flex absolute bottom-0 sm:relative text-slate-400 sm:h-full h-fit bg-transparent hover:bg-gray-600 hover:bg-opacity-5 sm:rounded-xl rounded-t-xl ease-in-out
+        className={`flex absolute bottom-0 sm:relative text-slate-400 sm:h-full h-fit max-h-full bg-transparent hover:bg-gray-600 hover:bg-opacity-5 sm:rounded-xl rounded-t-xl ease-in-out
          sm:w-fit w-full`}
           onClick={(e)=>{e.stopPropagation()}}
       >
@@ -38,7 +38,7 @@ const ProfileSlider = () => {
           keyboard_double_arrow_right
         </span>
         <div
-          className="right-0 bg-white h-full xl:w-[390px] sm:w-80 w-full rounded-xl p-3 px-4 border border-violet-200"
+          className="right-0 bg-white h-full xl:w-[390px] sm:w-80 w-full rounded-xl p-3 px-4 border border-violet-200 overflow-y-hidden"
           onMouseEnter={(e) => e.stopPropagation()}
         >
           {isConnected ? (

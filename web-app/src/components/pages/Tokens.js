@@ -66,7 +66,7 @@ const TokensUI = () => {
             </div>
             <span className='max-md:hidden'>Token address</span>
         <span className='mr-14 max-xsm:text-sm max-xsm:mr-5'>Total supply</span>
-          </div> 
+          </div>
           <div className='flex flex-col w-full h-max justify-around items-center '> 
             {tokenData.map((token, index) => (
               <Link className="w-full" to = {networkUrl} target="_blank" >
@@ -81,7 +81,7 @@ const TokensUI = () => {
                 <Link className="text-gray-600 hover:text-blue-400" to = {networkUrl} target="_blank">
                 <div onClick={()=>{blockExplorer(token.tokenAddress)} } className="max-md:hidden">{token.tokenAddress}</div>
                 </Link>
-               
+
               <div className={`flex ${isConnected?"pr-16":"pr-24"} text-gray-600 max-xsm:text-sm max-xsm:pr-5 `}>{isConnected?token.totalSupply:"---"}</div>
               </div>
               </Link>

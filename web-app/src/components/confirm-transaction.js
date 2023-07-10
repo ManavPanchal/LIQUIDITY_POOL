@@ -71,7 +71,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                                     <div className="flex justify-between items-center">
                                         <span className="text-4xl text-black font-medium">
                                             {(from === "RemoveLiquidity") ?
-                                                <>{tokens?.LPTAmount} LPT</> : <>{Number(tokens?.token1Amount).toFixed(2)} <span>{tokens.token1?.name}</span></>}
+                                                <>{tokens?.LPTAmount} LPT</> : <>{Number(tokens?.token1.amount).toFixed(2)} <span>{tokens.token1?.name}</span></>}
                                         </span>
                                         <img src={ethLogo} alt="" className="w-7" />
                                     </div>
@@ -87,7 +87,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                                         <span className="text-4xl text-black font-medium">
                                             {
                                                 !(from === "RemoveLiquidity") ?
-                                                    <>{Number(tokens?.token2Amount).toFixed(2)} <span>{tokens.token2?.name}</span></> :
+                                                    <>{Number(tokens?.token2.amount).toFixed(2)} <span>{tokens.token2?.name}</span></> :
                                                     <>
                                                         <span className={`flex gap-3 items-center ${fetchingClaimableBalance && "animate-pulse"}`}>
                                                             <img src={ethLogo} alt="" className="w-7" />
@@ -111,8 +111,8 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                                 </div>}
                             </div>
                             {(from === "SwapUI") && <TradeCalculations
-                                token1={{ name: tokens.token1?.name, amount: tokens?.token1Amount }}
-                                token2={{ name: tokens.token2?.name, amount: tokens?.token2Amount }}
+                                token1={{ name: tokens.token1?.name, amount: tokens?.token1.amount }}
+                                token2={{ name: tokens.token2?.name, amount: tokens?.token2.amount }}
                                 review={true}
                             />}
                             <div className={`confirm_btn w-full ${fetchingClaimableBalance && "animate-pulse"}`} onClick={() => {
@@ -192,7 +192,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                                                 <span className="flex gap-1 items-center">
                                                     <img src={ethLogo} alt="" className="w-4" />
                                                     <span className="text-center text-sm">
-                                                        {tokens?.token1Amount}
+                                                        {tokens?.token1.amount}
                                                         <span>  {tokens.token1?.name}</span>
                                                     </span>
                                                 </span>
@@ -202,7 +202,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
                                                 <span className="flex gap-1 items-center">
                                                     <img src={ethLogo} alt="" className="w-4" />
                                                     <span className="text-center">
-                                                        {tokens?.token2Amount}
+                                                        {tokens?.token2.amount}
                                                         <span>  {tokens.token2?.name}</span>
                                                     </span>
                                                 </span>

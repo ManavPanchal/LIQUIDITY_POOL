@@ -1,7 +1,7 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import { createContext, useEffect, useState } from 'react';
-import ProfileSlider from './components/ProfileSlider';
+import ProfileSlider from './components/profile-slider';
 import AppRoutes from './AppRoutes';
 import { WagmiConfig } from 'wagmi';
 import { config } from './utils/wagmi_configuration';

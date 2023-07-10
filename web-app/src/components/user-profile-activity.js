@@ -1,6 +1,5 @@
 import { React, useState, useEffect } from 'react';
 import poolInstance from '../utils/poolInstance';
-import { ethers } from 'ethers';
 import moment from 'moment';
 const UserActivity = () => {
   const [allActivities, setAllActivities] = useState([]);
@@ -19,7 +18,7 @@ const UserActivity = () => {
     activityEvents();
   }, []);
 
-  
+
   let activities = [
     ...allActivities.map((userActivity, index) => ({
       name: userActivity.activity,
@@ -32,13 +31,13 @@ const UserActivity = () => {
       key: `activity-${index}`,
     })),
   ];
-  
+
   function formatDuration(duration) {
     const seconds = Math.floor(duration / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-  
+
     if (days > 0) {
       return `${days}d`;
     } else if (hours > 0) {
@@ -49,13 +48,9 @@ const UserActivity = () => {
       return `${seconds}s`;
     }
   }
-  
-  
-  
-  
-  console.log(activities);
+
   return (
-    <div className="break-words w-full h-full overflow-y-scroll overflow-x-hidden">
+    <div className="break-words w-full h-full max-h-full overflow-y-scroll overflow-x-hidden">
       {activities ? (
         <div className="Activities w-full h-full flex flex-col gap-1">
           {activities?.map((activity) => {
