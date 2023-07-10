@@ -987,3 +987,21 @@ export const pools = [
     tokenPair: 'MYT-DFI',
   },
 ];
+
+
+export const initialTokens = {
+  token1:{
+    name:"",
+    isSelected: false,
+    balance:0,
+    address:"",
+    amount:""
+  },
+  token2:{
+      name:"",
+      isSelected: false,
+      balance:0,
+      address:"",
+      amount:""
+  }
+}

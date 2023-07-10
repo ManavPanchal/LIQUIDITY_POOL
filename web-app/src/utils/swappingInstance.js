@@ -1,13 +1,12 @@
 import { ethers } from "ethers";
 import walletInstance from "./walletInstance";
-import { LiquidityPoolABI, pools, tokenABI } from "./constants";
+import { LiquidityPoolABI } from "./constants";
 import { toast } from "react-toastify";
 
 async function SwappingInstance(tokens) {
-  try {
     const { signer, signerAddress, networkId } = await walletInstance();
     const contract  = new ethers.Contract(process.env.REACT_APP_LIQUIDITY_CONTRACT, LiquidityPoolABI, signer);
-    const tx = await contract.swapTokens(tokens.pool?.poolId,`${(tokens.token1Amount * (10**18))}`, tokens.token1?.address)
+    const tx = await contract.swapTokens(tokens.pool?.poolId,`${(tokens.token1.amount * (10**18))}`, tokens.token1?.address)
     await tx.wait();
     await fetch('/api/swapTokens', {
       method: 'POST',
@@ -16,28 +15,15 @@ async function SwappingInstance(tokens) {
         poolId: tokens.pool?.poolId,
         activity: 'Swapped',
         tokenPair: `${tokens.token1?.name}-${tokens.token2?.name}`,
-        amount1: tokens.token1Amount,
-        amount2: tokens.token2Amount,
+        amount1: tokens.token1?.amount,
+        amount2: tokens.token2?.amount,
         networkId,
       }),
       headers : {
         'Content-Type': 'application/json',
       }
     })
-  } catch (error) {
-    if(error.toString().includes("reverted: Exceeds Min Balance"))
-    toast.info('Sorry! Swapping is not possible with entered amount you can try again on less amount', {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      });
-    else console.log(error);
-  }
+
 }
 
 export default SwappingInstance;

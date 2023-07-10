@@ -58,6 +58,8 @@ export const confirmProccess = async (
   setConfirmTransactionFlag
 ) => {
   try {
+    console.log(tokens);
+    console.log(ethers.utils.formatEther(ethers.utils.parseEther(tokens?.token1.amount)));
     const { contract: poolContract } = await poolInstance();
     if (!(from === 'RemoveLiquidity')) {
       let { contract: token1Contract, signerAddress } = await tokensInstance(
@@ -67,10 +69,10 @@ export const confirmProccess = async (
         signerAddress,
         process.env.REACT_APP_LIQUIDITY_CONTRACT,
       );
-      if (Number(token1Allowance) / 10 ** 18 < tokens?.token1Amount) {
+      if (Number(token1Allowance) / 10 ** 18 < tokens?.token1.amount) {
         const tx = await token1Contract.approve(
           process.env.REACT_APP_LIQUIDITY_CONTRACT,
-          ethers.utils.parseEther(tokens?.token1Amount),
+          ethers.utils.parseEther(tokens?.token1.amount),
         );
         setAllowanceWaiting(true);
         await tx.wait();
@@ -91,10 +93,10 @@ export const confirmProccess = async (
           signerAddress,
           process.env.REACT_APP_LIQUIDITY_CONTRACT,
         );
-        if (Number(token2Allowance) / 10 ** 18 < tokens?.token2Amount) {
+        if (Number(token2Allowance) / 10 ** 18 < tokens?.token2.amount) {
           const tx = await tokenContract.approve(
             process.env.REACT_APP_LIQUIDITY_CONTRACT,
-            ethers.utils.parseEther(tokens?.token2Amount),
+            ethers.utils.parseEther(tokens?.token2.amount),
           );
           setAllowanceWaiting(true);
           await tx.wait();
@@ -105,8 +107,8 @@ export const confirmProccess = async (
           );
         }
         if (
-          Number(token1Allowance) / 10 ** 18 >= tokens?.token1Amount &&
-          Number(token2Allowance) / 10 ** 18 >= tokens?.token2Amount
+          Number(token1Allowance) / 10 ** 18 >= tokens?.token1.amount &&
+          Number(token2Allowance) / 10 ** 18 >= tokens?.token2.amount
         ) {
           setTransactionFlag(true);
           console.log('...', tokens.pool?.poolId);
@@ -114,8 +116,8 @@ export const confirmProccess = async (
             tokens.pool?.poolId,
             tokens.token1?.address,
             tokens.token2?.address,
-            ethers.utils.parseEther(tokens?.token1Amount),
-            ethers.utils.parseEther(tokens?.token2Amount),
+            ethers.utils.parseEther(tokens?.token1.amount),
+            ethers.utils.parseEther(tokens?.token2.amount),
           );
           await tx.wait();
           const currentTokenPair = pools.filter(
@@ -126,8 +128,8 @@ export const confirmProccess = async (
             poolId: tokens.pool?.poolId,
             activity: 'Added',
             tokenPair: currentTokenPair[0].tokenPair,
-            amount1: Number(tokens?.token1Amount),
-            amount2: Number(tokens?.token2Amount),
+            amount1: Number(tokens?.token1.amount),
+            amount2: Number(tokens?.token2.amount),
             networkId,
           };
           console.log(requestBody, '.............');
@@ -146,7 +148,7 @@ export const confirmProccess = async (
           generateToast('please give sufficient Allowance')
         }
       } else {
-        if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1Amount) {
+        if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1.amount) {
           setTransactionFlag(true);
           await SwappingInstance(tokens);
           generateConfirmationToast("Swapped succesfully")

@@ -5,59 +5,54 @@ import { AppContext } from '../../App';
 import TradeCalculations from '../trade-calculation';
 import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
-import { LiquidityPoolABI, pools, tokenABI } from '../../utils/constants';
+import { initialTokens, LiquidityPoolABI, pools } from '../../utils/constants';
 import { readContract, watchAccount, watchNetwork } from '@wagmi/core';
 import ConfirmSwap from '../confirm-transaction';
 import { toast } from 'react-toastify';
 import { fetchUserTokenBalance } from '../../utils/tokensInstance';
+import useTokens from '../../customHooks/useTokens';
 
 const SwapUI = () => {
-  const [tokens, setTokens] = useState({
-    token1: {
-      isSelected: false,
-      balance:0
-    },
-    token2: {
-      isSelected: false,
-      balance:0
-    },
-  });
+
+  const { token1, token2, setPoolId, resetTokens, swapPair, pool} = useTokens(initialTokens);
   const { isConnected, address} = useAccount();
-  const { setSliderToggle,confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
+  const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } = useContext(AppContext);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
-  const [token1Amount, setToken1Amount] = useState('');
-  const [token2Amount, setToken2Amount] = useState('');
   const [isWaitingForCalculation, setCalculationLoading] = useState(false);
   const [confirmswapToggle, setConfirmTransactionToggle] = useState(false);
 
   useEffect(()=>{
-    setToken1Amount('');
-    setToken2Amount('');
-    setConfirmTransactionFlag(false);
+    token1.setAmount('');
+    token2.setAmount('');
+    confirmTransactionFlag && setConfirmTransactionFlag(false);
+    if(token2.name && token1.name){
+      getTokenBalances(address)
+    }
   },[confirmTransactionFlag])
 
   const numberRegex = /^\d*\.?\d*$/
 
   const getTokenBalances = async (address)=>{
-    const token1Balance = await fetchUserTokenBalance(tokens.token1?.address, address)
-    const token2Balance = await fetchUserTokenBalance(tokens.token2?.address, address)
-    setTokens({token1:{...tokens.token1,balance:token1Balance}, token2:{...tokens.token2,balance:token2Balance}})
-    setToken1Amount("")
-    setToken2Amount("")
+    const token1Balance = await fetchUserTokenBalance(token1?.address, address)
+    const token2Balance = await fetchUserTokenBalance(token2?.address, address)
+    token1.setBalance(token1Balance);
+    token2.setBalance(token2Balance)
+    token1.setAmount("")
+    token2.setAmount("")
   }
 
   watchNetwork( () => {
-    if(tokens.token2?.name && tokens.token1?.name){
+    if(token2.name && token1.name){
       getTokenBalances(address)
     }
   })
   watchAccount( (accountData) => {
     if(!accountData.isConnected){
-      setTokens({token1: {isSelected: false,},token2: {isSelected: false,},});
-      setToken1Amount('');
-      setToken2Amount('')
+      resetTokens();
+      token1.setAmount('');
+      token2.setAmount('')
     }
-    else if(tokens.token2?.name && tokens.token1?.name){
+    else if(token2.name && token1.name){
       getTokenBalances(accountData.address)
     }
   })
@@ -65,14 +60,14 @@ const SwapUI = () => {
   useEffect(() => {
     async function calculateSwappingToken() {
       try {
-        if (tokens.token1?.name && (token1Amount || token2Amount)) {
+        if (token1.name && (token1.amount || token2.amount)) {
           const pool = pools.filter((pool) => {
-            if (tokens.token1?.address && tokens.token2?.address)
+            if (token1?.address && token2?.address)
               return (
-                (pool.token1Address === tokens.token1?.address &&
-                  pool.token2Address === tokens.token2?.address) ||
-                (pool.token1Address === tokens.token2?.address &&
-                  pool.token2Address === tokens.token1?.address)
+                (pool.token1Address === token1?.address &&
+                  pool.token2Address === token2?.address) ||
+                (pool.token1Address === token2?.address &&
+                  pool.token2Address === token1?.address)
               );
             return null;
           });
@@ -85,19 +80,19 @@ const SwapUI = () => {
                 functionName: 'calculateSwappingAmount',
                 args: [
                   pool[0].id,
-                  Number(token1Amount) * 10 ** 18,
-                  tokens.token1?.address,
+                  Number(token1.amount) * 10 ** 18,
+                  token1?.address,
                 ],
               }))
             : (data = null);
 
           pool
-            ? setTokens({ ...tokens, pool: { poolId: pool[0].id } })
+            ? setPoolId(pool[0].id)
             : (data = null);
 
           if (data) {
             setCalculationLoading(false);
-            setToken2Amount((Number(data[0]) / 10 ** 18).toFixed(4).toString());
+            token2.setAmount((Number(data[0]) / 10 ** 18).toFixed(4).toString());
           }
         }
       } catch (error) {
@@ -115,8 +110,11 @@ const SwapUI = () => {
         console.error(error);
       }
     }
-    calculateSwappingToken();
-  }, [tokens.token2?.name && tokens.token1?.name && token1Amount]);
+
+    if(token2.name && token1.name && token1.amount)
+      calculateSwappingToken();
+
+  }, [token2.name, token1.amount, token1.name]);
 
   return (
     <div className={`flex justify-center pt-[68px] p-2`}>
@@ -152,28 +150,25 @@ const SwapUI = () => {
                 id="token1"
                 className="bg-transparent outline-none text-4xl w-0 flex-1"
                 placeholder="0"
-                onChange={(e) => numberRegex.test(e.target.value) && setToken1Amount(e.target.value)}
-                value={token1Amount}
+                onChange={(e) => numberRegex.test(e.target.value) && token1.setAmount(e.target.value)}
+                value={token1.amount}
               />
               <button
                 className={`token_selector flex justify-between items-center gap-1 font-semibold text-lg font-Inter-c ${
-                  tokens.token1?.name
+                  token1.name
                     ? 'bg-slate-500 bg-opacity-10'
                     : 'bg-uni-dark-pink text-white'
                 } px-3 rounded-3xl box-border`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
-                  setTokens({
-                    ...tokens,
-                    token1: { ...tokens.token1, isSelected: true },
-                  });
+                  token1.select()
                 }}
               >
-                {tokens.token1?.logo && (
+                {token1?.logo && (
                   <img src={ethLogo} alt="" className="w-6" />
                 )}
                 <span>
-                  {tokens.token1?.name ? tokens.token1.name : 'Select tokens'}
+                  {token1.name ? token1.name : 'Select tokens'}
                 </span>
                 <span>
                   <svg
@@ -188,18 +183,15 @@ const SwapUI = () => {
               </button>
             </div>
             <div className="amount_calculator font-mono text-sm">
-              <p>{tokens.token1?.balance && tokens.token1?.balance}</p>
+              <p>{token1.balance && token1.balance}</p>
             </div>
             <div className="bg-white absolute -bottom-1/4 p-1 right-1/2 rounded-lg ">
               <button
                 className="p-2 bg-blue-50 rounded-lg overflow-hidden"
                 onClick={() => {
-                  if (tokens.token1?.name && tokens.token2?.name)
-                    setTokens({
-                      token1: { ...tokens.token2 },
-                      token2: { ...tokens.token1 },
-                    });
-                  setToken1Amount(token2Amount);
+                  if (token1.name && token2.name)
+                    swapPair()
+                  token1.setAmount(token2.amount);
                 }}
               >
                 <svg
@@ -227,28 +219,25 @@ const SwapUI = () => {
                   isWaitingForCalculation && 'animate-pulse'
                 }`}
                 placeholder="0"
-                onChange={(e) => (numberRegex.test(e.target.value) && setToken2Amount(e.target.value))}
-                value={token2Amount}
+                onChange={(e) => (numberRegex.test(e.target.value) && token2.setAmount(e.target.value))}
+                value={token2.amount}
               />
               <button
                 className={`token_selector flex justify-between items-center gap-1 font-semibold text-lg font-Inter-c ${
-                  tokens.token2?.name
+                  token2.name
                     ? 'bg-slate-500 bg-opacity-10'
                     : 'bg-uni-dark-pink text-white'
                 } px-3 rounded-3xl box-border`}
                 onClick={() => {
                   setTokenSelectorToggle(true);
-                  setTokens({
-                    ...tokens,
-                    token2: { ...tokens.token2, isSelected: true },
-                  });
+                  token2.select();
                 }}
               >
-                {tokens.token2?.logo && (
+                {token2?.logo && (
                   <img src={ethLogo} alt="" className="w-6" />
                 )}
                 <span>
-                  {tokens.token2?.name ? tokens.token2.name : 'Select tokens'}
+                  {token2.name ? token2.name : 'Select tokens'}
                 </span>
                 <span>
                   <svg
@@ -263,21 +252,21 @@ const SwapUI = () => {
               </button>
             </div>
             <div className="amount_calculator font-mono text-sm">
-              {tokens.token2?.balance && tokens.token2?.balance}
+              {token2.balance && token2.balance}
             </div>
           </div>
         </div>
-        {tokens.token1?.name && tokens.token2?.name && (
+        {token1.name && token2.name && (
           <TradeCalculations
-            token1={{ name: tokens.token1?.name, amount: token1Amount }}
-            token2={{ name: tokens.token2?.name, amount: token2Amount }}
+            token1={{ name: token1.name, amount: token1.amount }}
+            token2={{ name: token2.name, amount: token2.amount }}
           />
         )}
         <button
           className={`action_btn mt-[2px] ${
             !isConnected
               ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
-              : (token1Amount >= tokens.token1?.balance || !tokens.token2?.name ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
+              : (token1.amount >= token1.balance || !token2.name ) ? "text-gray-400 bg-gray-100 " : 'text-uni-dim-white bg-uni-dark-pink'
           } ${
             isWaitingForCalculation && 'animate-pulse'
           }  rounded-2xl text-center text-xl font-semibold w-full`}
@@ -285,9 +274,9 @@ const SwapUI = () => {
           {isConnected ? (
             <p
               className="w-full p-3"
-              onClick={() => (token1Amount && tokens.token1?.name && tokens.token2?.name && token1Amount <= tokens.token1?.balance ) && setConfirmTransactionToggle(true)}
+              onClick={() => (token1.amount && token1.name && token2.name && token1.amount <= token1.balance ) && setConfirmTransactionToggle(true)}
             >
-              {(tokens.token1?.name && tokens.token2?.name) ? (token1Amount ? (token1Amount > tokens.token1?.balance ? "Insufficient Balance":  "Swap") : "Enter Amount")  : "Select token"  }
+              {(token1.name && token1.name) ? (token1.amount ? (token1.amount > token1.balance ? "Insufficient Balance":  "Swap") : "Enter Amount")  : "Select token"  }
             </p>
 
           ) : (
@@ -300,14 +289,13 @@ const SwapUI = () => {
       {tokenSelectorToggle && (
         <TokenSelector
           setTokenSelectorToggle={setTokenSelectorToggle}
-          setTokens={setTokens}
-          tokens={tokens}
+          tokens={{token1, token2}}
         />
       )}
-      {confirmswapToggle && tokens?.pool && (
+      {confirmswapToggle && pool && (
         <ConfirmSwap
           setConfirmTransactionToggle={setConfirmTransactionToggle}
-          tokens={{ ...tokens, token1Amount, token2Amount }}
+          tokens={{ token1, token2, pool}}
           from={'SwapUI'}
         />
       )}

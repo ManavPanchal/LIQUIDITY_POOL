@@ -5,80 +5,70 @@ import { useContext, useState } from 'react';
 import { AppContext } from '../../App';
 import { useAccount } from 'wagmi';
 import TokenSelector from '../token-selector';
-import { pools, Tokens } from '../../utils/constants';
+import { initialTokens, pools, Tokens } from '../../utils/constants';
 import { ethers } from 'ethers';
 import poolInstance from '../../utils/poolInstance';
 import ConfirmInvestment from '../confirm-transaction';
 import { fetchUserTokenBalance } from '../../utils/tokensInstance';
 import { watchAccount, watchNetwork } from '@wagmi/core';
+import useTokens from '../../customHooks/useTokens';
 
 function AddToPool() {
   const { isConnected, address } = useAccount();
-  const [tokens, setTokens] = useState({
-    token1: {
-      isSelected: false,
-    },
-    token2: {
-      isSelected: false,
-    },
-  });
+  const { token1, token2, setPoolId, resetTokens, pool} = useTokens(initialTokens);
   const [tokenSelectorToggle, setTokenSelectorToggle] = useState(false);
   const { setSliderToggle, confirmTransactionFlag, setConfirmTransactionFlag } =
     useContext(AppContext);
-  const [amount1, setAmount1] = useState('');
-  const [amount2, setAmount2] = useState('');
   const [ConfirmTransactionToggle, setConfirmTransactionToggle] =
     useState(false);
   const numberRegex = /^\d*\.?\d*$/;
 
   useEffect(() => {
-    setAmount1('');
-    setAmount2('');
+    token1.setAmount('');
+    token2.setAmount('');
     setConfirmTransactionFlag(false);
+    if(token2.name && token1.name){
+      getTokenBalances(address)
+    }
   }, [confirmTransactionFlag]);
 
   const getTokenBalances = async (address) => {
     const token1Balance = await fetchUserTokenBalance(
-      tokens.token1?.address,
+      token1.address,
       address,
     );
     const token2Balance = await fetchUserTokenBalance(
-      tokens.token2?.address,
+      token2.address,
       address,
     );
-    setTokens({
-      token1: { ...tokens.token1, balance: token1Balance },
-      token2: { ...tokens.token2, balance: token2Balance },
-    });
-    setAmount1('');
-    setAmount2('');
+    token1.setBalance(token1Balance);
+    token2.setBalance(token2Balance);
+    token1.setAmount('');
+    token2.setAmount('');
   };
 
   watchNetwork((network) => {
-    if (tokens.token2?.name && tokens.token1?.name) {
+    if (token2.name && token1.name) {
       network.chain && getTokenBalances(address);
     }
   });
   watchAccount((accountData) => {
     if (!accountData.isConnected) {
-      setTokens({
-        token1: { isSelected: false },
-        token2: { isSelected: false },
-      });
-      setAmount1('');
-      setAmount2('');
-    } else if (tokens.token2?.name && tokens.token1?.name) {
+      resetTokens();
+      token1.setAmount('');
+      token2.setAmount('');
+    } else if (token2.name && token1.name) {
       getTokenBalances(accountData.address);
     }
   });
 
   async function tokenPair() {
     const token1Address = Tokens.filter(
-      (token) => token.tokenName === tokens?.token1.name,
+      (token) => token.tokenName === token1.name,
     ).map((token) => token.tokenAddress);
 
     const token2Address = Tokens.filter(
-      (token) => token.tokenName === tokens?.token2.name,
+      (token) => token.tokenName === token2.name,
     ).map((token) => token.tokenAddress);
 
     const poolId = pools
@@ -97,10 +87,8 @@ function AddToPool() {
   async function calculateTokenAmount(token, event) {
     try {
       const { poolId, token1Address, token2Address } = await tokenPair();
-      !tokens.pool && setTokens({ ...tokens, pool: { poolId: poolId[0] } });
+      !pool && setPoolId(poolId[0]);
       const { contract: poolContract } = await poolInstance();
-      console.log(poolId, 'pid');
-      console.log(await poolContract.pool(0));
       let bal1;
       let bal2;
       const poolData = await poolContract.pool(poolId[0]);
@@ -118,7 +106,7 @@ function AddToPool() {
       const reserve1 = ethers.utils.formatEther(bal1);
       const reserve2 = ethers.utils.formatEther(bal2);
       console.log(reserve1, '.....', reserve2);
-      console.log(amount1);
+      console.log(token1.amount);
       if (token === 'token1') {
         const amountSent = ethers.utils.parseEther(event.target.value);
         const amountToDisplay = await poolContract.calculateTokenAmount(
@@ -128,7 +116,7 @@ function AddToPool() {
         );
 
         const formatAmount = ethers.utils.formatEther(amountToDisplay);
-        setAmount2(amountToDisplay === '0' ? '' : formatAmount);
+        token2.setAmount(amountToDisplay === '0' ? '' : formatAmount);
       } else {
         const amountSent = ethers.utils.parseEther(event.target.value);
         const amountToDisplay = await poolContract.calculateTokenAmount(
@@ -139,7 +127,7 @@ function AddToPool() {
 
         const formatAmount = ethers.utils.formatEther(amountToDisplay);
 
-        setAmount1(amountToDisplay === '0' ? '' : formatAmount);
+        token1.setAmount(amountToDisplay === '0' ? '' : formatAmount);
       }
     } catch (error) {}
   }
@@ -196,10 +184,10 @@ function AddToPool() {
               placeholder="0"
               onChange={(e) => {
                 numberRegex.test(e.target.value) &&
-                  setAmount1(e.target.value === '0' ? '' : e.target.value);
+                  token1.setAmount(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token1', e);
               }}
-              value={amount1}
+              value={token1.amount}
               inputmode="decimal"
               autocomplete="off"
               autocorrect="off"
@@ -208,23 +196,20 @@ function AddToPool() {
             />
             <button
               className={`token_selector flex grow items-center gap-1 font-semibold text-lg font-Inter-c ${
-                tokens.token1?.name
+                token1.name
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
               } p-1 px-2 rounded-3xl max-w-fit`}
               onClick={async () => {
                 setTokenSelectorToggle(true);
-                setTokens({
-                  ...tokens,
-                  token1: { ...tokens.token1, isSelected: true },
-                });
+                token1.select();
               }}
             >
-              {tokens.token1?.logo && (
+              {token1?.logo && (
                 <img src={ethLogo} alt="" className="w-6" />
               )}
               <span>
-                {tokens.token1?.name ? tokens.token1.name : 'Select tokens'}
+                {token1.name ? token1.name : 'Select tokens'}
               </span>
               <span>
                 <svg
@@ -239,7 +224,7 @@ function AddToPool() {
             </button>
           </div>
           <div className="w-fit h-5 text-slate-500">
-            {tokens.token1?.name ? tokens.token1?.balance : ''}
+            {token1.name ? token1.balance : ''}
           </div>
         </div>
         <div className="text-center text-xl font-bold opacity-60">+</div>
@@ -251,10 +236,10 @@ function AddToPool() {
               placeholder="0"
               onChange={(e) => {
                 numberRegex.test(e.target.value) &&
-                  setAmount2(e.target.value === '0' ? '' : e.target.value);
+                  token2.setAmount(e.target.value === '0' ? '' : e.target.value);
                 calculateTokenAmount('token2', e);
               }}
-              value={amount2}
+              value={token2.amount}
               inputmode="decimal"
               autocomplete="off"
               autocorrect="off"
@@ -263,23 +248,20 @@ function AddToPool() {
             />
             <button
               className={`token_selector flex grow items-center gap-1 font-semibold text-lg font-Inter-c ${
-                tokens.token2?.name
+                token2.name
                   ? 'bg-slate-500 bg-opacity-10'
                   : 'bg-uni-dark-pink text-white'
               } p-1 px-2 rounded-3xl max-w-fit`}
               onClick={async () => {
                 setTokenSelectorToggle(true);
-                setTokens({
-                  ...tokens,
-                  token2: { ...tokens.token2, isSelected: true },
-                });
+                token2.select();
               }}
             >
-              {tokens.token2?.logo && (
+              {token2?.logo && (
                 <img src={ethLogo} alt="" className="w-6" />
               )}
               <span>
-                {tokens.token2?.name ? tokens.token2.name : 'Select tokens'}
+                {token2.name ? token2.name : 'Select tokens'}
               </span>
               <span>
                 <svg
@@ -294,16 +276,16 @@ function AddToPool() {
             </button>
           </div>
           <div className="w-fit h-5 text-slate-500 ">
-            {tokens.token2?.name ? tokens.token2?.balance : ''}
+            {token2.name ? token2.balance : ''}
           </div>
         </div>
         <button
           disabled={
             isConnected
-              ? amount1 &&
-                amount2 &&
-                amount1 <= tokens.token1.balance &&
-                amount2 <= tokens.token2.balance
+              ? token1.amount &&
+                token2.amount &&
+                token1.amount <= token1.balance &&
+                token2.amount <= token2.balance
                 ? false
                 : true
               : false
@@ -314,17 +296,17 @@ function AddToPool() {
           }}
           className={`${
             isConnected
-              ? amount1 &&
-                amount2 &&
-                amount1 <= tokens.token1.balance &&
-                amount2 <= tokens.token2.balance
+              ? token1.amount &&
+                token2.amount &&
+                token1.amount <= token1.balance &&
+                token2.amount <= token2.balance
                 ? 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
                 : 'text-gray-400 bg-gray-100 '
               : 'text-uni-dark-pink bg-uni-dark-pink bg-opacity-10'
           } text-center px-8 py-4 text-xl rounded-2xl font-bold`}
         >
           {isConnected
-            ? amount1 > tokens.token1.balance || amount2 > tokens.token2.balance
+            ? token1.amount > token1.balance || token2.amount > token2.balance
               ? `Insufficient Balance`
               : `Add Funds`
             : `Connect Wallet`}
@@ -333,14 +315,13 @@ function AddToPool() {
       {tokenSelectorToggle && (
         <TokenSelector
           setTokenSelectorToggle={setTokenSelectorToggle}
-          setTokens={setTokens}
-          tokens={tokens}
+          tokens={{token1, token2}}
         />
       )}
-      {ConfirmTransactionToggle && tokens?.pool && (
+      {ConfirmTransactionToggle && pool && (
         <ConfirmInvestment
           setConfirmTransactionToggle={setConfirmTransactionToggle}
-          tokens={{ ...tokens, token1Amount: amount1, token2Amount: amount2 }}
+          tokens={{token1, token2, pool}}
           from={'AddLiquidity'}
         />
       )}
