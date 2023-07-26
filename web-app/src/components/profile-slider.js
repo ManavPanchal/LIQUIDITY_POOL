@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { lazy, Suspense, useContext } from 'react';
 import { AppContext } from '../App';
 import { useAccount, useBalance, useConnect } from 'wagmi';
 import { metamaskIcon, coinbaseIcon } from '../images/images';
-import UserProfile from './user-profile';
+
+const UserProfile = lazy(() => import('./user-profile'))
 
 const ProfileSlider = () => {
   const { setSliderToggle } = useContext(AppContext);
@@ -22,11 +23,11 @@ const ProfileSlider = () => {
   ];
 
   return (
-    <section
-      className={`fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
+    <div
+      className={`profile_slider fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
       onClick={()=>setSliderToggle(false)}
     >
-      <section
+      <div
         className={`flex absolute bottom-0 sm:relative text-slate-400 sm:h-full h-fit max-h-full bg-transparent hover:bg-gray-600 hover:bg-opacity-5 sm:rounded-xl rounded-t-xl ease-in-out
          sm:w-fit w-full`}
           onClick={(e)=>{e.stopPropagation()}}
@@ -42,12 +43,14 @@ const ProfileSlider = () => {
           onMouseEnter={(e) => e.stopPropagation()}
         >
           {isConnected ? (
-            <UserProfile
-              address={address}
-              data={data}
-              isError={isError}
-              isLoading={isLoading}
-            />
+            <Suspense>
+              <UserProfile
+                address={address}
+                data={data}
+                isError={isError}
+                isLoading={isLoading}
+              />
+            </Suspense>
           ) : (
             <>
               <div className="header flex justify-between items-center">
@@ -101,8 +104,8 @@ const ProfileSlider = () => {
             </>
           )}
         </div>
-      </section>
-    </section>
+      </div>
+    </div>
   );
 };
 

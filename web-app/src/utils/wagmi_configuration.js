@@ -20,3 +20,9 @@ export const config = createConfig({
     publicClient,
     webSocketPublicClient
 })
+
+console.log(config);
+
+export const Providers = {
+  publicProvider,
+}

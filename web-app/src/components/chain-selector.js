@@ -1,34 +1,33 @@
-import React, { useEffect, useState, useRef } from "react";
-import { useAccount } from "wagmi";
+import React, { useEffect, useState } from "react";
 import { getNetwork, watchNetwork } from "@wagmi/core";
 import { switchNetwork } from "@wagmi/core";
 import { blockchains } from "../utils/blockchains";
 function ChainSelector() {
-  const { isConnected } = useAccount();
   const [dropdownToogle, setDropdownToggle] = useState(false);
   const [currentChain, setCurrentChain] = useState({
     name: "",
     logo: "",
   });
 
-  useEffect(() => {
-    let chainId = getNetwork().chain?.id || 1;
-    setChain(chainId);
-  }, []);
-
   const setChain = (chainId) => {
     const tempBlockchain = blockchains.filter((blockchain) => {
       return blockchain.id == chainId;
     });
     setCurrentChain({
-      name: tempBlockchain[0].name,
-      logo: tempBlockchain[0].logo,
+      name: tempBlockchain[0]?.name,
+      logo: tempBlockchain[0]?.logo,
     });
   };
+
+  useEffect(() => {
+    let chainId = getNetwork().chain?.id || 1;
+    setChain(chainId);
+  }, []);
 
   watchNetwork(()=>{
     let chainId = getNetwork().chain?.id || 1;
     setChain(chainId);
+    setDropdownToggle(false);
   })
 
   const changeChain = async (chainId) => {
@@ -42,7 +41,6 @@ function ChainSelector() {
 
   return (
     <>
-      {isConnected && (
         <div className="relative inline-block min-w-fit">
           <div
             className="currentchain cursor-pointer hover:bg-blue-500 hover:bg-opacity-10 px-3 py-2 rounded-md flex gap-1 items-center"
@@ -93,7 +91,6 @@ function ChainSelector() {
             </div>
           )}
         </div>
-      )}
     </>
   );
 }

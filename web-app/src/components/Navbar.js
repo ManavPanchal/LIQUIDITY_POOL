@@ -1,13 +1,12 @@
-import React, { useContext } from 'react';
-import { useState } from 'react';
+import React, { lazy, Suspense, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { dots, uniLogo, ethLogo , searchIcon} from '../images/images';
+import { dots, uniLogo , searchIcon} from '../images/images';
 import { AppContext } from '../App';
 import { useAccount } from 'wagmi';
-import ChainSelector from './chain-selector';
+
+const ChainSelector = lazy(()=>import ('./chain-selector'))
 
 const Navbar = () => {
-  const [dropdownToogle, setDropdownToggle] = useState(false);
   const { setSliderToggle } = useContext(AppContext);
 
   const { isConnected, address } = useAccount();
@@ -21,7 +20,7 @@ const Navbar = () => {
     <section className="navbar_div h-22 w-full p-3 xl:grid xl:grid-cols-3 flex justify-between items-center">
       <section className="navigation flex items-center gap-5">
         <Link to="/#" className='text-center'>
-          <img src={uniLogo} alt="logo" className="h-9 cursor-pointer self-center pb-1" />
+          <img src={uniLogo} alt="logo" className="cursor-pointer self-center pb-1" width="36px" height="36px" />
         </Link>
         <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 block sm:hidden cursor-pointer' />
         <u className="list-none no-underline text-slate-400 left-0 p-3 m-0 sm:p-0 border-slate-200 border-t sm:border-none flex items-center fixed bottom-0 sm:relative sm:justify-normal sm:bg-transparent bg-uni-dim-white justify-between w-full box-border">
@@ -60,9 +59,9 @@ const Navbar = () => {
             <path
               d="M15 15L11.2439 11.2439M12.3821 6.69106C12.3821 9.83414 9.83414 12.3821 6.69106 12.3821C3.54797 12.3821 1 9.83414 1 6.69106C1 3.54797 3.54797 1 6.69106 1C9.83414 1 12.3821 3.54797 12.3821 6.69106Z"
               stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
           <input
@@ -79,7 +78,7 @@ const Navbar = () => {
       <section className="connectors flex gap-1 items-center justify-self-end px-2">
         <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 hidden sm:block lg:hidden cursor-pointer'/>
         <section className="chain_selector">
-          <ChainSelector/>
+          { isConnected && <Suspense><ChainSelector/></Suspense>}
         </section>
         <section
           className="user_profile rounded-3xl cursor-pointer overflow-hidden"

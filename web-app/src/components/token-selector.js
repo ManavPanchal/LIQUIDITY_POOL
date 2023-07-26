@@ -1,7 +1,8 @@
 import { readContract } from '@wagmi/core';
-import React, {useState} from 'react';
+import React, { useState} from 'react';
 import { useAccount } from 'wagmi';
 import { tokenABI, Tokens } from "../utils/constants"
+
 const TokenSelector = ({ setTokenSelectorToggle, tokens }) => {
 
   const { address } = useAccount();
@@ -21,6 +22,25 @@ const TokenSelector = ({ setTokenSelectorToggle, tokens }) => {
     }
   }
 
+  const onTokenSelect = async (token) => {
+    if (tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) return;
+    setBalanceLoader(true);
+    const balance = await fetchUserTokenBalance(token.tokenAddress)
+    if (tokens.token1.isSelected){
+      tokens.token1.setName(token.tokenSymbol);
+      tokens.token1.setBalance(balance);
+      tokens.token1.setAddress(token.tokenAddress)
+      tokens.token1.setLogo(token.tokenImage)
+    }
+    else if (tokens.token2.isSelected){
+      tokens.token2.setName(token.tokenSymbol);
+      tokens.token2.setBalance(balance);
+      tokens.token2.setAddress(token.tokenAddress);
+      tokens.token2.setLogo(token.tokenImage)
+    }
+    setTokenSelectorToggle(false);
+  }
+
   return (
     <div className='token_selector_container h-screen w-screen bg-slate-600 bg-opacity-50 absolute top-0' onClick={() => setTokenSelectorToggle(false)}>
       <div className="main absolute py sm:top-1/2 left-1/2 bottom-0 -translate-x-1/2 sm:-translate-y-1/2 bg-uni-dim-white w-[400px] max-w-full sm:rounded-3xl rounded-t-3xl max-h-fit overflow-hidden " onClick={(e) => { e.stopPropagation() }}>
@@ -28,7 +48,7 @@ const TokenSelector = ({ setTokenSelectorToggle, tokens }) => {
           <div className="heading flex justify-between py-2 px-1">
             <span className='font-medium'>Select a token</span>
             <button onClick={() => setTokenSelectorToggle(false)}>
-              <span class="material-symbols-outlined">
+              <span className="material-symbols-outlined">
                 close
               </span>
             </button>
@@ -46,24 +66,7 @@ const TokenSelector = ({ setTokenSelectorToggle, tokens }) => {
               return (<>
                 <div
                   className={`token flex p-2 pl-5 hover:bg-slate-600 hover:bg-opacity-5 cursor-pointer gap-2 items-center ${(tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) && "opacity-20"}`}
-                  onClick={async () => {
-                    if (tokens.token1.name === token.tokenName || tokens.token2.name === token.tokenName) return;
-                    setBalanceLoader(true);
-                    const balance = await fetchUserTokenBalance(token.tokenAddress)
-                    if (tokens.token1.isSelected){
-                      tokens.token1.setName(token.tokenSymbol);
-                      tokens.token1.setBalance(balance);
-                      tokens.token1.setAddress(token.tokenAddress)
-                      tokens.token1.setLogo(token.tokenImage)
-                    }
-                    else if (tokens.token2.isSelected){
-                      tokens.token2.setName(token.tokenSymbol);
-                      tokens.token2.setBalance(balance);
-                      tokens.token2.setAddress(token.tokenAddress);
-                      tokens.token2.setLogo(token.tokenImage)
-                    }
-                    setTokenSelectorToggle(false);
-                  }}>
+                  onClick={()=>{onTokenSelect(token)}}>
                   <span className='token_image'>
                     <img src={token.tokenImage} alt="" className='w-8' />
                   </span>

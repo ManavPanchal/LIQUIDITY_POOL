@@ -1,12 +1,14 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import { createContext, useEffect, useState } from 'react';
-import ProfileSlider from './components/profile-slider';
+import { createContext, lazy, Suspense, useState } from 'react';
 import AppRoutes from './AppRoutes';
 import { WagmiConfig } from 'wagmi';
 import { config } from './utils/wagmi_configuration';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+const ProfileSlider = lazy(()=> import("./components/profile-slider"))
+
 export const AppContext = createContext();
 
 function App() {
@@ -24,7 +26,7 @@ function App() {
         }}
       >
         <div id="App" className="h-screen w-screen overflow-x-hidden">
-          {sliderToggle && <ProfileSlider />}
+          {sliderToggle && <Suspense fallback={()=>"Loading"}><ProfileSlider /></Suspense>}
           <header className="App-header">
             <Navbar />
           </header>

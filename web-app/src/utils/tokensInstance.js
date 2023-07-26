@@ -16,21 +16,6 @@ async function tokensInstance(tokenAddress) {
   return { contract, networkId, signerAddress };
 }
 
-// async function tokensSupply(tokenAddress) {
-//   const ABI = tokenABI;
-//   // const provider = new ethers.providers.Web3Provider(window.ethereum);
-//   const provider = new ethers.providers.JsonRpcProvider('')
-//   const contractAddress = tokenAddress;
-//   // await provider.send('eth_requestAccounts', []);
-//   // const signer = provider.getSigner();
-//   // const signerAddress = await signer.getAddress();
-//   const network = await provider.getNetwork();
-//   const networkId = network.chainId;
-//   const contract = new ethers.Contract(contractAddress, ABI, provider);
-//   localStorage.setItem('nid', networkId);
-//   return { contract, networkId };
-// }
-
 export const fetchUserTokenBalance = async(tokenAddress, accountAddress)=>{
   try {
         const balance = await readContract({

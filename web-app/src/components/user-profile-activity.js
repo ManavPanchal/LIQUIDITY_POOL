@@ -12,7 +12,6 @@ const UserActivity = () => {
         `http://localhost:5000/api/getActivities/${signerAddress}/${networkId}`,
       );
       const swappedEvents = await response.json();
-      console.log(swappedEvents.allActivities, 'deeeeeeeeeeeeee');
       setAllActivities(swappedEvents.allActivities);
     }
     activityEvents();

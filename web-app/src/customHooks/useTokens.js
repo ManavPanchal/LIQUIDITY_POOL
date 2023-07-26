@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 const useTokens = (initialToken) =>{
     const [tokens, setTokens] =  useState(initialToken);
 
-    useEffect(()=>{console.log(tokens);},[tokens])
-
     const token1 = {
         name:useMemo(()=> tokens.token1?.name,[tokens.token1?.name]),
         address: useMemo(() => tokens.token1?.address,[tokens.token1?.address]),
