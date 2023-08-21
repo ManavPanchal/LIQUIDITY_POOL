@@ -1,53 +1,54 @@
-import { pools } from "./constants";
-import { ethers } from "ethers";
-import lptInstance from "./lptInstance";
-import poolInstance from "./poolInstance";
-import SwappingInstance from "./swappingInstance";
-import tokensInstance from "./tokensInstance";
-import { toast } from "react-toastify";
+import { pools, tokenABI } from './constants';
+import { ethers } from 'ethers';
+import lptInstance from './lptInstance';
+import poolInstance from './poolInstance';
+import SwappingInstance from './swappingInstance';
+import tokensInstance from './tokensInstance';
+import { toast } from 'react-toastify';
+import { writeContract } from '@wagmi/core';
 
 const headers = {
   'Content-Type': 'application/json',
 };
 
-const generateToast = (message)=>{
+const generateToast = (message) => {
   toast.info(message, {
-    position: "top-right",
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "light",
-    });
-}
+    theme: 'light',
+  });
+};
 
-const generateConfirmationToast = (message)=>{
+const generateConfirmationToast = (message) => {
   toast.success(message, {
-    position: "top-right",
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "light",
-    });
-}
+    theme: 'light',
+  });
+};
 
-const generateErrorToast = (message) =>{
-  toast.error(message ,{
-    position: "top-right",
+const generateErrorToast = (message) => {
+  toast.error(message, {
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "light",
-    })
-}
+    theme: 'light',
+  });
+};
 
 export const confirmProccess = async (
   tokens,
@@ -55,16 +56,28 @@ export const confirmProccess = async (
   setAllowanceWaiting,
   setTransactionFlag,
   setConfirmTransactionToggle,
-  setConfirmTransactionFlag
+  setConfirmTransactionFlag,
 ) => {
   try {
     console.log(tokens);
-    console.log(ethers.utils.formatEther(ethers.utils.parseEther(tokens?.token1.amount)));
+    console.log(
+      ethers.utils.formatEther(ethers.utils.parseEther(tokens?.token1.amount)),
+    );
     const { contract: poolContract } = await poolInstance();
     if (!(from === 'RemoveLiquidity')) {
+      await writeContract({
+        address: tokens.token1?.address,
+        abi: tokenABI,
+        functionName: 'approve',
+        args: [
+          process.env.REACT_APP_LIQUIDITY_CONTRACT,
+          ethers.utils.parseEther(tokens?.token1.amount),
+        ],
+      });
       let { contract: token1Contract, signerAddress } = await tokensInstance(
         tokens.token1?.address,
       );
+
       let token1Allowance = await token1Contract.allowance(
         signerAddress,
         process.env.REACT_APP_LIQUIDITY_CONTRACT,
@@ -143,18 +156,18 @@ export const confirmProccess = async (
             console.log('success');
           }
           setConfirmTransactionFlag(true);
-          generateConfirmationToast("Liquidity Added")
+          generateConfirmationToast('Liquidity Added');
         } else {
-          generateToast('please give sufficient Allowance')
+          generateToast('please give sufficient Allowance');
         }
       } else {
         if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1.amount) {
           setTransactionFlag(true);
           await SwappingInstance(tokens);
-          generateConfirmationToast("Swapped succesfully")
+          generateConfirmationToast('Swapped succesfully');
           setConfirmTransactionFlag(true);
         } else {
-          generateToast('please give sufficient Allowance')
+          generateToast('please give sufficient Allowance');
         }
       }
       setConfirmTransactionToggle(false);
@@ -162,7 +175,7 @@ export const confirmProccess = async (
       const {
         contract: LPTContract,
         signerAddress,
-        networkId
+        networkId,
       } = await lptInstance(pools[tokens.pool?.poolId].LPTAddress);
       let LPTAllowance = await LPTContract.allowance(
         signerAddress,
@@ -229,10 +242,10 @@ export const confirmProccess = async (
         if (response.status === 200) {
           console.log('success');
         }
-        generateConfirmationToast("Liquidity Removed")
+        generateConfirmationToast('Liquidity Removed');
         setConfirmTransactionFlag(true);
       } else {
-        generateToast('please give sufficient Allowance')
+        generateToast('please give sufficient Allowance');
       }
       setConfirmTransactionToggle(false);
     }
@@ -242,11 +255,9 @@ export const confirmProccess = async (
     if (match && match.length > 1) {
       const revertedMessage = match[1];
       generateErrorToast(revertedMessage);
-    }
-    else if(error.message.includes("user rejected transaction"))
-      generateErrorToast("user rejected the transaction")
-    else
-      console.log(error);
+    } else if (error.message.includes('user rejected transaction'))
+      generateErrorToast('user rejected the transaction');
+    else console.log(error);
     setConfirmTransactionToggle(false);
   }
 };

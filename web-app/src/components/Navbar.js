@@ -1,15 +1,22 @@
-import React, { lazy, Suspense, useContext } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
-import { dots, uniLogo , searchIcon} from '../images/images';
+import { dots, uniLogo, searchIcon } from '../images/images';
 import { AppContext } from '../App';
-import { useAccount } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
-const ChainSelector = lazy(()=>import ('./chain-selector'))
+const ChainSelector = lazy(() => import('./chain-selector'));
 
 const Navbar = () => {
   const { setSliderToggle } = useContext(AppContext);
 
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, connector } = useAccount();
 
   const style = {
     navigation_li:
@@ -19,22 +26,40 @@ const Navbar = () => {
   return (
     <section className="navbar_div h-22 w-full p-3 xl:grid xl:grid-cols-3 flex justify-between items-center">
       <section className="navigation flex items-center gap-5">
-        <Link to="/#" className='text-center'>
-          <img src={uniLogo} alt="logo" className="cursor-pointer self-center pb-1" width="36px" height="36px" />
+        <Link to="/#" className="text-center">
+          <img
+            src={uniLogo}
+            alt="logo"
+            className="cursor-pointer self-center pb-1"
+            width="36px"
+            height="36px"
+          />
         </Link>
-        <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 block sm:hidden cursor-pointer' />
+        <img
+          src={searchIcon}
+          alt=""
+          className="w-5 h-5 self-center mr-3 block sm:hidden cursor-pointer"
+        />
         <u className="list-none no-underline text-slate-400 left-0 p-3 m-0 sm:p-0 border-slate-200 border-t sm:border-none flex items-center fixed bottom-0 sm:relative sm:justify-normal sm:bg-transparent bg-uni-dim-white justify-between w-full box-border">
-          <li >
-            <Link to="/swap/#" className={style.navigation_li + ""}>Swap</Link>
-          </li>
-          <li >
-            <Link to="/tokens" className={style.navigation_li}>Tokens</Link>
+          <li>
+            <Link to="/swap/#" className={style.navigation_li + ''}>
+              Swap
+            </Link>
           </li>
           <li>
-            <Link to="/swap" className={style.navigation_li}>NFTs</Link>
+            <Link to="/tokens" className={style.navigation_li}>
+              Tokens
+            </Link>
           </li>
           <li>
-            <Link to="/pools" className={style.navigation_li}>Pools</Link>
+            <Link to="/swap" className={style.navigation_li}>
+              NFTs
+            </Link>
+          </li>
+          <li>
+            <Link to="/pools" className={style.navigation_li}>
+              Pools
+            </Link>
           </li>
           <li className={style.navigation_li}>
             <img
@@ -76,9 +101,17 @@ const Navbar = () => {
         <section className="list_section"></section>
       </section>
       <section className="connectors flex gap-1 items-center justify-self-end px-2">
-        <img src={searchIcon} alt="" className='w-5 h-5 self-center mr-3 hidden sm:block lg:hidden cursor-pointer'/>
+        <img
+          src={searchIcon}
+          alt=""
+          className="w-5 h-5 self-center mr-3 hidden sm:block lg:hidden cursor-pointer"
+        />
         <section className="chain_selector">
-          { isConnected && <Suspense><ChainSelector/></Suspense>}
+          {isConnected && (
+            <Suspense>
+              <ChainSelector />
+            </Suspense>
+          )}
         </section>
         <section
           className="user_profile rounded-3xl cursor-pointer overflow-hidden"

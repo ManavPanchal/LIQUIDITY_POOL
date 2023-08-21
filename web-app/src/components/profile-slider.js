@@ -3,7 +3,7 @@ import { AppContext } from '../App';
 import { useAccount, useBalance, useConnect } from 'wagmi';
 import { metamaskIcon, coinbaseIcon } from '../images/images';
 
-const UserProfile = lazy(() => import('./user-profile'))
+const UserProfile = lazy(() => import('./user-profile'));
 
 const ProfileSlider = () => {
   const { setSliderToggle } = useContext(AppContext);
@@ -25,12 +25,14 @@ const ProfileSlider = () => {
   return (
     <div
       className={`profile_slider fixed h-full sm:py-2 sm:pr-2 ease-in-out sm:right-0 z-10 duration-1000 sm:w-fit w-full sm:bg-transparent bg-slate-400 bg-opacity-20`}
-      onClick={()=>setSliderToggle(false)}
+      onClick={() => setSliderToggle(false)}
     >
       <div
         className={`flex absolute bottom-0 sm:relative text-slate-400 sm:h-full h-fit max-h-full bg-transparent hover:bg-gray-600 hover:bg-opacity-5 sm:rounded-xl rounded-t-xl ease-in-out
          sm:w-fit w-full`}
-          onClick={(e)=>{e.stopPropagation()}}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
       >
         <span
           className="profile_container_closer material-symbols-outlined p-3 mt-4 text-center hidden sm:block cursor-pointer"
@@ -67,7 +69,7 @@ const ProfileSlider = () => {
                   return (
                     <div
                       className="wallet flex gap-2 p-3 pl-6 w-full items-center bg-blue-600 bg-opacity-5 cursor-pointer hover:bg-opacity-10"
-                      onClick={() => connect({ connector: connectors[0] })}
+                      onClick={() => connect({ connector: connectors[index] })}
                     >
                       <img
                         src={wallet.image}
