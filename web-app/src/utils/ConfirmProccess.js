@@ -1,11 +1,13 @@
-import { pools, tokenABI } from './constants';
+import { LPTABI, pools, tokenABI } from './constants';
 import { ethers } from 'ethers';
 import lptInstance from './lptInstance';
 import poolInstance from './poolInstance';
 import SwappingInstance from './swappingInstance';
 import tokensInstance from './tokensInstance';
 import { toast } from 'react-toastify';
-import { writeContract } from '@wagmi/core';
+import { contract } from '../contract-interaction/ethers';
+import { checkOrSetApprovance } from '../contract-interaction/chekers';
+import { getNetwork } from '@wagmi/core';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -23,7 +25,6 @@ const generateToast = (message) => {
     theme: 'light',
   });
 };
-
 const generateConfirmationToast = (message) => {
   toast.success(message, {
     position: 'top-right',
@@ -51,6 +52,7 @@ const generateErrorToast = (message) => {
 };
 
 export const confirmProccess = async (
+  address,
   tokens,
   from,
   setAllowanceWaiting,
@@ -59,116 +61,65 @@ export const confirmProccess = async (
   setConfirmTransactionFlag,
 ) => {
   try {
+    const { id: networkId } = getNetwork()?.chain;
+    const LPTContract = contract(pools[tokens.pool?.poolId].LPTAddress, LPTABI);
     console.log(tokens);
     console.log(
       ethers.utils.formatEther(ethers.utils.parseEther(tokens?.token1.amount)),
     );
     const { contract: poolContract } = await poolInstance();
     if (!(from === 'RemoveLiquidity')) {
-      await writeContract({
-        address: tokens.token1?.address,
-        abi: tokenABI,
-        functionName: 'approve',
-        args: [
-          process.env.REACT_APP_LIQUIDITY_CONTRACT,
-          ethers.utils.parseEther(tokens?.token1.amount),
-        ],
-      });
-      let { contract: token1Contract, signerAddress } = await tokensInstance(
-        tokens.token1?.address,
-      );
-
-      let token1Allowance = await token1Contract.allowance(
-        signerAddress,
+      const token1Contract = contract(tokens.token1?.address, tokenABI);
+      const token2Contract = contract(tokens?.token2?.address, tokenABI);
+      await checkOrSetApprovance(
+        token1Contract,
+        address,
         process.env.REACT_APP_LIQUIDITY_CONTRACT,
+        tokens?.token1.amount * 10 ** 18,
+        setAllowanceWaiting,
       );
-      if (Number(token1Allowance) / 10 ** 18 < tokens?.token1.amount) {
-        const tx = await token1Contract.approve(
-          process.env.REACT_APP_LIQUIDITY_CONTRACT,
-          ethers.utils.parseEther(tokens?.token1.amount),
-        );
-        setAllowanceWaiting(true);
-        await tx.wait();
-        setAllowanceWaiting(false);
-        token1Allowance = await token1Contract.allowance(
-          signerAddress,
-          process.env.REACT_APP_LIQUIDITY_CONTRACT,
-        );
-      }
       if (from === 'AddLiquidity') {
-        const {
-          contract: tokenContract,
-          signerAddress,
-          networkId,
-        } = await tokensInstance(tokens.token2?.address);
-        console.log();
-        let token2Allowance = await tokenContract.allowance(
-          signerAddress,
+        await checkOrSetApprovance(
+          token2Contract,
+          address,
           process.env.REACT_APP_LIQUIDITY_CONTRACT,
+          tokens?.token2?.amount * 10 ** 18,
         );
-        if (Number(token2Allowance) / 10 ** 18 < tokens?.token2.amount) {
-          const tx = await tokenContract.approve(
-            process.env.REACT_APP_LIQUIDITY_CONTRACT,
-            ethers.utils.parseEther(tokens?.token2.amount),
-          );
-          setAllowanceWaiting(true);
-          await tx.wait();
-          setAllowanceWaiting(false);
-          token2Allowance = await tokenContract.allowance(
-            signerAddress,
-            process.env.REACT_APP_LIQUIDITY_CONTRACT,
-          );
+        setTransactionFlag(true);
+        const tx = await poolContract.addLiquidity(
+          tokens.pool?.poolId,
+          tokens.token1?.address,
+          tokens.token2?.address,
+          ethers.utils.parseEther(tokens?.token1.amount),
+          ethers.utils.parseEther(tokens?.token2.amount),
+        );
+        await tx.wait();
+        const currentTokenPair = pools.filter(
+          (pool) => pool.id === tokens.pool?.poolId,
+        );
+        const requestBody = {
+          userAddress: address,
+          poolId: tokens.pool?.poolId,
+          activity: 'Added',
+          tokenPair: currentTokenPair[0].tokenPair,
+          amount1: Number(tokens?.token1.amount),
+          amount2: Number(tokens?.token2.amount),
+          networkId,
+        };
+        const response = await fetch('/api/addLiquidity', {
+          method: 'POST',
+          body: JSON.stringify(requestBody),
+          headers,
+        });
+        if (response.status === 200) {
+          console.log('success');
         }
-        if (
-          Number(token1Allowance) / 10 ** 18 >= tokens?.token1.amount &&
-          Number(token2Allowance) / 10 ** 18 >= tokens?.token2.amount
-        ) {
-          setTransactionFlag(true);
-          console.log('...', tokens.pool?.poolId);
-          const tx = await poolContract.addLiquidity(
-            tokens.pool?.poolId,
-            tokens.token1?.address,
-            tokens.token2?.address,
-            ethers.utils.parseEther(tokens?.token1.amount),
-            ethers.utils.parseEther(tokens?.token2.amount),
-          );
-          await tx.wait();
-          const currentTokenPair = pools.filter(
-            (pool) => pool.id === tokens.pool?.poolId,
-          );
-          const requestBody = {
-            userAddress: signerAddress,
-            poolId: tokens.pool?.poolId,
-            activity: 'Added',
-            tokenPair: currentTokenPair[0].tokenPair,
-            amount1: Number(tokens?.token1.amount),
-            amount2: Number(tokens?.token2.amount),
-            networkId,
-          };
-          console.log(requestBody, '.............');
-          const response = await fetch('/api/addLiquidity', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers,
-          });
-
-          if (response.status === 200) {
-            console.log('success');
-          }
-          setConfirmTransactionFlag(true);
-          generateConfirmationToast('Liquidity Added');
-        } else {
-          generateToast('please give sufficient Allowance');
-        }
+        setConfirmTransactionFlag(true);
       } else {
-        if (Number(token1Allowance) / 10 ** 18 >= tokens?.token1.amount) {
-          setTransactionFlag(true);
-          await SwappingInstance(tokens);
-          generateConfirmationToast('Swapped succesfully');
-          setConfirmTransactionFlag(true);
-        } else {
-          generateToast('please give sufficient Allowance');
-        }
+        setTransactionFlag(true);
+        await SwappingInstance(tokens, address);
+        generateConfirmationToast('Swapped succesfully');
+        setConfirmTransactionFlag(true);
       }
       setConfirmTransactionToggle(false);
     } else {

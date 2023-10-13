@@ -1,13 +1,11 @@
-import { ethers } from "ethers";
-import walletInstance from "./walletInstance";
+import { getNetwork } from "@wagmi/core";
 import { LiquidityPoolABI } from "./constants";
-import { toast } from "react-toastify";
+import {contract} from "../contract-interaction/ethers"
 
-async function SwappingInstance(tokens) {
-    const { signer, signerAddress, networkId } = await walletInstance();
-    const contract  = new ethers.Contract(process.env.REACT_APP_LIQUIDITY_CONTRACT, LiquidityPoolABI, signer);
-    const tx = await contract.swapTokens(tokens.pool?.poolId,`${(tokens.token1.amount * (10**18))}`, tokens.token1?.address)
-    await tx.wait();
+async function SwappingInstance(tokens, signerAddress) {
+    const {id: networkId} = getNetwork()?.chain
+    const swappingContract = contract(process.env.REACT_APP_LIQUIDITY_CONTRACT, LiquidityPoolABI)
+    await swappingContract.write("swapTokens",[tokens.pool?.poolId,`${(tokens.token1.amount * (10**18))}`, tokens.token1?.address])
     await fetch('/api/swapTokens', {
       method: 'POST',
       body: JSON.stringify({
@@ -23,7 +21,6 @@ async function SwappingInstance(tokens) {
         'Content-Type': 'application/json',
       }
     })
-
 }
 
 export default SwappingInstance;

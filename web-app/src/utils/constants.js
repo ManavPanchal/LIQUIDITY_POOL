@@ -1,4 +1,4 @@
-import { ethLogo } from '../images/images';
+import { ethLogo, metamaskIcon, walletConnectIcon } from '../images/images';
 
 export const LiquidityPoolABI = [
 	{
@@ -1004,4 +1004,11 @@ export const initialTokens = {
       address:"",
       amount:""
   }
+}
+
+export const getWalletIcons = (walletName) =>{
+  return {
+    MetaMask : metamaskIcon,
+    WalletConnect: walletConnectIcon
+  }[walletName]
 }

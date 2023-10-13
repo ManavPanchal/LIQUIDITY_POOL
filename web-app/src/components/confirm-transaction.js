@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import { AppContext } from '../App';
 import { writeContract } from '@wagmi/core';
 import { tokenABI } from '../utils/constants';
+import { useAccount } from 'wagmi';
 
 const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
   const [waitingForAllowance, setAllowanceWaiting] = useState(false);
@@ -17,6 +18,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
   const [removableTokens, setRemovableTokens] = useState();
   const [fetchingClaimableBalance, setBalanceFetching] = useState(false);
   const { setConfirmTransactionFlag } = useContext(AppContext);
+  const {address} = useAccount();
 
   const getclaimableLiquidity = async () => {
     try {
@@ -158,18 +160,7 @@ const ConfirmTransaction = ({ setConfirmTransactionToggle, tokens, from }) => {
               onClick={() => {
                 if (!fetchingClaimableBalance) {
                   setReviewFlag(false);
-                  (async () => {
-                    await writeContract({
-                      address: tokens.token1?.address,
-                      abi: tokenABI,
-                      functionName: 'approve',
-                      args: [
-                        process.env.REACT_APP_LIQUIDITY_CONTRACT,
-                        ethers.utils.parseEther(tokens?.token1.amount),
-                      ],
-                    });
-                  })();
-                  // confirmProccess(tokens, from, setAllowanceWaiting, setTransactionFlag, setConfirmTransactionToggle, setConfirmTransactionFlag)
+                  confirmProccess(address,tokens, from, setAllowanceWaiting, setTransactionFlag, setConfirmTransactionToggle, setConfirmTransactionFlag)
                 }
               }}
             >

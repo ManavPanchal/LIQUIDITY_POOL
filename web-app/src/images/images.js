@@ -7,6 +7,7 @@ import metamaskIcon from "./metamaskIcon.webp"
 import coinbaseIcon from "./coinBaseimag.webp"
 import polygonSvg from "./polygon.svg"
 import searchIcon from "./magnifying-glass.png"
+import walletConnectIcon from "./walletConnectIcon.png"
 export {
     lionlogo,
     uniLogo,
@@ -16,5 +17,6 @@ export {
     metamaskIcon,
     coinbaseIcon,
     polygonSvg,
-    searchIcon
+    searchIcon,
+    walletConnectIcon
 }

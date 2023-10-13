@@ -11,12 +11,13 @@ const Tokenpairprovider = () => {
   const navigateTo = useNavigate();
   const [poolInfo, setpoolInfo] = useState([]);
   let poolcount = 0;
-  const {isConnected} = useAccount()
+  const {address, isConnected} = useAccount();
+
 
   const addevents = async() => {
-    const { signerAddress,networkId } = await poolInstance();
+    const { networkId } = await poolInstance();
     const response = await fetch(
-      `http://localhost:5000/api/getProvider/${signerAddress}/${networkId}`,
+      `/api/getProvider/${address}/${networkId}`,
     );
     const poolPositions = await response.json()
     setpoolInfo(poolPositions.allProviderPools)

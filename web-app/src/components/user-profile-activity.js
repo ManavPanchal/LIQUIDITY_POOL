@@ -1,15 +1,16 @@
 import { React, useState, useEffect } from 'react';
 import poolInstance from '../utils/poolInstance';
 import moment from 'moment';
+import { useAccount, useNetwork } from 'wagmi';
 const UserActivity = () => {
   const [allActivities, setAllActivities] = useState([]);
+  const {address} = useAccount()
+  const {chain:{id}} = useNetwork();
 
   useEffect(() => {
     async function activityEvents() {
-      const { signerAddress, networkId } = await poolInstance();
-
       const response = await fetch(
-        `http://localhost:5000/api/getActivities/${signerAddress}/${networkId}`,
+        `/api/getActivities/${address}/${id}`,
       );
       const swappedEvents = await response.json();
       setAllActivities(swappedEvents.allActivities);

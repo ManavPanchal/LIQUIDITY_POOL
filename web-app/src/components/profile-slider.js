@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useContext } from 'react';
 import { AppContext } from '../App';
 import { useAccount, useBalance, useConnect } from 'wagmi';
-import { metamaskIcon, coinbaseIcon } from '../images/images';
+import { getWalletIcons } from '../utils/constants';
 
 const UserProfile = lazy(() => import('./user-profile'));
 
@@ -11,16 +11,14 @@ const ProfileSlider = () => {
   const { isConnected, address } = useAccount();
   const { data, isError, isLoading } = useBalance({ address });
 
-  const wallets = [
-    {
-      image: metamaskIcon,
-      name: 'metmask',
-    },
-    {
-      image: coinbaseIcon,
-      name: 'Coinbase',
-    },
-  ];
+  const handleConnect = (connector) =>{
+    if(connector?.name === "WalletConnect") setSliderToggle(false);
+    try {
+      connect({connector})
+    } catch (error) {
+      console.log("connection error......");
+    }
+  }
 
   return (
     <div
@@ -65,19 +63,19 @@ const ProfileSlider = () => {
                 </span>
               </div>
               <div className="wallets_container flex flex-col rounded-xl overflow-hidden gap-[2.5px] mt-3">
-                {wallets.map((wallet, index) => {
+                {connectors?.map((connector) => {
                   return (
                     <div
                       className="wallet flex gap-2 p-3 pl-6 w-full items-center bg-blue-600 bg-opacity-5 cursor-pointer hover:bg-opacity-10"
-                      onClick={() => connect({ connector: connectors[index] })}
+                      onClick={() => handleConnect(connector)}
                     >
                       <img
-                        src={wallet.image}
+                        src={getWalletIcons(connector?.name)}
                         alt=""
                         className="w-10 rounded-md"
                       />
                       <span className="text-lg font-bold text-black">
-                        {wallet.name}
+                        {connector?.name}
                       </span>
                     </div>
                   );

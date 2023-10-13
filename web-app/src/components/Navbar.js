@@ -16,7 +16,7 @@ const ChainSelector = lazy(() => import('./chain-selector'));
 const Navbar = () => {
   const { setSliderToggle } = useContext(AppContext);
 
-  const { isConnected, address, connector } = useAccount();
+  const { isConnected, address } = useAccount();
 
   const style = {
     navigation_li:
